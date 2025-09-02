@@ -153,4 +153,4 @@ If you need help or have questions:
 
 **Made with ❤️ for learning and education!**
 
-*SmartBuds - Where learning is fun and exciting!* 🌟 
+*SmartBuds - Where learning is fun and exciting!* 🌟 # Updated for deployment
