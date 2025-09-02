@@ -52,9 +52,13 @@ export default function AdminPage() {
   const handleCreateTest = async (testData: Omit<Test, 'id' | 'created_at'>) => {
     try {
       const newTest = await testService.create(testData);
-      setTests(prev => [...prev, newTest]);
-      setShowCreateForm(false);
-      setToast({ type: 'success', message: 'Test created successfully!' });
+      if (newTest) {
+        setTests(prev => [...prev, newTest]);
+        setShowCreateForm(false);
+        setToast({ type: 'success', message: 'Test created successfully!' });
+      } else {
+        setToast({ type: 'error', message: 'Failed to create test' });
+      }
     } catch (error) {
       console.error('Error creating test:', error);
       setToast({ type: 'error', message: 'Failed to create test' });
@@ -64,9 +68,13 @@ export default function AdminPage() {
   const handleUpdateTest = async (testData: Test) => {
     try {
       const updatedTest = await testService.update(testData.id, testData);
-      setTests(prev => prev.map(test => test.id === updatedTest.id ? updatedTest : test));
-      setEditingTest(null);
-      setToast({ type: 'success', message: 'Test updated successfully!' });
+      if (updatedTest) {
+        setTests(prev => prev.map(test => test.id === updatedTest.id ? updatedTest : test));
+        setEditingTest(null);
+        setToast({ type: 'success', message: 'Test updated successfully!' });
+      } else {
+        setToast({ type: 'error', message: 'Failed to update test' });
+      }
     } catch (error) {
       console.error('Error updating test:', error);
       setToast({ type: 'error', message: 'Failed to update test' });
