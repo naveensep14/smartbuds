@@ -43,10 +43,11 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
-              <img 
-                src="/images/logo-square.jpg" 
-                alt="SmartBuds Logo" 
-                className="w-12 h-12 rounded-lg object-cover"
+              <div 
+                className="w-12 h-12 rounded-lg bg-cover bg-center"
+                style={{
+                  backgroundImage: 'url(/images/logo-square.jpg)'
+                }}
               />
             </div>
           </div>

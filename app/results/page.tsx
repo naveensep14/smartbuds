@@ -135,10 +135,11 @@ export default function ResultsPage() {
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-3">
                 <div className="w-12 h-12 flex items-center justify-center">
-                  <img 
-                    src="/images/logo-square.jpg" 
-                    alt="SmartBuds Logo" 
-                    className="w-12 h-12 rounded-lg object-cover"
+                  <div 
+                    className="w-12 h-12 rounded-lg bg-cover bg-center"
+                    style={{
+                      backgroundImage: 'url(/images/logo-square.jpg)'
+                    }}
                   />
                 </div>
                 <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
