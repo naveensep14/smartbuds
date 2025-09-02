@@ -2,8 +2,12 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
 
 export default function HomePage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
       {/* Header */}
@@ -28,13 +32,42 @@ export default function HomePage() {
             </nav>
             {/* Mobile menu button */}
             <div className="md:hidden">
-              <button className="text-gray-600 hover:text-orange-600">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+              <button 
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="text-gray-600 hover:text-orange-600 transition-colors p-2 rounded-lg hover:bg-gray-100"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>
+          
+          {/* Mobile menu */}
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden border-t border-gray-200 py-4"
+            >
+              <div className="flex flex-col space-y-4">
+                <Link 
+                  href="/tests" 
+                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Take Tests
+                </Link>
+                <Link 
+                  href="/admin" 
+                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Admin Panel
+                </Link>
+              </div>
+            </motion.div>
+          )}
         </div>
       </header>
 
