@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Plus, Edit, Trash2, Eye, BarChart3, Users, Settings, Menu, X } from 'lucide-react';
+import { BookOpen, Plus, Edit, Trash2, Eye, BarChart3, Users, Settings, Menu, X, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateTestForm from '@/components/CreateTestForm';
@@ -12,6 +12,7 @@ import ConfirmDeleteModal from '@/components/ConfirmDeleteModal';
 import Toast from '@/components/Toast';
 import { testService } from '@/lib/database';
 import { Test } from '@/types';
+import { useAuth } from '@/lib/auth';
 
 export default function AdminPage() {
   const [tests, setTests] = useState<Test[]>([]);
@@ -23,6 +24,7 @@ export default function AdminPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [isSupabaseConfigured, setIsSupabaseConfigured] = useState(false);
+  const { signOut } = useAuth();
 
   useEffect(() => {
     loadTests();
@@ -107,6 +109,13 @@ export default function AdminPage() {
                 <Link href="/admin" className="text-orange-600 font-semibold">
                   Admin Panel
                 </Link>
+                <button
+                  onClick={signOut}
+                  className="text-gray-600 hover:text-red-600 transition-colors flex items-center space-x-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Logout</span>
+                </button>
               </nav>
               
               {/* Mobile menu button */}
@@ -141,6 +150,16 @@ export default function AdminPage() {
                   >
                     Admin Panel
                   </Link>
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="text-gray-600 hover:text-red-600 transition-colors flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50 text-left"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span>
+                  </button>
                 </div>
               </motion.div>
             )}
