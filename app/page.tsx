@@ -17,11 +17,9 @@ export default function HomePage() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 flex items-center justify-center">
-                <img 
-                  src="/images/logo-square.jpg" 
-                  alt="SmartBuds Logo" 
-                  className="w-12 h-12 rounded-lg object-cover"
-                />
+                <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                  SB
+                </div>
               </div>
               <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
             </div>
@@ -81,11 +79,10 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <img 
-              src="/images/logo-wide.jpg" 
-              alt="SmartBuds Logo" 
-              className="mx-auto max-w-md md:max-w-lg lg:max-w-xl rounded-lg shadow-lg"
-            />
+            <div className="mx-auto max-w-md md:max-w-lg lg:max-w-xl rounded-lg shadow-lg bg-gradient-to-r from-orange-400 to-red-500 p-8 text-center">
+              <h2 className="text-3xl font-bold text-white mb-4">SmartBuds</h2>
+              <p className="text-white text-lg">Educational Platform</p>
+            </div>
           </motion.div>
           <motion.h1 
             className="text-5xl md:text-7xl font-bold text-gradient mb-6"

@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    unoptimized: true,
-  },
+  // Remove all image configuration to use default static file serving
 }
 
 module.exports = nextConfig 
