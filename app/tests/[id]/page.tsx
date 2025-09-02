@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Clock, CheckCircle, XCircle, ArrowLeft, ArrowRight, Flag } from 'lucide-react';
+import { BookOpen, Clock, CheckCircle, XCircle, ArrowLeft, ArrowRight, Flag, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Test, Question } from '@/types';
@@ -18,6 +18,7 @@ export default function TestPage() {
   const [isTestCompleted, setIsTestCompleted] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Load test from database
   useEffect(() => {
@@ -54,10 +55,73 @@ export default function TestPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading test...</p>
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <div className="flex items-center space-x-3">
+                <Link href="/" className="flex items-center space-x-3">
+                  <img
+                    src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
+                    alt="SmartBuds Logo"
+                    className="w-12 h-12 rounded-lg object-cover"
+                  />
+                  <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
+                </Link>
+              </div>
+              <nav className="hidden md:flex space-x-8">
+                <Link href="/tests" className="text-orange-600 font-semibold">
+                  Take Tests
+                </Link>
+                <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
+                  Admin Panel
+                </Link>
+              </nav>
+              
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+            
+            {/* Mobile menu */}
+            {mobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="md:hidden border-t border-gray-100 pt-4 pb-2"
+              >
+                <div className="flex flex-col space-y-3">
+                  <Link 
+                    href="/tests" 
+                    className="text-orange-600 font-semibold px-4 py-2 rounded-lg hover:bg-gray-50"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Take Tests
+                  </Link>
+                  <Link 
+                    href="/admin" 
+                    className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Admin Panel
+                  </Link>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </header>
+
+        <div className="flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading test...</p>
+          </div>
         </div>
       </div>
     );
@@ -65,13 +129,76 @@ export default function TestPage() {
 
   if (!test) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Test Not Found</h1>
-          <p className="text-gray-600 mb-4">The test you're looking for doesn't exist.</p>
-          <Link href="/tests" className="btn-primary">
-            Back to Tests
-          </Link>
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <div className="flex items-center space-x-3">
+                <Link href="/" className="flex items-center space-x-3">
+                  <img
+                    src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
+                    alt="SmartBuds Logo"
+                    className="w-12 h-12 rounded-lg object-cover"
+                  />
+                  <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
+                </Link>
+              </div>
+              <nav className="hidden md:flex space-x-8">
+                <Link href="/tests" className="text-orange-600 font-semibold">
+                  Take Tests
+                </Link>
+                <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
+                  Admin Panel
+                </Link>
+              </nav>
+              
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+            
+            {/* Mobile menu */}
+            {mobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="md:hidden border-t border-gray-100 pt-4 pb-2"
+              >
+                <div className="flex flex-col space-y-3">
+                  <Link 
+                    href="/tests" 
+                    className="text-orange-600 font-semibold px-4 py-2 rounded-lg hover:bg-gray-50"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Take Tests
+                  </Link>
+                  <Link 
+                    href="/admin" 
+                    className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Admin Panel
+                  </Link>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </header>
+
+        <div className="flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">Test Not Found</h1>
+            <p className="text-gray-600 mb-4">The test you're looking for doesn't exist.</p>
+            <Link href="/tests" className="btn-primary">
+              Back to Tests
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -140,7 +267,68 @@ export default function TestPage() {
   if (showResults) {
     const score = calculateScore();
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <div className="flex items-center space-x-3">
+                <Link href="/" className="flex items-center space-x-3">
+                  <img
+                    src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
+                    alt="SmartBuds Logo"
+                    className="w-12 h-12 rounded-lg object-cover"
+                  />
+                  <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
+                </Link>
+              </div>
+              <nav className="hidden md:flex space-x-8">
+                <Link href="/tests" className="text-orange-600 font-semibold">
+                  Take Tests
+                </Link>
+                <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
+                  Admin Panel
+                </Link>
+              </nav>
+              
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+            
+            {/* Mobile menu */}
+            {mobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="md:hidden border-t border-gray-100 pt-4 pb-2"
+              >
+                <div className="flex flex-col space-y-3">
+                  <Link 
+                    href="/tests" 
+                    className="text-orange-600 font-semibold px-4 py-2 rounded-lg hover:bg-gray-50"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Take Tests
+                  </Link>
+                  <Link 
+                    href="/admin" 
+                    className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Admin Panel
+                  </Link>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </header>
+
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <motion.div
             className="card text-center"
@@ -162,13 +350,13 @@ export default function TestPage() {
             </p>
             
             <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-primary-50 rounded-lg p-4">
-                <h3 className="font-semibold text-primary-700 mb-2">Correct Answers</h3>
-                <p className="text-2xl font-bold text-primary-600">{score.correct}</p>
+              <div className="bg-orange-50 rounded-lg p-4">
+                <h3 className="font-semibold text-orange-700 mb-2">Correct Answers</h3>
+                <p className="text-2xl font-bold text-orange-600">{score.correct}</p>
               </div>
-              <div className="bg-secondary-50 rounded-lg p-4">
-                <h3 className="font-semibold text-secondary-700 mb-2">Total Questions</h3>
-                <p className="text-2xl font-bold text-secondary-600">{score.total}</p>
+              <div className="bg-red-50 rounded-lg p-4">
+                <h3 className="font-semibold text-red-700 mb-2">Total Questions</h3>
+                <p className="text-2xl font-bold text-red-600">{score.total}</p>
               </div>
             </div>
 
@@ -187,7 +375,7 @@ export default function TestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -195,27 +383,70 @@ export default function TestPage() {
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-3">
                 <img
-                  src="https://i.ibb.co/VqKJ8M9/logo-square.jpg"
+                  src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
                   alt="SmartBuds Logo"
                   className="w-12 h-12 rounded-lg object-cover"
                 />
                 <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
               </Link>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 bg-red-50 px-3 py-2 rounded-lg">
-                <Clock className="w-5 h-5 text-red-600" />
-                <span className="font-semibold text-red-600">{formatTime(timeRemaining)}</span>
-              </div>
-            </div>
+            <nav className="hidden md:flex space-x-8">
+              <Link href="/tests" className="text-orange-600 font-semibold">
+                Take Tests
+              </Link>
+              <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
+                Admin Panel
+              </Link>
+            </nav>
+            
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
+          
+          {/* Mobile menu */}
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="md:hidden border-t border-gray-100 pt-4 pb-2"
+            >
+              <div className="flex flex-col space-y-3">
+                <Link 
+                  href="/tests" 
+                  className="text-orange-600 font-semibold px-4 py-2 rounded-lg hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Take Tests
+                </Link>
+                <Link 
+                  href="/admin" 
+                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Admin Panel
+                </Link>
+              </div>
+            </motion.div>
+          )}
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Test Info */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">{test.title}</h1>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mb-4">
+            <h1 className="text-2xl font-bold text-gray-800">{test.title}</h1>
+            <div className="flex items-center space-x-2 bg-red-50 px-3 py-2 rounded-lg">
+              <Clock className="w-5 h-5 text-red-600" />
+              <span className="font-semibold text-red-600">{formatTime(timeRemaining)}</span>
+            </div>
+          </div>
           <p className="text-gray-600 mb-4">{test.description}</p>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
             <div className="flex flex-wrap gap-2">

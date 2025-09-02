@@ -127,7 +127,7 @@ export default function ResultsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -135,7 +135,7 @@ export default function ResultsPage() {
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-3">
                 <img
-                  src="https://i.ibb.co/VqKJ8M9/logo-square.jpg"
+                  src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
                   alt="SmartBuds Logo"
                   className="w-12 h-12 rounded-lg object-cover"
                 />
@@ -143,14 +143,11 @@ export default function ResultsPage() {
               </Link>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <Link href="/tests" className="text-gray-600 hover:text-primary-600 transition-colors">
+              <Link href="/tests" className="text-gray-600 hover:text-orange-600 transition-colors">
                 Take Tests
               </Link>
-              <Link href="/admin" className="text-gray-600 hover:text-primary-600 transition-colors">
+              <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
                 Admin Panel
-              </Link>
-              <Link href="/results" className="text-primary-600 font-semibold">
-                Results
               </Link>
             </nav>
           </div>

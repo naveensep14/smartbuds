@@ -44,7 +44,7 @@ export default function TestsPage() {
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-3">
                 <img
-                  src="https://i.ibb.co/VqKJ8M9/logo-square.jpg"
+                  src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
                   alt="SmartBuds Logo"
                   className="w-12 h-12 rounded-lg object-cover"
                 />

@@ -2,115 +2,90 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Plus, Edit, Trash2, Eye, BarChart3, Users, Settings, LogOut, Menu, X } from 'lucide-react';
+import { BookOpen, Plus, Edit, Trash2, Eye, BarChart3, Users, Settings, Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import { Test, Question } from '@/types';
-import { testService } from '@/lib/database';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateTestForm from '@/components/CreateTestForm';
 import EditTestForm from '@/components/EditTestForm';
 import TestPreviewModal from '@/components/TestPreviewModal';
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal';
 import Toast from '@/components/Toast';
-import { isSupabaseConfigured } from '@/lib/supabase';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import { useAuth } from '@/lib/auth';
+import { testService } from '@/lib/database';
+import { Test } from '@/types';
 
 export default function AdminPage() {
   const [tests, setTests] = useState<Test[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingTest, setEditingTest] = useState<Test | null>(null);
   const [previewingTest, setPreviewingTest] = useState<Test | null>(null);
   const [deletingTest, setDeletingTest] = useState<Test | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error'; isVisible: boolean }>({
-    message: '',
-    type: 'success',
-    isVisible: false
-  });
-  const { signOut } = useAuth();
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [isSupabaseConfigured, setIsSupabaseConfigured] = useState(false);
 
-  // Load tests from database on component mount
   useEffect(() => {
-    const loadTests = async () => {
-      const fetchedTests = await testService.getAll();
-      setTests(fetchedTests);
-    };
     loadTests();
+    checkSupabaseConfig();
   }, []);
 
-  const stats = {
-    totalTests: tests.length,
-    totalQuestions: tests.reduce((sum, test) => sum + test.questions.length, 0),
-    totalStudents: 'Coming Soon', // This would come from a database
-    averageScore: 'Coming Soon', // This would be calculated from results
+  const checkSupabaseConfig = () => {
+    const hasUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const hasKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    setIsSupabaseConfigured(!!(hasUrl && hasKey));
   };
 
-  const handleSaveTest = async (test: Test) => {
-    const savedTest = await testService.create(test);
-    if (savedTest) {
-      const updatedTests = await testService.getAll();
-      setTests(updatedTests);
+  const loadTests = async () => {
+    try {
+      const fetchedTests = await testService.getAll();
+      setTests(fetchedTests);
+    } catch (error) {
+      console.error('Error loading tests:', error);
+      setToast({ type: 'error', message: 'Failed to load tests' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateTest = async (testData: Omit<Test, 'id' | 'created_at'>) => {
+    try {
+      const newTest = await testService.create(testData);
+      setTests(prev => [...prev, newTest]);
       setShowCreateForm(false);
-      setToast({
-        message: 'Test created successfully!',
-        type: 'success',
-        isVisible: true
-      });
-    } else {
-      setToast({
-        message: 'Failed to create test. Please try again.',
-        type: 'error',
-        isVisible: true
-      });
+      setToast({ type: 'success', message: 'Test created successfully!' });
+    } catch (error) {
+      console.error('Error creating test:', error);
+      setToast({ type: 'error', message: 'Failed to create test' });
     }
   };
 
-  const handleUpdateTest = async (test: Test) => {
-    const updatedTest = await testService.update(test.id, test);
-    if (updatedTest) {
-      const updatedTests = await testService.getAll();
-      setTests(updatedTests);
+  const handleUpdateTest = async (testData: Test) => {
+    try {
+      const updatedTest = await testService.update(testData.id, testData);
+      setTests(prev => prev.map(test => test.id === updatedTest.id ? updatedTest : test));
       setEditingTest(null);
-      setToast({
-        message: 'Test updated successfully!',
-        type: 'success',
-        isVisible: true
-      });
-    } else {
-      setToast({
-        message: 'Failed to update test. Please try again.',
-        type: 'error',
-        isVisible: true
-      });
+      setToast({ type: 'success', message: 'Test updated successfully!' });
+    } catch (error) {
+      console.error('Error updating test:', error);
+      setToast({ type: 'error', message: 'Failed to update test' });
     }
   };
 
-  const handleDeleteTest = async (testId: string) => {
-    const success = await testService.delete(testId);
-    if (success) {
-      const updatedTests = await testService.getAll();
-      setTests(updatedTests);
-      setToast({
-        message: 'Test deleted successfully!',
-        type: 'success',
-        isVisible: true
-      });
-    } else {
-      setToast({
-        message: 'Failed to delete test. Please try again.',
-        type: 'error',
-        isVisible: true
-      });
+  const handleDeleteTest = async (test: Test) => {
+    try {
+      await testService.delete(test.id);
+      setTests(prev => prev.filter(t => t.id !== test.id));
+      setDeletingTest(null);
+      setToast({ type: 'success', message: 'Test deleted successfully!' });
+    } catch (error) {
+      console.error('Error deleting test:', error);
+      setToast({ type: 'error', message: 'Failed to delete test' });
     }
-  };
-
-  const handleSignOut = async () => {
-    await signOut();
   };
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -118,7 +93,7 @@ export default function AdminPage() {
               <div className="flex items-center space-x-3">
                 <Link href="/" className="flex items-center space-x-3">
                   <img
-                    src="https://i.ibb.co/VqKJ8M9/logo-square.jpg"
+                    src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
                     alt="SmartBuds Logo"
                     className="w-12 h-12 rounded-lg object-cover"
                   />
@@ -132,13 +107,6 @@ export default function AdminPage() {
                 <Link href="/admin" className="text-orange-600 font-semibold">
                   Admin Panel
                 </Link>
-                <button
-                  onClick={handleSignOut}
-                  className="text-gray-600 hover:text-red-600 transition-colors flex items-center space-x-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Logout</span>
-                </button>
               </nav>
               
               {/* Mobile menu button */}
@@ -173,16 +141,6 @@ export default function AdminPage() {
                   >
                     Admin Panel
                   </Link>
-                  <button
-                    onClick={() => {
-                      handleSignOut();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="text-gray-600 hover:text-red-600 transition-colors flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50 text-left"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span>Logout</span>
-                  </button>
                 </div>
               </motion.div>
             )}
@@ -245,7 +203,7 @@ export default function AdminPage() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm text-gray-600">Total Tests</p>
-                  <p className="text-2xl font-bold text-gray-800">{stats.totalTests}</p>
+                  <p className="text-2xl font-bold text-gray-800">{tests.length}</p>
                 </div>
               </div>
             </motion.div>
@@ -262,7 +220,7 @@ export default function AdminPage() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm text-gray-600">Total Questions</p>
-                  <p className="text-2xl font-bold text-gray-800">{stats.totalQuestions}</p>
+                  <p className="text-2xl font-bold text-gray-800">{tests.reduce((sum, test) => sum + test.questions.length, 0)}</p>
                 </div>
               </div>
             </motion.div>
@@ -448,7 +406,7 @@ export default function AdminPage() {
         {showCreateForm && (
           <CreateTestForm
             onClose={() => setShowCreateForm(false)}
-            onSave={handleSaveTest}
+            onSave={handleCreateTest}
           />
         )}
 
@@ -475,19 +433,21 @@ export default function AdminPage() {
             test={deletingTest}
             onCancel={() => setDeletingTest(null)}
             onConfirm={() => {
-              handleDeleteTest(deletingTest.id);
+              handleDeleteTest(deletingTest);
               setDeletingTest(null);
             }}
           />
         )}
 
         {/* Toast Notification */}
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          isVisible={toast.isVisible}
-          onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
-        />
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            isVisible={true}
+            onClose={() => setToast(null)}
+          />
+        )}
       </div>
     </ProtectedRoute>
   );
