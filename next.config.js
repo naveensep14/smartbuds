@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Remove image domain restrictions for static images in public folder
+  images: {
+    unoptimized: true,
+  },
 }
 
 module.exports = nextConfig 
