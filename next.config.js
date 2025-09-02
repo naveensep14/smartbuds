@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Remove all image configuration to use default static file serving
+  images: {
+    unoptimized: true,
+    domains: ['localhost', 'vercel.app', 'vercel.com'],
+  },
 }
 
 module.exports = nextConfig 
