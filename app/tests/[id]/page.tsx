@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Clock, CheckCircle, XCircle, ArrowLeft, ArrowRight, Flag } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import Image from 'next/image';
 import { Test, Question } from '@/types';
 import { testService } from '@/lib/database';
 
@@ -195,10 +196,12 @@ export default function TestPage() {
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-3">
                 <div className="w-12 h-12 flex items-center justify-center">
-                  <img 
+                  <Image 
                     src="/images/logo-square.jpg" 
                     alt="SmartBuds Logo" 
-                    className="w-12 h-12 rounded-lg object-cover"
+                    width={48}
+                    height={48}
+                    className="rounded-lg object-cover"
                   />
                 </div>
                 <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>

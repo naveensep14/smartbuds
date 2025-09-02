@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth';
 import { Lock, Eye, EyeOff } from 'lucide-react';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -43,10 +44,12 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
-              <img 
+              <Image 
                 src="/images/logo-square.jpg" 
                 alt="SmartBuds Logo" 
-                className="w-12 h-12 rounded-lg object-cover"
+                width={48}
+                height={48}
+                className="rounded-lg object-cover"
               />
             </div>
           </div>

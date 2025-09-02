@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, BarChart3, TrendingUp, Users, Calendar, Filter, Download, Eye } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { TestResult, Test } from '@/types';
 
 // Sample test results data
@@ -135,10 +136,12 @@ export default function ResultsPage() {
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-3">
                 <div className="w-12 h-12 flex items-center justify-center">
-                  <img 
+                  <Image 
                     src="/images/logo-square.jpg" 
                     alt="SmartBuds Logo" 
-                    className="w-12 h-12 rounded-lg object-cover"
+                    width={48}
+                    height={48}
+                    className="rounded-lg object-cover"
                   />
                 </div>
                 <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>

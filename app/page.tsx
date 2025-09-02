@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, Users, Trophy, Plus, Play, Settings, Menu, X } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function HomePage() {
   const [isHovered, setIsHovered] = useState(false);
@@ -17,10 +18,12 @@ export default function HomePage() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 flex items-center justify-center">
-                <img 
+                <Image 
                   src="/images/logo-square.jpg" 
                   alt="SmartBuds Logo" 
-                  className="w-12 h-12 rounded-lg object-cover"
+                  width={48}
+                  height={48}
+                  className="rounded-lg object-cover"
                 />
               </div>
               <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
@@ -81,9 +84,11 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <img 
+            <Image 
               src="/images/logo-wide.jpg" 
               alt="SmartBuds Logo" 
+              width={600}
+              height={300}
               className="mx-auto max-w-md md:max-w-lg lg:max-w-xl rounded-lg shadow-lg"
             />
           </motion.div>
