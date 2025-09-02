@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, Plus, Edit, Trash2, Eye, BarChart3, Users, Settings, LogOut, Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Test, Question } from '@/types';
 import { testService } from '@/lib/database';
 import CreateTestForm from '@/components/CreateTestForm';
@@ -118,11 +117,9 @@ export default function AdminPage() {
             <div className="flex justify-between items-center py-4">
               <div className="flex items-center space-x-3">
                 <Link href="/" className="flex items-center space-x-3">
-                  <Image
-                    src="/images/logo-square.jpg"
+                  <img
+                    src="https://i.ibb.co/VqKJ8M9/logo-square.jpg"
                     alt="SmartBuds Logo"
-                    width={48}
-                    height={48}
                     className="w-12 h-12 rounded-lg object-cover"
                   />
                   <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>

@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    unoptimized: true,
-    domains: ['localhost', 'vercel.app', 'vercel.com'],
-  },
+  // No image configuration needed for external CDN URLs
 }
 
 module.exports = nextConfig 
