@@ -49,12 +49,18 @@ export async function getServerUser() {
 export async function isServerAdmin(): Promise<boolean> {
   const user = await getServerUser();
   
+  console.log('Server admin check - user:', user?.email);
+  
   if (!user || !user.email) {
+    console.log('Server admin check - no user or email');
     return false;
   }
   
   // Double-check admin status on server side
-  return ADMIN_EMAILS.includes(user.email.toLowerCase() as any);
+  const isAdmin = ADMIN_EMAILS.includes(user.email.toLowerCase() as any);
+  console.log('Server admin check - isAdmin:', isAdmin, 'admin emails:', ADMIN_EMAILS);
+  
+  return isAdmin;
 }
 
 export async function requireAdmin() {

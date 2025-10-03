@@ -145,12 +145,6 @@ export default function ResultsPage() {
               </Link>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <Link href="/tests" className="text-gray-600 hover:text-orange-600 transition-colors">
-                Take Tests
-              </Link>
-              <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
-                Admin Panel
-              </Link>
             </nav>
           </div>
         </div>

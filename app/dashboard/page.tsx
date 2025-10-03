@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Clock, Trophy, User, LogOut, Menu, X } from 'lucide-react';
+import { BookOpen, Clock, Trophy, User, LogOut, Menu, X, Settings } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { ActivityService, Activity } from '@/lib/activity';
 
 export default function DashboardPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [activitiesLoading, setActivitiesLoading] = useState(true);
   const { user, signOut, loading, isAdmin } = useAuth();
   const router = useRouter();
 
@@ -17,6 +20,25 @@ export default function DashboardPage() {
       router.push('/login');
     }
   }, [user, loading, router]);
+
+  useEffect(() => {
+    const loadActivities = async () => {
+      if (user && user.email) {
+        try {
+          console.log('Dashboard - Loading activities for user:', user.email);
+          const userActivities = await ActivityService.getRecentActivities(user.email, 5);
+          console.log('Dashboard - Loaded activities:', userActivities);
+          setActivities(userActivities);
+        } catch (error) {
+          console.error('Error loading activities:', error);
+        } finally {
+          setActivitiesLoading(false);
+        }
+      }
+    };
+
+    loadActivities();
+  }, [user]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -57,13 +79,6 @@ export default function DashboardPage() {
             
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/tests" className="text-gray-600 hover:text-orange-600 transition-colors">
-                Take Tests
-              </Link>
-              <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
-                Admin Panel
-              </Link>
-              
               {/* User Menu */}
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
@@ -80,8 +95,8 @@ export default function DashboardPage() {
                   onClick={handleSignOut}
                   className="flex items-center space-x-1 text-gray-600 hover:text-red-600 transition-colors"
                 >
-                  <LogOut className="w-4 h-4" />
-                  <span className="text-sm">Sign Out</span>
+                  <LogOut className="w-3 h-3" />
+                  <span className="text-xs">Sign Out</span>
                 </button>
               </div>
             </nav>
@@ -104,20 +119,6 @@ export default function DashboardPage() {
               className="md:hidden border-t border-gray-100 pt-4 pb-2"
             >
               <div className="flex flex-col space-y-3">
-                <Link
-                  href="/tests"
-                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Take Tests
-                </Link>
-                <Link
-                  href="/admin"
-                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Admin Panel
-                </Link>
                 <div className="border-t border-gray-200 pt-3 mt-3">
                   <div className="flex items-center space-x-2 px-4 py-2">
                     <img
@@ -133,8 +134,8 @@ export default function DashboardPage() {
                     onClick={handleSignOut}
                     className="flex items-center space-x-2 text-gray-600 hover:text-red-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50 w-full text-left"
                   >
-                    <LogOut className="w-4 h-4" />
-                    <span className="text-sm">Sign Out</span>
+                    <LogOut className="w-3 h-3" />
+                    <span className="text-xs">Sign Out</span>
                   </button>
                 </div>
               </div>
@@ -196,7 +197,7 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <Link href="/results" className="block">
+            <Link href="/my-results" className="block">
               <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
                 <div className="flex items-center space-x-4">
                   <div className="bg-green-100 p-3 rounded-xl">
@@ -242,18 +243,62 @@ export default function DashboardPage() {
           className="bg-white rounded-2xl shadow-lg p-8"
         >
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h2>
-          <div className="space-y-4">
-            <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-              <Clock className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-gray-900 font-medium">Welcome to SuccessBuds!</p>
-                <p className="text-sm text-gray-600">You just joined our learning platform</p>
+          
+          {activitiesLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+              <span className="ml-3 text-gray-600">Loading activities...</span>
+            </div>
+          ) : activities.length > 0 ? (
+            <div className="space-y-4">
+              {activities.map((activity) => {
+                const iconConfig = ActivityService.getActivityIcon(activity.type);
+                const IconComponent = iconConfig.icon === 'Trophy' ? Trophy : 
+                                    iconConfig.icon === 'BookOpen' ? BookOpen : 
+                                    iconConfig.icon === 'User' ? User : 
+                                    iconConfig.icon === 'Settings' ? Settings : Clock;
+                
+                return (
+                  <div key={activity.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                    <div className={`w-10 h-10 ${iconConfig.bgColor} rounded-full flex items-center justify-center`}>
+                      <IconComponent className={`w-5 h-5 ${iconConfig.color}`} />
+                    </div>
+                    <div>
+                      <p className="text-gray-900 font-medium">{activity.title}</p>
+                      <p className="text-sm text-gray-600">{activity.description}</p>
+                      <p className="text-xs text-gray-500">{ActivityService.formatActivityTime(activity.timestamp)}</p>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Show more activities button */}
+              <div className="text-center pt-4">
+                <Link 
+                  href="/my-results" 
+                  className="inline-flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-medium"
+                >
+                  <span>View All Activity</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
               </div>
             </div>
+          ) : (
             <div className="text-center py-8 text-gray-500">
-              <p>Complete your first test to see your activity here!</p>
+              <Clock className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+              <p className="text-lg font-medium mb-2">No recent activity</p>
+              <p className="text-sm mb-4">Complete your first test to see your activity here!</p>
+              <Link 
+                href="/tests" 
+                className="inline-flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>Take Your First Test</span>
+              </Link>
             </div>
-          </div>
+          )}
         </motion.div>
       </div>
     </div>

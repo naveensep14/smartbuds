@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Clock, Users, Play, Search, Filter, Menu, X } from 'lucide-react';
+import { BookOpen, Clock, Users, Play, Search, Filter, Menu, X, LogOut, User } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Test } from '@/types';
 import { testService } from '@/lib/database';
+import { useAuth } from '@/lib/auth';
 
 export default function TestsPage() {
   const [tests, setTests] = useState<Test[]>([]);
@@ -14,6 +16,13 @@ export default function TestsPage() {
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedBoard, setSelectedBoard] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, signOut, loading } = useAuth();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/');
+  };
 
   // Load tests from database on component mount
   useEffect(() => {
@@ -54,19 +63,40 @@ export default function TestsPage() {
                 <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
               </Link>
             </div>
-            <nav className="hidden md:flex space-x-8">
-              <Link href="/tests" className="text-orange-600 font-semibold">
-                Take Tests
-              </Link>
-              <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
-                Admin Panel
-              </Link>
-              <Link href="/login" className="text-gray-600 hover:text-orange-600 transition-colors">
-                Login
-              </Link>
-              <Link href="/signup" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
-                Sign Up
-              </Link>
+            <nav className="hidden md:flex items-center space-x-8">
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <Link href="/dashboard" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                    Dashboard
+                  </Link>
+                  <div className="flex items-center space-x-2">
+                    <img
+                      src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=orange&color=white`}
+                      alt="Profile"
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <span className="text-sm font-medium text-gray-700">
+                      {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center space-x-1 text-gray-600 hover:text-red-600 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="text-sm">Sign Out</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-4">
+                  <Link href="/login" className="text-gray-600 hover:text-orange-600 transition-colors">
+                    Login
+                  </Link>
+                  <Link href="/signup" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                    Sign Up
+                  </Link>
+                </div>
+              )}
             </nav>
             
             {/* Mobile menu button */}
@@ -87,34 +117,56 @@ export default function TestsPage() {
               className="md:hidden border-t border-gray-100 pt-4 pb-2"
             >
               <div className="flex flex-col space-y-3">
-                <Link 
-                  href="/tests" 
-                  className="text-orange-600 font-semibold px-4 py-2 rounded-lg hover:bg-gray-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Take Tests
-                </Link>
-                <Link 
-                  href="/admin" 
-                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Admin Panel
-                </Link>
-                <Link 
-                  href="/login" 
-                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Login
-                </Link>
-                <Link 
-                  href="/signup" 
-                  className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-center"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Sign Up
-                </Link>
+                {user ? (
+                  <>
+                    <Link 
+                      href="/dashboard" 
+                      className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-center"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    <div className="border-t border-gray-200 pt-4 mt-4">
+                      <div className="flex items-center space-x-2 px-4 py-2">
+                        <img
+                          src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=orange&color=white`}
+                          alt="Profile"
+                          className="w-8 h-8 rounded-full"
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          handleSignOut();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="flex items-center space-x-2 text-gray-600 hover:text-red-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50 w-full text-left"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span className="text-sm">Sign Out</span>
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Link 
+                      href="/login" 
+                      className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Login
+                    </Link>
+                    <Link 
+                      href="/signup" 
+                      className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-center"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
               </div>
             </motion.div>
           )}

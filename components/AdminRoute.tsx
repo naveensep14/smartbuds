@@ -17,8 +17,10 @@ export default function AdminRoute({ children }: AdminRouteProps) {
   useEffect(() => {
     const verifyAdmin = async () => {
       try {
+        console.log('Verifying admin access for user:', user?.email, 'isAdmin:', isAdmin);
         const response = await fetch('/api/admin/verify');
         const data = await response.json();
+        console.log('Admin verification response:', data);
         setServerVerified(data.isAdmin === true);
       } catch (error) {
         console.error('Admin verification failed:', error);
@@ -29,6 +31,7 @@ export default function AdminRoute({ children }: AdminRouteProps) {
     if (user && isAdmin) {
       verifyAdmin();
     } else {
+      console.log('User not admin or not logged in:', { user: user?.email, isAdmin });
       setServerVerified(false);
     }
   }, [user, isAdmin]);

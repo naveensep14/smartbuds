@@ -220,6 +220,7 @@ export const resultService = {
   // Create new result
   create: async (result: Omit<TestResult, 'id' | 'completedAt'>): Promise<TestResult | null> => {
     try {
+      console.log('Database create - Input:', result);
       const { data, error } = await supabase
         .from('results')
         .insert({
@@ -234,6 +235,7 @@ export const resultService = {
         .select()
         .single();
 
+      console.log('Database create - Response:', { data, error });
       if (error) throw error;
 
       return {

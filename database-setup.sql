@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS tests (
   description TEXT,
   subject TEXT NOT NULL,
   grade TEXT NOT NULL,
+  board TEXT NOT NULL DEFAULT 'ICSE',
   duration INTEGER NOT NULL,
   questions JSONB NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -14,21 +15,21 @@ CREATE TABLE IF NOT EXISTS tests (
 -- Create results table
 CREATE TABLE IF NOT EXISTS results (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  testId UUID REFERENCES tests(id) ON DELETE CASCADE,
-  studentName TEXT NOT NULL,
+  test_id UUID REFERENCES tests(id) ON DELETE CASCADE,
+  student_name TEXT NOT NULL,
   score INTEGER NOT NULL,
-  totalQuestions INTEGER NOT NULL,
-  correctAnswers INTEGER NOT NULL,
+  total_questions INTEGER NOT NULL,
+  correct_answers INTEGER NOT NULL,
   answers JSONB NOT NULL,
-  timeTaken INTEGER,
-  completedAt TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  time_taken INTEGER,
+  completed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_tests_subject ON tests(subject);
 CREATE INDEX IF NOT EXISTS idx_tests_grade ON tests(grade);
-CREATE INDEX IF NOT EXISTS idx_results_testId ON results("testId");
-CREATE INDEX IF NOT EXISTS idx_results_studentName ON results("studentName");
+CREATE INDEX IF NOT EXISTS idx_results_test_id ON results(test_id);
+CREATE INDEX IF NOT EXISTS idx_results_student_name ON results(student_name);
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE tests ENABLE ROW LEVEL SECURITY;

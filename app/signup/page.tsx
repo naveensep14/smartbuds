@@ -48,12 +48,6 @@ export default function SignupPage() {
               </Link>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <Link href="/tests" className="text-gray-600 hover:text-orange-600 transition-colors">
-                Take Tests
-              </Link>
-              <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
-                Admin Panel
-              </Link>
               <Link href="/login" className="text-gray-600 hover:text-orange-600 transition-colors">
                 Login
               </Link>
@@ -77,20 +71,6 @@ export default function SignupPage() {
               className="md:hidden border-t border-gray-100 pt-4 pb-2"
             >
               <div className="flex flex-col space-y-3">
-                <Link 
-                  href="/tests" 
-                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Take Tests
-                </Link>
-                <Link 
-                  href="/admin" 
-                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Admin Panel
-                </Link>
                 <Link 
                   href="/login" 
                   className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"

@@ -31,7 +31,9 @@ export async function middleware(request: NextRequest) {
   );
 
   // Check if user is authenticated
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user }, error } = await supabase.auth.getUser();
+  
+  console.log('Middleware - User:', user?.email, 'Error:', error, 'Path:', request.nextUrl.pathname);
 
   // Protect admin routes
   if (request.nextUrl.pathname.startsWith('/admin')) {
@@ -54,18 +56,29 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Protect tests routes (require authentication)
+  if (request.nextUrl.pathname.startsWith('/tests')) {
+    if (!user) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+  }
+
+  // Protect my-results route (require authentication)
+  if (request.nextUrl.pathname.startsWith('/my-results')) {
+    if (!user) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+  }
+
   return response;
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/admin/:path*',
+    '/dashboard/:path*',
+    '/tests/:path*',
+    '/my-results/:path*',
+    '/api/admin/:path*'
   ],
 };

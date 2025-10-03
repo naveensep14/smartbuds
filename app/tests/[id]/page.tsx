@@ -4,12 +4,15 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Clock, CheckCircle, XCircle, ArrowLeft, ArrowRight, Flag, Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import { Test, Question } from '@/types';
-import { testService } from '@/lib/database';
+import { useParams, useRouter } from 'next/navigation';
+import { Test, Question, TestResult } from '@/types';
+import { testService, resultService } from '@/lib/database';
+import { useAuth } from '@/lib/auth';
 
 export default function TestPage() {
   const params = useParams();
+  const router = useRouter();
+  const { user } = useAuth();
   const [test, setTest] = useState<Test | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -19,6 +22,8 @@ export default function TestPage() {
   const [showResults, setShowResults] = useState(false);
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [testResult, setTestResult] = useState<TestResult | null>(null);
+  const [startTime, setStartTime] = useState<Date>(new Date());
 
   // Load test from database
   useEffect(() => {
@@ -71,12 +76,6 @@ export default function TestPage() {
                 </Link>
               </div>
               <nav className="hidden md:flex space-x-8">
-                <Link href="/tests" className="text-orange-600 font-semibold">
-                  Take Tests
-                </Link>
-                <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
-                  Admin Panel
-                </Link>
               </nav>
               
               {/* Mobile menu button */}
@@ -103,13 +102,6 @@ export default function TestPage() {
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Take Tests
-                  </Link>
-                  <Link 
-                    href="/admin" 
-                    className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Admin Panel
                   </Link>
                 </div>
               </motion.div>
@@ -145,12 +137,6 @@ export default function TestPage() {
                 </Link>
               </div>
               <nav className="hidden md:flex space-x-8">
-                <Link href="/tests" className="text-orange-600 font-semibold">
-                  Take Tests
-                </Link>
-                <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
-                  Admin Panel
-                </Link>
               </nav>
               
               {/* Mobile menu button */}
@@ -177,13 +163,6 @@ export default function TestPage() {
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Take Tests
-                  </Link>
-                  <Link 
-                    href="/admin" 
-                    className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Admin Panel
                   </Link>
                 </div>
               </motion.div>
@@ -227,9 +206,65 @@ export default function TestPage() {
     }
   };
 
-  const handleSubmitTest = () => {
-    setIsTestCompleted(true);
-    setShowResults(true);
+  const handleSubmitTest = async () => {
+    if (!test || !user) return;
+
+    try {
+      // Calculate test results
+      const totalQuestions = test.questions.length;
+      let correctAnswers = 0;
+      const answers = test.questions.map(question => {
+        const selectedAnswer = selectedAnswers[question.id];
+        const isCorrect = selectedAnswer === question.correctAnswer;
+        if (isCorrect) correctAnswers++;
+        
+        return {
+          questionId: question.id,
+          selectedAnswer: selectedAnswer ?? -1,
+          isCorrect
+        };
+      });
+
+      const score = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+      const timeTaken = Math.floor((new Date().getTime() - startTime.getTime()) / 1000);
+
+      // Create test result
+      const resultData = {
+        testId: test.id,
+        studentName: user.email || 'Anonymous',
+        score,
+        totalQuestions,
+        correctAnswers,
+        timeTaken,
+        answers
+      };
+
+      // Save to database
+      console.log('Saving test result:', resultData);
+      const savedResult = await resultService.create(resultData);
+      console.log('Saved result:', savedResult);
+      
+      if (savedResult) {
+        setTestResult(savedResult);
+        setIsTestCompleted(true);
+        setShowResults(true);
+      } else {
+        console.error('Failed to save test result');
+        // Still show results even if save failed
+        setTestResult({
+          id: Date.now().toString(),
+          ...resultData,
+          completedAt: new Date()
+        });
+        setIsTestCompleted(true);
+        setShowResults(true);
+      }
+    } catch (error) {
+      console.error('Error submitting test:', error);
+      // Still show results even if save failed
+      setIsTestCompleted(true);
+      setShowResults(true);
+    }
   };
 
   const toggleFlagQuestion = () => {
@@ -264,8 +299,7 @@ export default function TestPage() {
     };
   };
 
-  if (showResults) {
-    const score = calculateScore();
+  if (showResults && testResult) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
         {/* Header */}
@@ -283,12 +317,6 @@ export default function TestPage() {
                 </Link>
               </div>
               <nav className="hidden md:flex space-x-8">
-                <Link href="/tests" className="text-orange-600 font-semibold">
-                  Take Tests
-                </Link>
-                <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
-                  Admin Panel
-                </Link>
               </nav>
               
               {/* Mobile menu button */}
@@ -316,13 +344,6 @@ export default function TestPage() {
                   >
                     Take Tests
                   </Link>
-                  <Link 
-                    href="/admin" 
-                    className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Admin Panel
-                  </Link>
                 </div>
               </motion.div>
             )}
@@ -337,26 +358,26 @@ export default function TestPage() {
             transition={{ duration: 0.6 }}
           >
             <div className="text-6xl mb-6">
-              {score.percentage >= 80 ? '🎉' : score.percentage >= 60 ? '👍' : '📚'}
+              {testResult.score >= 80 ? '🎉' : testResult.score >= 60 ? '👍' : '📚'}
             </div>
             <h1 className="text-4xl font-bold text-gradient mb-4">Test Completed!</h1>
             <div className="text-2xl font-semibold text-gray-800 mb-2">
-              Score: {score.correct}/{score.total} ({score.percentage}%)
+              Score: {testResult.correctAnswers}/{testResult.totalQuestions} ({testResult.score}%)
             </div>
             <p className="text-gray-600 mb-8">
-              {score.percentage >= 80 ? 'Excellent work!' : 
-               score.percentage >= 60 ? 'Good job! Keep practicing!' : 
+              {testResult.score >= 80 ? 'Excellent work!' : 
+               testResult.score >= 60 ? 'Good job! Keep practicing!' : 
                'Keep studying! You\'ll do better next time!'}
             </p>
             
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="bg-orange-50 rounded-lg p-4">
                 <h3 className="font-semibold text-orange-700 mb-2">Correct Answers</h3>
-                <p className="text-2xl font-bold text-orange-600">{score.correct}</p>
+                <p className="text-2xl font-bold text-orange-600">{testResult.correctAnswers}</p>
               </div>
               <div className="bg-red-50 rounded-lg p-4">
                 <h3 className="font-semibold text-red-700 mb-2">Total Questions</h3>
-                <p className="text-2xl font-bold text-red-600">{score.total}</p>
+                <p className="text-2xl font-bold text-red-600">{testResult.totalQuestions}</p>
               </div>
             </div>
 

@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
@@ -7,7 +7,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholde
 const hasValidCredentials = supabaseUrl !== 'https://placeholder.supabase.co' && 
                            supabaseAnonKey !== 'placeholder-key';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
 
 // Export a flag to check if Supabase is properly configured
 export const isSupabaseConfigured = hasValidCredentials;
@@ -57,36 +57,36 @@ export interface Database {
       results: {
         Row: {
           id: string;
-          test_id: string;
-          student_name: string;
+          testId: string;
+          studentName: string;
           score: number;
-          total_questions: number;
-          correct_answers: number;
-          time_taken: number;
+          totalQuestions: number;
+          correctAnswers: number;
+          timeTaken: number;
           answers: any;
-          completed_at: string;
+          completedAt: string;
         };
         Insert: {
           id?: string;
-          test_id: string;
-          student_name: string;
+          testId: string;
+          studentName: string;
           score: number;
-          total_questions: number;
-          correct_answers: number;
-          time_taken: number;
+          totalQuestions: number;
+          correctAnswers: number;
+          timeTaken: number;
           answers: any;
-          completed_at?: string;
+          completedAt?: string;
         };
         Update: {
           id?: string;
-          test_id?: string;
-          student_name?: string;
+          testId?: string;
+          studentName?: string;
           score?: number;
-          total_questions?: number;
-          correct_answers?: number;
-          time_taken?: number;
+          totalQuestions?: number;
+          correctAnswers?: number;
+          timeTaken?: number;
           answers?: any;
-          completed_at?: string;
+          completedAt?: string;
         };
       };
     };

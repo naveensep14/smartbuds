@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Menu, X, LogOut, User } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
+import Leaderboard from '@/components/Leaderboard';
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -32,15 +33,6 @@ export default function HomePage() {
               <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
             </div>
             <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/tests" className="text-gray-600 hover:text-orange-600 transition-colors">
-                Take Tests
-              </Link>
-              {isAdmin && (
-                <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
-                  Admin Panel
-                </Link>
-              )}
-              
               {user ? (
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
@@ -65,14 +57,9 @@ export default function HomePage() {
                   </button>
                 </div>
               ) : (
-                <>
-                  <Link href="/login" className="text-gray-600 hover:text-orange-600 transition-colors">
-                    Login
-                  </Link>
-                  <Link href="/signup" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
-                    Sign Up
-                  </Link>
-                </>
+                <Link href="/login" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                  Get Started
+                </Link>
               )}
             </nav>
             {/* Mobile menu button */}
@@ -96,23 +83,6 @@ export default function HomePage() {
               className="md:hidden border-t border-gray-200 py-4"
             >
               <div className="flex flex-col space-y-4">
-                <Link 
-                  href="/tests" 
-                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Take Tests
-                </Link>
-                {isAdmin && (
-                  <Link 
-                    href="/admin" 
-                    className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Admin Panel
-                  </Link>
-                )}
-                
                 {user ? (
                   <>
                     <Link 
@@ -146,22 +116,13 @@ export default function HomePage() {
                     </div>
                   </>
                 ) : (
-                  <>
-                    <Link 
-                      href="/login" 
-                      className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Login
-                    </Link>
-                    <Link 
-                      href="/signup" 
-                      className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-center"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Sign Up
-                    </Link>
-                  </>
+                  <Link 
+                    href="/login" 
+                    className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-center"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Get Started
+                  </Link>
                 )}
               </div>
             </motion.div>
@@ -197,12 +158,21 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="flex justify-center"
           >
-            <Link
-              href="/tests"
-              className="btn-primary"
-            >
-              Take Tests
-            </Link>
+            {user ? (
+              <Link
+                href="/tests"
+                className="btn-primary"
+              >
+                Take Tests
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="btn-primary"
+              >
+                Get Started
+              </Link>
+            )}
           </motion.div>
         </div>
 
@@ -239,6 +209,18 @@ export default function HomePage() {
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Personalized Learning</h3>
             <p className="text-gray-600">Get tailored feedback and recommendations based on your test results and learning patterns.</p>
+          </div>
+        </motion.div>
+
+        {/* Leaderboard Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.0 }}
+          className="mt-20"
+        >
+          <div className="max-w-4xl mx-auto">
+            <Leaderboard limit={5} />
           </div>
         </motion.div>
       </main>
