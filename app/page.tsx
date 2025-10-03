@@ -3,10 +3,19 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogOut, User } from 'lucide-react';
+import { useAuth } from '@/lib/auth';
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, signOut, isAdmin } = useAuth();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
@@ -22,19 +31,49 @@ export default function HomePage() {
               />
               <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
             </div>
-            <nav className="hidden md:flex space-x-8">
+            <nav className="hidden md:flex items-center space-x-8">
               <Link href="/tests" className="text-gray-600 hover:text-orange-600 transition-colors">
                 Take Tests
               </Link>
-              <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
-                Admin Panel
-              </Link>
-              <Link href="/login" className="text-gray-600 hover:text-orange-600 transition-colors">
-                Login
-              </Link>
-              <Link href="/signup" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
-                Sign Up
-              </Link>
+              {isAdmin && (
+                <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
+                  Admin Panel
+                </Link>
+              )}
+              
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <img
+                      src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=orange&color=white`}
+                      alt="Profile"
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <span className="text-sm font-medium text-gray-700">
+                      {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                    </span>
+                  </div>
+                  <Link href="/dashboard" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center space-x-1 text-gray-600 hover:text-red-600 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="text-sm">Sign Out</span>
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <Link href="/login" className="text-gray-600 hover:text-orange-600 transition-colors">
+                    Login
+                  </Link>
+                  <Link href="/signup" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </nav>
             {/* Mobile menu button */}
             <div className="md:hidden">
@@ -64,27 +103,66 @@ export default function HomePage() {
                 >
                   Take Tests
                 </Link>
-                <Link 
-                  href="/admin" 
-                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Admin Panel
-                </Link>
-                <Link 
-                  href="/login" 
-                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Login
-                </Link>
-                <Link 
-                  href="/signup" 
-                  className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-center"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Sign Up
-                </Link>
+                {isAdmin && (
+                  <Link 
+                    href="/admin" 
+                    className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Admin Panel
+                  </Link>
+                )}
+                
+                {user ? (
+                  <>
+                    <Link 
+                      href="/dashboard" 
+                      className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-center"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    <div className="border-t border-gray-200 pt-4 mt-4">
+                      <div className="flex items-center space-x-2 px-4 py-2">
+                        <img
+                          src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=orange&color=white`}
+                          alt="Profile"
+                          className="w-8 h-8 rounded-full"
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          handleSignOut();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="flex items-center space-x-2 text-gray-600 hover:text-red-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50 w-full text-left"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span className="text-sm">Sign Out</span>
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Link 
+                      href="/login" 
+                      className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Login
+                    </Link>
+                    <Link 
+                      href="/signup" 
+                      className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-center"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
               </div>
             </motion.div>
           )}

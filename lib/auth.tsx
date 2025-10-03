@@ -3,10 +3,13 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from './supabase';
 import { User } from '@supabase/supabase-js';
+import { getUserRole, isAdminEmail } from './admin-config';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  isAdmin: boolean;
+  userRole: 'admin' | 'user';
   signInWithGoogle: () => Promise<{ error: any }>;
   signOut: () => Promise<void>;
 }
@@ -16,6 +19,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Compute admin status and role based on user email
+  const isAdmin = user ? isAdminEmail(user.email || '') : false;
+  const userRole = user ? getUserRole(user.email || '') : 'user';
 
   useEffect(() => {
     // Get initial session
@@ -42,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/admin`
+        redirectTo: `${window.location.origin}/dashboard`
       }
     });
     return { error };
@@ -54,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, userRole, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );

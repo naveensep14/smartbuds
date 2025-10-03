@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, Plus, Edit, Trash2, Eye, BarChart3, Users, Settings, Menu, X, LogOut } from 'lucide-react';
 import Link from 'next/link';
-import ProtectedRoute from '@/components/ProtectedRoute';
+import AdminRoute from '@/components/AdminRoute';
 import CreateTestForm from '@/components/CreateTestForm';
 import EditTestForm from '@/components/EditTestForm';
 import TestPreviewModal from '@/components/TestPreviewModal';
@@ -14,7 +14,7 @@ import { testService } from '@/lib/database';
 import { Test } from '@/types';
 import { useAuth } from '@/lib/auth';
 
-export default function AdminPage() {
+function AdminPageContent() {
   const [tests, setTests] = useState<Test[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -94,7 +94,7 @@ export default function AdminPage() {
   };
 
   return (
-    <ProtectedRoute>
+    <AdminRoute>
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-100">
@@ -484,6 +484,14 @@ export default function AdminPage() {
           />
         )}
       </div>
-    </ProtectedRoute>
+    </AdminRoute>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <AdminRoute>
+      <AdminPageContent />
+    </AdminRoute>
   );
 } 

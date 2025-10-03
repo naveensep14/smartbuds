@@ -12,6 +12,7 @@
     "restore": "node scripts/restore-supabase.js"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.0",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
