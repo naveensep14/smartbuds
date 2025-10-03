@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Clock, Users, Play, Search, Filter, Menu, X, LogOut, User } from 'lucide-react';
+import { BookOpen, Clock, Users, Play, Search, Filter, Menu, X, LogOut, User, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Test } from '@/types';
 import { testService } from '@/lib/database';
 import { useAuth } from '@/lib/auth';
+import PrintableTest from '@/components/PrintableTest';
 
 export default function TestsPage() {
   const [tests, setTests] = useState<Test[]>([]);
@@ -16,6 +17,9 @@ export default function TestsPage() {
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedBoard, setSelectedBoard] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showPrintModal, setShowPrintModal] = useState(false);
+  const [selectedTestForPrint, setSelectedTestForPrint] = useState<Test | null>(null);
+  const [printMode, setPrintMode] = useState<'test' | 'answer-key'>('test');
   const { user, signOut, loading } = useAuth();
   const router = useRouter();
 
@@ -282,18 +286,83 @@ export default function TestsPage() {
                   </div>
                 </div>
                 
-                <Link 
-                  href={`/tests/${test.id}`}
-                  className="btn-primary w-full flex items-center justify-center space-x-2"
-                >
-                  <Play className="w-5 h-5" />
-                  <span>Start Test</span>
-                </Link>
+                <div className="space-y-3">
+                  <Link 
+                    href={`/tests/${test.id}`}
+                    className="btn-primary w-full flex items-center justify-center space-x-2"
+                  >
+                    <Play className="w-5 h-5" />
+                    <span>Start Test</span>
+                  </Link>
+                  
+                  <button
+                    onClick={() => {
+                      setSelectedTestForPrint(test);
+                      setPrintMode('test');
+                      setShowPrintModal(true);
+                    }}
+                    className="w-full flex items-center justify-center space-x-2 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm"
+                  >
+                    <Printer className="w-4 h-4" />
+                    <span>Print Test & Answer Key</span>
+                  </button>
+                </div>
               </motion.div>
             ))}
           </div>
         )}
       </main>
+
+      {/* Print Modal */}
+      {showPrintModal && selectedTestForPrint && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  Print {printMode === 'test' ? 'Test' : 'Answer Key'}
+                </h2>
+                <button
+                  onClick={() => setShowPrintModal(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Print Options */}
+              <div className="flex space-x-4 mb-6">
+                <button
+                  onClick={() => setPrintMode('test')}
+                  className={`px-4 py-2 rounded-lg transition-colors ${
+                    printMode === 'test'
+                      ? 'bg-orange-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Print Test
+                </button>
+                <button
+                  onClick={() => setPrintMode('answer-key')}
+                  className={`px-4 py-2 rounded-lg transition-colors ${
+                    printMode === 'answer-key'
+                      ? 'bg-orange-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Print Answer Key
+                </button>
+              </div>
+
+              {/* Printable Content */}
+              <PrintableTest 
+                test={selectedTestForPrint} 
+                showAnswers={printMode === 'answer-key'} 
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
