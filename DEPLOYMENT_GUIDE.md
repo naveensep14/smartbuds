@@ -1,4 +1,4 @@
-# 🚀 SmartBuds Deployment Guide
+# 🚀 SuccessBuds Deployment Guide
 
 ## **Option 1: Vercel (Recommended)**
 
@@ -14,7 +14,7 @@ git push origin main
 1. Go to [vercel.com](https://vercel.com)
 2. Sign up with your GitHub account
 3. Click "New Project"
-4. Import your SmartBuds repository
+4. Import your SuccessBuds repository
 5. Vercel will automatically detect it's a Next.js project
 6. Add your environment variables:
    ```
@@ -168,7 +168,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ## **Recommended Deployment: Vercel**
 
-### **Why Vercel is Best for SmartBuds:**
+### **Why Vercel is Best for SuccessBuds:**
 1. **Next.js Native** - Built for Next.js applications
 2. **Zero Configuration** - Automatic detection and setup
 3. **Fast Deployments** - Global CDN
@@ -206,7 +206,7 @@ vercel
 
 ## **🚀 Ready to Deploy?**
 
-Your SmartBuds educational platform is ready for production! Choose Vercel for the best experience, or any of the other options for your specific needs.
+Your SuccessBuds educational platform is ready for production! Choose Vercel for the best experience, or any of the other options for your specific needs.
 
 **Estimated Deployment Time: 5-10 minutes**
 

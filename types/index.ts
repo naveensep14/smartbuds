@@ -7,12 +7,15 @@ export interface Question {
   image?: string;
 }
 
+export type Board = 'IB' | 'ICSE' | 'IGCSE' | 'CBSE';
+
 export interface Test {
   id: string;
   title: string;
   description: string;
   subject: string;
   grade: string;
+  board: Board;
   duration: number; // in minutes
   questions: Question[];
   createdAt: Date;

@@ -1,5 +1,5 @@
 {
-  "name": "smartbuds-educational-platform",
+  "name": "successbuds-educational-platform",
   "version": "1.0.0",
   "description": "An educational platform for kids to take multiple choice tests",
   "main": "index.js",
@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "backup": "node scripts/backup-supabase.js",
+    "restore": "node scripts/restore-supabase.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.0",
@@ -37,6 +39,6 @@
     "kids",
     "multiple-choice"
   ],
-  "author": "SmartBuds",
+  "author": "SuccessBuds",
   "license": "MIT"
 }

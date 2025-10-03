@@ -2,8 +2,8 @@ import { Test, TestResult } from '@/types';
 
 // Storage keys
 const STORAGE_KEYS = {
-  TESTS: 'smartbuds_tests',
-  RESULTS: 'smartbuds_results',
+  TESTS: 'successbuds_tests',
+  RESULTS: 'successbuds_results',
 } as const;
 
 // Test Storage

@@ -64,10 +64,10 @@ export default function TestPage() {
                 <Link href="/" className="flex items-center space-x-3">
                   <img
                     src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
-                    alt="SmartBuds Logo"
+                    alt="SuccessBuds Logo"
                     className="w-12 h-12 rounded-lg object-cover"
                   />
-                  <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
+                  <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
                 </Link>
               </div>
               <nav className="hidden md:flex space-x-8">
@@ -138,10 +138,10 @@ export default function TestPage() {
                 <Link href="/" className="flex items-center space-x-3">
                   <img
                     src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
-                    alt="SmartBuds Logo"
+                    alt="SuccessBuds Logo"
                     className="w-12 h-12 rounded-lg object-cover"
                   />
-                  <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
+                  <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
                 </Link>
               </div>
               <nav className="hidden md:flex space-x-8">
@@ -276,10 +276,10 @@ export default function TestPage() {
                 <Link href="/" className="flex items-center space-x-3">
                   <img
                     src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
-                    alt="SmartBuds Logo"
+                    alt="SuccessBuds Logo"
                     className="w-12 h-12 rounded-lg object-cover"
                   />
-                  <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
+                  <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
                 </Link>
               </div>
               <nav className="hidden md:flex space-x-8">
@@ -384,10 +384,10 @@ export default function TestPage() {
               <Link href="/" className="flex items-center space-x-3">
                 <img
                   src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
-                  alt="SmartBuds Logo"
+                  alt="SuccessBuds Logo"
                   className="w-12 h-12 rounded-lg object-cover"
                 />
-                <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
+                <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
               </Link>
             </div>
             <nav className="hidden md:flex space-x-8">

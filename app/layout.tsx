@@ -6,7 +6,7 @@ import { AuthProvider } from '@/lib/auth'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'SmartBuds - Educational Platform',
+  title: 'SuccessBuds - Educational Platform',
   description: 'An interactive educational platform for kids to take multiple choice tests',
   keywords: ['education', 'testing', 'kids', 'learning', 'multiple choice'],
 }

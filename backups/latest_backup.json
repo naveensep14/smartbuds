@@ -1,0 +1,354 @@
+{
+  "backup_info": {
+    "timestamp": "2025-10-03T03:07:39.216Z",
+    "supabase_url": "https://mewkuspabjwrzkbbyxrw.supabase.co",
+    "tables": [
+      "tests",
+      "results"
+    ]
+  },
+  "tests": [
+    {
+      "id": "b840581f-654c-4e2a-bac3-dbe2bcee6615",
+      "title": "Science Quiz - Grade 3",
+      "description": "Test your knowledge of basic science concepts for 3rd grade students.",
+      "subject": "Science",
+      "grade": "Grade 3",
+      "questions": [
+        {
+          "id": "1",
+          "text": "What is the main source of energy for plants?",
+          "options": [
+            "Water",
+            "Sunlight",
+            "Soil",
+            "Air"
+          ],
+          "explanation": "Plants use sunlight to make their own food through photosynthesis.",
+          "correctAnswer": 1
+        },
+        {
+          "id": "2",
+          "text": "Which of these is a living thing?",
+          "options": [
+            "Rock",
+            "Tree",
+            "Water",
+            "Air"
+          ],
+          "explanation": "Trees are living things that grow, reproduce, and respond to their environment.",
+          "correctAnswer": 1
+        },
+        {
+          "id": "3",
+          "text": "What do we call the process when water turns into vapor?",
+          "options": [
+            "Freezing",
+            "Melting",
+            "Evaporation",
+            "Condensation"
+          ],
+          "explanation": "Evaporation is when liquid water turns into water vapor (gas).",
+          "correctAnswer": 2
+        },
+        {
+          "id": "4",
+          "text": "Which sense do we use to hear sounds?",
+          "options": [
+            "Touch",
+            "Sight",
+            "Hearing",
+            "Taste"
+          ],
+          "explanation": "Our ears help us hear sounds around us.",
+          "correctAnswer": 2
+        },
+        {
+          "id": "5",
+          "text": "What is the hardest part of our body?",
+          "options": [
+            "Muscle",
+            "Bone",
+            "Teeth",
+            "Skin"
+          ],
+          "explanation": "Tooth enamel is the hardest substance in the human body.",
+          "correctAnswer": 2
+        }
+      ],
+      "timelimit": 10,
+      "passingscore": 70,
+      "createdat": "2025-09-02T20:31:30.006386+00:00",
+      "updatedat": "2025-09-02T20:31:30.006386+00:00"
+    },
+    {
+      "id": "feecc29f-192a-4a74-9ae4-4e13c28b951f",
+      "title": "Mathematics Test - Grade 3",
+      "description": "Practice your math skills with this comprehensive 3rd grade mathematics test.",
+      "subject": "Mathematics",
+      "grade": "Grade 3",
+      "questions": [
+        {
+          "id": "1",
+          "text": "What is 7 + 8?",
+          "options": [
+            "14",
+            "15",
+            "16",
+            "17"
+          ],
+          "explanation": "7 + 8 = 15",
+          "correctAnswer": 1
+        },
+        {
+          "id": "2",
+          "text": "How many sides does a triangle have?",
+          "options": [
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "explanation": "A triangle has exactly 3 sides.",
+          "correctAnswer": 1
+        },
+        {
+          "id": "3",
+          "text": "What is 5 × 6?",
+          "options": [
+            "25",
+            "30",
+            "35",
+            "40"
+          ],
+          "explanation": "5 × 6 = 30",
+          "correctAnswer": 1
+        },
+        {
+          "id": "4",
+          "text": "Which number comes after 99?",
+          "options": [
+            "98",
+            "99",
+            "100",
+            "101"
+          ],
+          "explanation": "100 comes after 99.",
+          "correctAnswer": 2
+        },
+        {
+          "id": "5",
+          "text": "What is half of 20?",
+          "options": [
+            "5",
+            "10",
+            "15",
+            "20"
+          ],
+          "explanation": "Half of 20 is 10.",
+          "correctAnswer": 1
+        }
+      ],
+      "timelimit": 10,
+      "passingscore": 70,
+      "createdat": "2025-09-02T20:31:30.17848+00:00",
+      "updatedat": "2025-09-02T20:31:30.17848+00:00"
+    },
+    {
+      "id": "8398439c-ba23-4729-b7a5-a2e0e0dfa3ca",
+      "title": "English Grammar - Grade 3",
+      "description": "Test your understanding of basic English grammar rules.",
+      "subject": "English",
+      "grade": "Grade 3",
+      "questions": [
+        {
+          "id": "1",
+          "text": "Which word is a noun in the sentence: 'The cat runs fast'?",
+          "options": [
+            "The",
+            "Cat",
+            "Runs",
+            "Fast"
+          ],
+          "explanation": "'Cat' is a noun - it's a person, place, or thing.",
+          "correctAnswer": 1
+        },
+        {
+          "id": "2",
+          "text": "What is the past tense of 'run'?",
+          "options": [
+            "Running",
+            "Runs",
+            "Ran",
+            "Run"
+          ],
+          "explanation": "The past tense of 'run' is 'ran'.",
+          "correctAnswer": 2
+        },
+        {
+          "id": "3",
+          "text": "Which sentence is correct?",
+          "options": [
+            "I am going to the store.",
+            "I am going to the store",
+            "i am going to the store.",
+            "I am going to the store?"
+          ],
+          "explanation": "The first sentence has proper capitalization and punctuation.",
+          "correctAnswer": 0
+        },
+        {
+          "id": "4",
+          "text": "What is the opposite of 'big'?",
+          "options": [
+            "Large",
+            "Huge",
+            "Small",
+            "Tall"
+          ],
+          "explanation": "The opposite of 'big' is 'small'.",
+          "correctAnswer": 2
+        },
+        {
+          "id": "5",
+          "text": "Which word rhymes with 'cat'?",
+          "options": [
+            "Dog",
+            "Hat",
+            "Bird",
+            "Fish"
+          ],
+          "explanation": "'Hat' rhymes with 'cat'.",
+          "correctAnswer": 1
+        }
+      ],
+      "timelimit": 10,
+      "passingscore": 70,
+      "createdat": "2025-09-02T20:31:30.337576+00:00",
+      "updatedat": "2025-09-02T20:31:30.337576+00:00"
+    },
+    {
+      "id": "9d06e3be-b42a-4803-9635-d2416a4ad409",
+      "title": "Social Studies - Grade 3",
+      "description": "Learn about communities, geography, and basic social studies concepts.",
+      "subject": "Social Studies",
+      "grade": "Grade 3",
+      "questions": [
+        {
+          "id": "1",
+          "text": "What is the capital of our country?",
+          "options": [
+            "New York",
+            "Los Angeles",
+            "Washington D.C.",
+            "Chicago"
+          ],
+          "explanation": "Washington D.C. is the capital of the United States.",
+          "correctAnswer": 2
+        },
+        {
+          "id": "2",
+          "text": "Which direction is opposite to North?",
+          "options": [
+            "East",
+            "West",
+            "South",
+            "Up"
+          ],
+          "explanation": "South is opposite to North.",
+          "correctAnswer": 2
+        },
+        {
+          "id": "3",
+          "text": "What do we call people who live in the same area?",
+          "options": [
+            "Family",
+            "Friends",
+            "Community",
+            "School"
+          ],
+          "explanation": "A community is a group of people who live in the same area.",
+          "correctAnswer": 2
+        },
+        {
+          "id": "4",
+          "text": "What is a map used for?",
+          "options": [
+            "Drawing pictures",
+            "Showing locations",
+            "Writing stories",
+            "Solving math"
+          ],
+          "explanation": "Maps show locations and help us find places.",
+          "correctAnswer": 1
+        },
+        {
+          "id": "5",
+          "text": "Which is a natural resource?",
+          "options": [
+            "Car",
+            "Water",
+            "House",
+            "Road"
+          ],
+          "explanation": "Water is a natural resource that comes from nature.",
+          "correctAnswer": 1
+        }
+      ],
+      "timelimit": 10,
+      "passingscore": 70,
+      "createdat": "2025-09-02T20:31:30.548992+00:00",
+      "updatedat": "2025-09-02T20:31:30.548992+00:00"
+    },
+    {
+      "id": "a3a9eb20-e14a-4121-8777-ccf20aa1956d",
+      "title": "US - Math shapes test ",
+      "description": "Shapes - perimeter related ",
+      "subject": "Mathematics",
+      "grade": "4th Grade",
+      "questions": [
+        {
+          "id": "1",
+          "text": "A rectangle has a length of 8 cm and a width of 5 cam . What is the perimeter?",
+          "options": [
+            "12",
+            "26",
+            "14",
+            "25"
+          ],
+          "explanation": "2(8+5)",
+          "correctAnswer": 1
+        },
+        {
+          "id": "2",
+          "text": "A square has a side of 6 m . What is its perimeter ?",
+          "options": [
+            "24",
+            "20",
+            "34",
+            "44"
+          ],
+          "explanation": "4*6",
+          "correctAnswer": 0
+        },
+        {
+          "id": "3",
+          "text": "A triangle has sides of 4 cm , 7 cm and 9 cm ",
+          "options": [
+            "41",
+            "23",
+            "20",
+            "23"
+          ],
+          "explanation": "",
+          "correctAnswer": 2
+        }
+      ],
+      "timelimit": 30,
+      "passingscore": 70,
+      "createdat": "2025-09-18T23:51:12.620588+00:00",
+      "updatedat": "2025-09-18T23:51:12.620588+00:00"
+    }
+  ],
+  "results": []
+}

@@ -1,4 +1,4 @@
-# SmartBuds Feature Testing Plan
+# SuccessBuds Feature Testing Plan
 
 ## 🧪 **Test Environment**
 - **URL**: http://localhost:3000

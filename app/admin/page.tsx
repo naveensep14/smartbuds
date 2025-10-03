@@ -104,10 +104,10 @@ export default function AdminPage() {
                 <Link href="/" className="flex items-center space-x-3">
                   <img
                     src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
-                    alt="SmartBuds Logo"
+                    alt="SuccessBuds Logo"
                     className="w-12 h-12 rounded-lg object-cover"
                   />
-                  <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
+                  <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
                 </Link>
               </div>
               <nav className="hidden md:flex space-x-8">
@@ -306,6 +306,9 @@ export default function AdminPage() {
                       Grade
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Board
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Questions
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -338,6 +341,11 @@ export default function AdminPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {test.grade}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                          {test.board}
+                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {test.questions.length}

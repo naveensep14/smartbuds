@@ -23,6 +23,7 @@ export interface Database {
           description: string;
           subject: string;
           grade: string;
+          board: string;
           duration: number;
           questions: any;
           created_at: string;
@@ -34,6 +35,7 @@ export interface Database {
           description: string;
           subject: string;
           grade: string;
+          board: string;
           duration: number;
           questions: any;
           created_at?: string;
@@ -45,6 +47,7 @@ export interface Database {
           description?: string;
           subject?: string;
           grade?: string;
+          board?: string;
           duration?: number;
           questions?: any;
           created_at?: string;

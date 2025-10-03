@@ -27,7 +27,7 @@ export const backupSystem = {
       
       const link = document.createElement('a');
       link.href = URL.createObjectURL(dataBlob);
-      link.download = `smartbuds-backup-${new Date().toISOString().split('T')[0]}.json`;
+      link.download = `successbuds-backup-${new Date().toISOString().split('T')[0]}.json`;
       link.click();
       
       URL.revokeObjectURL(link.href);
@@ -52,8 +52,8 @@ export const backupSystem = {
           }
           
           // Clear existing data
-          localStorage.removeItem('smartbuds_tests');
-          localStorage.removeItem('smartbuds_results');
+          localStorage.removeItem('successbuds_tests');
+          localStorage.removeItem('successbuds_results');
           
           // Import tests
           backupData.tests.forEach(test => {
@@ -88,7 +88,7 @@ export const backupSystem = {
     return {
       testCount: tests.length,
       resultCount: results.length,
-      lastBackup: localStorage.getItem('smartbuds_last_backup') || undefined
+      lastBackup: localStorage.getItem('successbuds_last_backup') || undefined
     };
   },
 
@@ -107,7 +107,7 @@ export const backupSystem = {
       };
       
       // Store backup timestamp
-      localStorage.setItem('smartbuds_last_backup', new Date().toISOString());
+      localStorage.setItem('successbuds_last_backup', new Date().toISOString());
       
       console.log('Auto-backup completed:', backupData);
     } catch (error) {

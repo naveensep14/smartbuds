@@ -17,10 +17,10 @@ export default function HomePage() {
             <div className="flex items-center space-x-3">
               <img
                 src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
-                alt="SmartBuds Logo"
+                alt="SuccessBuds Logo"
                 className="w-12 h-12 rounded-lg object-cover"
               />
-              <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
+              <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
             </div>
             <nav className="hidden md:flex space-x-8">
               <Link href="/tests" className="text-gray-600 hover:text-orange-600 transition-colors">
@@ -28,6 +28,12 @@ export default function HomePage() {
               </Link>
               <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
                 Admin Panel
+              </Link>
+              <Link href="/login" className="text-gray-600 hover:text-orange-600 transition-colors">
+                Login
+              </Link>
+              <Link href="/signup" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                Sign Up
               </Link>
             </nav>
             {/* Mobile menu button */}
@@ -65,6 +71,20 @@ export default function HomePage() {
                 >
                   Admin Panel
                 </Link>
+                <Link 
+                  href="/login" 
+                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link 
+                  href="/signup" 
+                  className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-center"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Sign Up
+                </Link>
               </div>
             </motion.div>
           )}
@@ -82,7 +102,7 @@ export default function HomePage() {
           >
             Welcome to{' '}
             <span className="text-gradient bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-              SmartBuds
+              SuccessBuds
             </span>
           </motion.h1>
           <motion.p

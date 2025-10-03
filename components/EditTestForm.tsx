@@ -34,6 +34,9 @@ export default function EditTestForm({ test, onClose, onSave }: EditTestFormProp
     if (!formData.grade.trim()) {
       newErrors.grade = 'Grade is required';
     }
+    if (!formData.board.trim()) {
+      newErrors.board = 'Board is required';
+    }
     if (formData.duration <= 0) {
       newErrors.duration = 'Duration must be greater than 0';
     }
@@ -183,6 +186,25 @@ export default function EditTestForm({ test, onClose, onSave }: EditTestFormProp
                 placeholder="e.g., Grade 3, 4th Grade"
               />
               {errors.grade && <p className="text-red-500 text-sm mt-1">{errors.grade}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Board *
+              </label>
+              <select
+                value={formData.board}
+                onChange={(e) => setFormData(prev => ({ ...prev, board: e.target.value as any }))}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
+                  errors.board ? 'border-red-500' : 'border-gray-300'
+                }`}
+              >
+                <option value="CBSE">CBSE</option>
+                <option value="ICSE">ICSE</option>
+                <option value="IB">IB</option>
+                <option value="IGCSE">IGCSE</option>
+              </select>
+              {errors.board && <p className="text-red-500 text-sm mt-1">{errors.board}</p>}
             </div>
 
             <div>

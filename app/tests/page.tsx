@@ -12,6 +12,7 @@ export default function TestsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('');
+  const [selectedBoard, setSelectedBoard] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Load tests from database on component mount
@@ -28,12 +29,14 @@ export default function TestsPage() {
                          test.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSubject = !selectedSubject || test.subject === selectedSubject;
     const matchesGrade = !selectedGrade || test.grade === selectedGrade;
+    const matchesBoard = !selectedBoard || test.board === selectedBoard;
     
-    return matchesSearch && matchesSubject && matchesGrade;
+    return matchesSearch && matchesSubject && matchesGrade && matchesBoard;
   });
 
   const subjects = Array.from(new Set(tests.map(test => test.subject)));
   const grades = Array.from(new Set(tests.map(test => test.grade)));
+  const boards = Array.from(new Set(tests.map(test => test.board)));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50">
@@ -45,10 +48,10 @@ export default function TestsPage() {
               <Link href="/" className="flex items-center space-x-3">
                 <img
                   src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
-                  alt="SmartBuds Logo"
+                  alt="SuccessBuds Logo"
                   className="w-12 h-12 rounded-lg object-cover"
                 />
-                <h1 className="text-2xl font-bold text-gradient">SmartBuds</h1>
+                <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
               </Link>
             </div>
             <nav className="hidden md:flex space-x-8">
@@ -57,6 +60,12 @@ export default function TestsPage() {
               </Link>
               <Link href="/admin" className="text-gray-600 hover:text-orange-600 transition-colors">
                 Admin Panel
+              </Link>
+              <Link href="/login" className="text-gray-600 hover:text-orange-600 transition-colors">
+                Login
+              </Link>
+              <Link href="/signup" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                Sign Up
               </Link>
             </nav>
             
@@ -91,6 +100,20 @@ export default function TestsPage() {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Admin Panel
+                </Link>
+                <Link 
+                  href="/login" 
+                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link 
+                  href="/signup" 
+                  className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-center"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Sign Up
                 </Link>
               </div>
             </motion.div>
@@ -138,11 +161,22 @@ export default function TestsPage() {
                 <option key={grade} value={grade}>{grade}</option>
               ))}
             </select>
+            <select
+              value={selectedBoard}
+              onChange={(e) => setSelectedBoard(e.target.value)}
+              className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            >
+              <option value="">All Boards</option>
+              {boards.map(board => (
+                <option key={board} value={board}>{board}</option>
+              ))}
+            </select>
             <button
               onClick={() => {
                 setSearchTerm('');
                 setSelectedSubject('');
                 setSelectedGrade('');
+                setSelectedBoard('');
               }}
               className="px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
             >

@@ -16,6 +16,7 @@ export default function CreateTestForm({ onClose, onSave }: CreateTestFormProps)
     description: '',
     subject: '',
     grade: '',
+    board: 'CBSE' as const,
     duration: 30,
   });
 
@@ -86,6 +87,7 @@ export default function CreateTestForm({ onClose, onSave }: CreateTestFormProps)
   const isValid = testData.title.trim() !== '' && 
                   testData.subject.trim() !== '' && 
                   testData.grade.trim() !== '' &&
+                  testData.board.trim() !== '' &&
                   questions.some(q => q.text.trim() !== '');
 
   return (
@@ -162,6 +164,21 @@ export default function CreateTestForm({ onClose, onSave }: CreateTestFormProps)
                   <option value="3rd Grade">3rd Grade</option>
                   <option value="4th Grade">4th Grade</option>
                   <option value="5th Grade">5th Grade</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Board *
+                </label>
+                <select
+                  value={testData.board}
+                  onChange={(e) => handleTestDataChange('board', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                >
+                  <option value="CBSE">CBSE</option>
+                  <option value="ICSE">ICSE</option>
+                  <option value="IB">IB</option>
+                  <option value="IGCSE">IGCSE</option>
                 </select>
               </div>
               <div>

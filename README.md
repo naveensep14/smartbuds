@@ -1,4 +1,4 @@
-# SmartBuds Educational Platform 🎓
+# SuccessBuds Educational Platform 🎓
 
 A modern, interactive educational platform designed for kids to take multiple choice tests with a beautiful, kid-friendly interface.
 
@@ -38,7 +38,7 @@ A modern, interactive educational platform designed for kids to take multiple ch
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd SmartBuds
+   cd SuccessBuds
    ```
 
 2. **Install dependencies**
@@ -57,7 +57,7 @@ A modern, interactive educational platform designed for kids to take multiple ch
 ## Project Structure 📁
 
 ```
-SmartBuds/
+SuccessBuds/
 ├── app/                    # Next.js app directory
 │   ├── globals.css        # Global styles
 │   ├── layout.tsx         # Root layout
@@ -153,4 +153,4 @@ If you need help or have questions:
 
 **Made with ❤️ for learning and education!**
 
-*SmartBuds - Where learning is fun and exciting!* 🌟 # Updated for deployment
+*SuccessBuds - Where learning is fun and exciting!* 🌟 # Updated for deployment
