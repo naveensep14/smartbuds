@@ -24,6 +24,7 @@ export const testService = {
         description: test.description,
         subject: test.subject,
         grade: test.grade,
+        board: test.board || 'ICSE', // Default to ICSE if not set
         duration: test.timelimit,
         questions: test.questions,
         createdAt: new Date(test.createdat),
@@ -54,6 +55,7 @@ export const testService = {
         description: data.description,
         subject: data.subject,
         grade: data.grade,
+        board: data.board || 'ICSE', // Default to ICSE if not set
         duration: data.timelimit,
         questions: data.questions,
         createdAt: new Date(data.createdat),
@@ -75,6 +77,7 @@ export const testService = {
           description: test.description,
           subject: test.subject,
           grade: test.grade,
+          board: test.board,
           timelimit: test.duration,
           questions: test.questions,
         })
@@ -89,6 +92,7 @@ export const testService = {
         description: data.description,
         subject: data.subject,
         grade: data.grade,
+        board: data.board || 'ICSE', // Default to ICSE if not set
         duration: data.timelimit,
         questions: data.questions,
         createdAt: new Date(data.createdat),
@@ -110,6 +114,7 @@ export const testService = {
           description: updates.description,
           subject: updates.subject,
           grade: updates.grade,
+          board: updates.board,
           timelimit: updates.duration,
           questions: updates.questions,
           updatedat: new Date().toISOString(),
@@ -126,6 +131,7 @@ export const testService = {
         description: data.description,
         subject: data.subject,
         grade: data.grade,
+        board: data.board || 'ICSE', // Default to ICSE if not set
         duration: data.timelimit,
         questions: data.questions,
         createdAt: new Date(data.createdat),

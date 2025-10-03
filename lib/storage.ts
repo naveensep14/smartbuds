@@ -147,6 +147,7 @@ export const initializeStorage = () => {
         description: 'Comprehensive science test covering various topics for 3rd grade students',
         subject: 'Science',
         grade: '3rd Grade',
+        board: 'ICSE',
         duration: 30,
         questions: [
           {
@@ -194,6 +195,7 @@ export const initializeStorage = () => {
         description: 'Mathematics test focusing on arithmetic and basic problem solving',
         subject: 'Mathematics',
         grade: '3rd Grade',
+        board: 'ICSE',
         duration: 45,
         questions: [
           {
