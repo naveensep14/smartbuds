@@ -53,7 +53,7 @@ export class LeaderboardService {
       }>();
 
       // Get unique student emails for profile lookup
-      const studentEmails = [...new Set(results.map(result => result.studentName))];
+      const studentEmails = Array.from(new Set(results.map(result => result.studentName)));
       
       // Fetch profiles for all students
       const { data: profiles, error: profileError } = await supabase

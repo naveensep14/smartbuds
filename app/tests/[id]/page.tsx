@@ -173,7 +173,7 @@ export default function TestPage() {
         <div className="flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-800 mb-2">Test Not Found</h1>
-            <p className="text-gray-600 mb-4">The test you're looking for doesn't exist.</p>
+            <p className="text-gray-600 mb-4">The test you&apos;re looking for doesn&apos;t exist.</p>
             <Link href="/tests" className="btn-primary">
               Back to Tests
             </Link>

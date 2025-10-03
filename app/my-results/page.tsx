@@ -382,7 +382,7 @@ export default function MyResultsPage() {
               <BookOpen className="w-12 h-12 text-gray-400" />
             </div>
             <h3 className="text-xl font-semibold text-gray-800 mb-2">No Results Yet</h3>
-            <p className="text-gray-600 mb-6">You haven't taken any tests yet. Start your learning journey!</p>
+            <p className="text-gray-600 mb-6">You haven&apos;t taken any tests yet. Start your learning journey!</p>
             <Link 
               href="/tests" 
               className="inline-flex items-center space-x-2 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors"

@@ -123,7 +123,7 @@ export default function LoginPage() {
           {/* Footer */}
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
-              One click to get started. We'll create your account automatically.
+              One click to get started. We&apos;ll create your account automatically.
             </p>
           </div>
         </motion.div>

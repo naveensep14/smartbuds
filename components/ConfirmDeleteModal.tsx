@@ -42,7 +42,7 @@ export default function ConfirmDeleteModal({ test, onConfirm, onCancel }: Confir
         <div className="p-6">
           <div className="mb-6">
             <p className="text-gray-700 mb-4">
-              Are you sure you want to delete the test <strong>"{test.title}"</strong>?
+              Are you sure you want to delete the test <strong>&quot;{test.title}&quot;</strong>?
             </p>
             
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
