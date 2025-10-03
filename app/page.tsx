@@ -20,6 +20,24 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+      {/* SEO Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "SuccessBuds",
+            "url": "https://successbuds.com",
+            "description": "Online educational platform for kids offering interactive multiple choice tests and learning management tools",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://successbuds.com/tests?search={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          })
+        }}
+      />
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -150,7 +168,7 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto"
           >
-            Your comprehensive educational testing platform. Take assessments, track progress, and achieve your learning goals.
+            The leading online educational platform for students, parents, and teachers. Take interactive multiple choice tests, track academic progress, and improve learning outcomes with our comprehensive assessment tools.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -189,8 +207,8 @@ export default function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Comprehensive Testing</h3>
-            <p className="text-gray-600">Access a wide range of educational assessments designed to evaluate your knowledge and skills.</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Interactive Multiple Choice Tests</h3>
+            <p className="text-gray-600">Take comprehensive online tests covering various subjects and grade levels. Perfect for exam preparation, practice assessments, and skill evaluation.</p>
           </div>
           <div className="card">
             <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
@@ -198,8 +216,8 @@ export default function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Progress Tracking</h3>
-            <p className="text-gray-600">Monitor your performance over time with detailed analytics and progress reports.</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Student Progress Analytics</h3>
+            <p className="text-gray-600">Track academic performance with detailed progress reports, score analytics, and learning insights. Monitor improvement over time and identify areas for growth.</p>
           </div>
           <div className="card">
             <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
@@ -207,8 +225,8 @@ export default function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Personalized Learning</h3>
-            <p className="text-gray-600">Get tailored feedback and recommendations based on your test results and learning patterns.</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Parent & Teacher Dashboard</h3>
+            <p className="text-gray-600">Comprehensive dashboard for parents and teachers to monitor student progress, assign tests, and access detailed performance analytics and reports.</p>
           </div>
         </motion.div>
 
