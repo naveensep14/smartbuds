@@ -25,7 +25,8 @@ export class EmailService {
       // For development, log the email instead of sending
       if (process.env.NODE_ENV === 'development') {
         console.log('=== EMAIL TO SEND (Development Mode) ===');
-        console.log('To: niveditha.2587@gmail.com');
+        console.log('To: naveensep14@gmail.com (verified Resend email)');
+        console.log('Original Recipient: niveditha.2587@gmail.com');
         console.log('From:', data.name, `(${data.email})`);
         console.log('Subject:', data.subject);
         console.log('Category:', data.category);
@@ -48,6 +49,7 @@ export class EmailService {
       const htmlContent = `
         <div style="font-family: sans-serif; line-height: 1.6; color: #333;">
           <h2 style="color: #e65100;">New Message from SuccessBuds Help Page</h2>
+          <p><strong>Original Recipient:</strong> niveditha.2587@gmail.com</p>
           <p><strong>Type:</strong> ${data.category}</p>
           <p><strong>From:</strong> ${data.name} &lt;${data.email}&gt;</p>
           <p><strong>Subject:</strong> ${data.subject}</p>
@@ -56,6 +58,7 @@ export class EmailService {
           <p>${data.message.replace(/\n/g, '<br>')}</p>
           <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
           <p style="font-size: 0.9em; color: #777;">This message was sent from the SuccessBuds help page at ${new Date().toLocaleString()}.</p>
+          <p style="font-size: 0.9em; color: #777;"><strong>Note:</strong> This email was forwarded to you because Resend free tier only allows sending to verified email addresses.</p>
         </div>
       `;
 
@@ -67,10 +70,10 @@ export class EmailService {
         },
         body: JSON.stringify({
           from: 'SuccessBuds Support <onboarding@resend.dev>', // Replace with your verified Resend domain email
-          to: 'niveditha.2587@gmail.com',
-          subject: `[SuccessBuds Help] ${data.subject} (${data.category})`,
+          to: 'naveensep14@gmail.com', // Your verified Resend email
+          subject: `[SuccessBuds Help] ${data.subject} (${data.category}) - For: niveditha.2587@gmail.com`,
           html: htmlContent,
-          text: `Type: ${data.category}\nFrom: ${data.name} <${data.email}>\nSubject: ${data.subject}\nMessage: ${data.message}`
+          text: `Original Recipient: niveditha.2587@gmail.com\nType: ${data.category}\nFrom: ${data.name} <${data.email}>\nSubject: ${data.subject}\nMessage: ${data.message}\n\nNote: This email was forwarded to you because Resend free tier only allows sending to verified email addresses.`
         })
       });
 
