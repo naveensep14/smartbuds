@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -21,6 +21,8 @@ export default function NavigationHeader({
 }: NavigationHeaderProps) {
   const { user, signOut } = useAuth();
   const router = useRouter();
+  const [logoError, setLogoError] = useState(false);
+  const [profileError, setProfileError] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -32,13 +34,21 @@ export default function NavigationHeader({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-3">
-            <Image
-              src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
-              alt="SuccessBuds Logo"
-              width={48}
-              height={48}
-              className="rounded-lg object-cover"
-            />
+            {!logoError ? (
+              <Image
+                src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
+                alt="SuccessBuds Logo"
+                width={48}
+                height={48}
+                className="rounded-lg object-cover"
+                onError={() => setLogoError(true)}
+                unoptimized
+              />
+            ) : (
+              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                <span className="text-orange-600 font-bold text-lg">S</span>
+              </div>
+            )}
             <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
           </div>
           <nav className="hidden md:flex items-center space-x-8">
@@ -51,13 +61,23 @@ export default function NavigationHeader({
                   Dashboard
                 </Link>
                 <div className="flex items-center space-x-2">
-                  <Image
-                    src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=orange&color=white`}
-                    alt="Profile"
-                    width={32}
-                    height={32}
-                    className="rounded-full"
-                  />
+                  {!profileError ? (
+                    <Image
+                      src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=orange&color=white`}
+                      alt="Profile"
+                      width={32}
+                      height={32}
+                      className="rounded-full"
+                      onError={() => setProfileError(true)}
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                      <span className="text-orange-600 font-bold text-sm">
+                        {user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                      </span>
+                    </div>
+                  )}
                   <div className="text-right">
                     <span className="text-sm font-medium text-gray-700 block">
                       {user.user_metadata?.full_name || user.email?.split('@')[0]}

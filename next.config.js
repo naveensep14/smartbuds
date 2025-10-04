@@ -1,6 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // No image configuration needed for external CDN URLs
+  // Image configuration for external URLs
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'i.ibb.co',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ui-avatars.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
   // Exclude Supabase Edge Functions from Next.js build
   webpack: (config) => {
     // Exclude Supabase functions directory from Next.js build
