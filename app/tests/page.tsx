@@ -11,6 +11,7 @@ import { useAuth } from '@/lib/auth';
 import PrintableTest from '@/components/PrintableTest';
 import { supabase } from '@/lib/supabase';
 import { TestProgressService } from '@/lib/test-progress';
+import NavigationHeader from '@/components/NavigationHeader';
 
 export default function TestsPage() {
   const [tests, setTests] = useState<Test[]>([]);
