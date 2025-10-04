@@ -10,6 +10,7 @@ import { testService } from '@/lib/database';
 import { useAuth } from '@/lib/auth';
 import PrintableTest from '@/components/PrintableTest';
 import { supabase } from '@/lib/supabase';
+import { TestProgressService } from '@/lib/test-progress';
 
 export default function TestsPage() {
   const [tests, setTests] = useState<Test[]>([]);
@@ -22,6 +23,7 @@ export default function TestsPage() {
   const [selectedTestForPrint, setSelectedTestForPrint] = useState<Test | null>(null);
   const [printMode, setPrintMode] = useState<'test' | 'answer-key'>('test');
   const [completedTestIds, setCompletedTestIds] = useState<Set<string>>(new Set());
+  const [incompleteTestIds, setIncompleteTestIds] = useState<Set<string>>(new Set());
   const { user, signOut, loading } = useAuth();
   const router = useRouter();
 
@@ -45,6 +47,7 @@ export default function TestsPage() {
       if (!user?.email) return;
       
       try {
+        // Load completed tests
         const { data: results, error } = await supabase
           .from('results')
           .select('testId')
@@ -57,8 +60,14 @@ export default function TestsPage() {
         
         const completedIds = new Set(results.map(result => result.testId));
         setCompletedTestIds(completedIds);
+        
+        // Load incomplete tests
+        const incompleteTests = await TestProgressService.getIncompleteTests(user.email);
+        const incompleteIds = new Set(incompleteTests.map(progress => progress.testId));
+        setIncompleteTestIds(incompleteIds);
+        
       } catch (error) {
-        console.error('Error loading completed tests:', error);
+        console.error('Error loading test status:', error);
       }
     };
     
@@ -281,7 +290,13 @@ export default function TestsPage() {
             {filteredTests.map((test, index) => (
               <motion.div
                 key={test.id}
-                className={`card group ${completedTestIds.has(test.id) ? 'border-green-200 bg-green-50' : ''}`}
+                className={`card group ${
+                  completedTestIds.has(test.id) 
+                    ? 'border-green-200 bg-green-50' 
+                    : incompleteTestIds.has(test.id)
+                    ? 'border-blue-200 bg-blue-50'
+                    : ''
+                }`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -296,6 +311,12 @@ export default function TestsPage() {
                       <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium flex items-center space-x-1">
                         <CheckCircle className="w-3 h-3" />
                         <span>Completed</span>
+                      </span>
+                    )}
+                    {incompleteTestIds.has(test.id) && !completedTestIds.has(test.id) && (
+                      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium flex items-center space-x-1">
+                        <Clock className="w-3 h-3" />
+                        <span>In Progress</span>
                       </span>
                     )}
                   </div>
@@ -328,11 +349,19 @@ export default function TestsPage() {
                     className={`w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-lg font-semibold transition-all duration-200 ${
                       completedTestIds.has(test.id) 
                         ? 'bg-green-500 hover:bg-green-600 text-white' 
+                        : incompleteTestIds.has(test.id)
+                        ? 'bg-blue-500 hover:bg-blue-600 text-white'
                         : 'btn-primary'
                     }`}
                   >
                     <Play className="w-5 h-5" />
-                    <span>{completedTestIds.has(test.id) ? 'Retake Test' : 'Start Test'}</span>
+                    <span>{
+                      completedTestIds.has(test.id) 
+                        ? 'Retake Test' 
+                        : incompleteTestIds.has(test.id)
+                        ? 'Resume Test'
+                        : 'Start Test'
+                    }</span>
                   </Link>
                   
                   <button

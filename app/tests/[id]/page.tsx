@@ -9,6 +9,7 @@ import { Test, Question, TestResult } from '@/types';
 import { testService, resultService } from '@/lib/database';
 import { useAuth } from '@/lib/auth';
 import PrintableTest from '@/components/PrintableTest';
+import { TestProgressService, TestProgress } from '@/lib/test-progress';
 
 export default function TestPage() {
   const params = useParams();
@@ -27,22 +28,41 @@ export default function TestPage() {
   const [startTime, setStartTime] = useState<Date>(new Date());
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [printMode, setPrintMode] = useState<'test' | 'answer-key'>('test');
+  const [testProgress, setTestProgress] = useState<TestProgress | null>(null);
+  const [isResuming, setIsResuming] = useState(false);
 
   // Load test from database
   useEffect(() => {
     const loadTest = async () => {
-      if (params.id) {
+      if (params.id && user?.email) {
         const testId = Array.isArray(params.id) ? params.id[0] : params.id;
+        
+        // Load test data
         const fetchedTest = await testService.getById(testId);
         if (fetchedTest) {
           setTest(fetchedTest);
           setTimeRemaining(fetchedTest.duration * 60);
+          
+          // Check for existing progress
+          const existingProgress = await TestProgressService.getProgress(user.email, testId);
+          if (existingProgress && !existingProgress.isCompleted) {
+            setTestProgress(existingProgress);
+            setIsResuming(true);
+            // Restore progress
+            setCurrentQuestionIndex(existingProgress.currentQuestionIndex);
+            setSelectedAnswers(existingProgress.selectedAnswers);
+            setStartTime(existingProgress.startTime);
+            // Calculate remaining time based on time spent
+            const timeSpent = TestProgressService.calculateTimeSpent(existingProgress.startTime);
+            const remainingTime = (fetchedTest.duration * 60) - timeSpent;
+            setTimeRemaining(Math.max(0, remainingTime));
+          }
         }
         setLoading(false);
       }
     };
     loadTest();
-  }, [params.id]);
+  }, [params.id, user]);
 
   // Timer effect - must be called before any conditional returns
   useEffect(() => {
@@ -190,22 +210,45 @@ export default function TestPage() {
   const totalQuestions = test.questions.length;
   const answeredQuestions = Object.keys(selectedAnswers).length;
 
+  // Save progress when answers change
+  const saveProgress = async () => {
+    if (user?.email && test) {
+      const timeSpent = TestProgressService.calculateTimeSpent(startTime);
+      await TestProgressService.saveProgress({
+        userEmail: user.email,
+        testId: test.id,
+        currentQuestionIndex,
+        selectedAnswers,
+        startTime,
+        timeSpent,
+        isCompleted: false
+      });
+    }
+  };
+
   const handleAnswerSelect = (answerIndex: number) => {
     setSelectedAnswers(prev => ({
       ...prev,
       [currentQuestion.id]: answerIndex
     }));
+    
+    // Save progress after a short delay to avoid too many saves
+    setTimeout(saveProgress, 500);
   };
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < totalQuestions - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
+      // Save progress when navigating
+      setTimeout(saveProgress, 100);
     }
   };
 
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(prev => prev - 1);
+      // Save progress when navigating
+      setTimeout(saveProgress, 100);
     }
   };
 
@@ -249,6 +292,12 @@ export default function TestPage() {
       
       if (savedResult) {
         setTestResult(savedResult);
+        
+        // Mark progress as completed
+        if (user.email) {
+          await TestProgressService.markCompleted(user.email, test.id);
+        }
+        
         setIsTestCompleted(true);
         setShowResults(true);
       } else {
@@ -498,6 +547,27 @@ export default function TestPage() {
             </div>
           </div>
         </div>
+
+        {/* Resume Notification */}
+        {isResuming && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-blue-800">Resuming Test</h3>
+                <p className="text-blue-600 text-sm">
+                  You have {answeredQuestions} answered questions. Continuing from question {currentQuestionIndex + 1}.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Question */}
         <motion.div
