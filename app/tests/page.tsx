@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
 import { motion } from 'framer-motion';
 import { BookOpen, Clock, Users, Play, Search, Filter, Menu, X, LogOut, User, Printer } from 'lucide-react';
 import Link from 'next/link';
