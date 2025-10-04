@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Clock, Users, Play, Search, Filter, Menu, X, LogOut, User, Printer } from 'lucide-react';
+import { BookOpen, Clock, Users, Play, Search, Filter, Menu, X, LogOut, User, Printer, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Test } from '@/types';
 import { testService } from '@/lib/database';
 import { useAuth } from '@/lib/auth';
 import PrintableTest from '@/components/PrintableTest';
+import { supabase } from '@/lib/supabase';
 
 export default function TestsPage() {
   const [tests, setTests] = useState<Test[]>([]);
@@ -20,6 +21,7 @@ export default function TestsPage() {
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [selectedTestForPrint, setSelectedTestForPrint] = useState<Test | null>(null);
   const [printMode, setPrintMode] = useState<'test' | 'answer-key'>('test');
+  const [completedTestIds, setCompletedTestIds] = useState<Set<string>>(new Set());
   const { user, signOut, loading } = useAuth();
   const router = useRouter();
 
@@ -36,6 +38,32 @@ export default function TestsPage() {
     };
     loadTests();
   }, []);
+
+  // Load completed tests for the current user
+  useEffect(() => {
+    const loadCompletedTests = async () => {
+      if (!user?.email) return;
+      
+      try {
+        const { data: results, error } = await supabase
+          .from('results')
+          .select('testId')
+          .eq('studentName', user.email);
+        
+        if (error) {
+          console.error('Error loading completed tests:', error);
+          return;
+        }
+        
+        const completedIds = new Set(results.map(result => result.testId));
+        setCompletedTestIds(completedIds);
+      } catch (error) {
+        console.error('Error loading completed tests:', error);
+      }
+    };
+    
+    loadCompletedTests();
+  }, [user]);
 
   const filteredTests = tests.filter(test => {
     const matchesSearch = test.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -253,16 +281,24 @@ export default function TestsPage() {
             {filteredTests.map((test, index) => (
               <motion.div
                 key={test.id}
-                className="card group"
+                className={`card group ${completedTestIds.has(test.id) ? 'border-green-200 bg-green-50' : ''}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 whileHover={{ y: -5 }}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
-                    {test.subject}
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
+                      {test.subject}
+                    </span>
+                    {completedTestIds.has(test.id) && (
+                      <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium flex items-center space-x-1">
+                        <CheckCircle className="w-3 h-3" />
+                        <span>Completed</span>
+                      </span>
+                    )}
+                  </div>
                   <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">
                     {test.grade}
                   </span>
@@ -289,10 +325,14 @@ export default function TestsPage() {
                 <div className="space-y-3">
                   <Link 
                     href={`/tests/${test.id}`}
-                    className="btn-primary w-full flex items-center justify-center space-x-2"
+                    className={`w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                      completedTestIds.has(test.id) 
+                        ? 'bg-green-500 hover:bg-green-600 text-white' 
+                        : 'btn-primary'
+                    }`}
                   >
                     <Play className="w-5 h-5" />
-                    <span>Start Test</span>
+                    <span>{completedTestIds.has(test.id) ? 'Retake Test' : 'Start Test'}</span>
                   </Link>
                   
                   <button
