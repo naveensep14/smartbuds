@@ -1,4 +1,4 @@
-// Email service utility for handling help/feedback emails using Supabase Edge Functions
+// Email service utility for handling help/feedback emails
 
 export interface HelpMessageData {
   name: string;
@@ -8,19 +8,16 @@ export interface HelpMessageData {
   category: string;
 }
 
-export class SupabaseEmailService {
-  private static instance: SupabaseEmailService;
-  private supabaseUrl: string;
+export class EmailService {
+  private static instance: EmailService;
   
-  constructor() {
-    this.supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  }
+  constructor() {}
   
-  static getInstance(): SupabaseEmailService {
-    if (!SupabaseEmailService.instance) {
-      SupabaseEmailService.instance = new SupabaseEmailService();
+  static getInstance(): EmailService {
+    if (!EmailService.instance) {
+      EmailService.instance = new EmailService();
     }
-    return SupabaseEmailService.instance;
+    return EmailService.instance;
   }
 
   async sendHelpMessage(data: HelpMessageData): Promise<boolean> {
@@ -40,25 +37,52 @@ export class SupabaseEmailService {
         return true;
       }
 
-      // For production, use Supabase Edge Function
-      const response = await fetch(`${this.supabaseUrl}/functions/v1/send-help-email`, {
+      // For production, use Resend API directly
+      const resendApiKey = process.env.RESEND_API_KEY;
+      
+      if (!resendApiKey) {
+        console.error('RESEND_API_KEY environment variable is not set');
+        return false;
+      }
+
+      const htmlContent = `
+        <div style="font-family: sans-serif; line-height: 1.6; color: #333;">
+          <h2 style="color: #e65100;">New Message from SuccessBuds Help Page</h2>
+          <p><strong>Type:</strong> ${data.category}</p>
+          <p><strong>From:</strong> ${data.name} &lt;${data.email}&gt;</p>
+          <p><strong>Subject:</strong> ${data.subject}</p>
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+          <p><strong>Message:</strong></p>
+          <p>${data.message.replace(/\n/g, '<br>')}</p>
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+          <p style="font-size: 0.9em; color: #777;">This message was sent from the SuccessBuds help page at ${new Date().toLocaleString()}.</p>
+        </div>
+      `;
+
+      const response = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+          'Authorization': `Bearer ${resendApiKey}`
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          from: 'SuccessBuds Support <onboarding@resend.dev>', // Replace with your verified Resend domain email
+          to: 'niveditha.2587@gmail.com',
+          subject: `[SuccessBuds Help] ${data.subject} (${data.category})`,
+          html: htmlContent,
+          text: `Type: ${data.category}\nFrom: ${data.name} <${data.email}>\nSubject: ${data.subject}\nMessage: ${data.message}`
+        })
       });
 
       if (!response.ok) {
         const errorData = await response.text();
-        console.error('Supabase Edge Function error:', errorData);
+        console.error('Resend API error:', errorData);
         return false;
       }
 
       const result = await response.json();
-      console.log('Email sent successfully via Supabase:', result);
-      return result.success === true;
+      console.log('Email sent successfully via Resend:', result);
+      return true;
 
     } catch (error) {
       console.error('Error sending help email:', error);
@@ -69,6 +93,6 @@ export class SupabaseEmailService {
 
 // Export a simple function for easy use
 export async function sendHelpEmail(data: HelpMessageData): Promise<boolean> {
-  const emailService = SupabaseEmailService.getInstance();
+  const emailService = EmailService.getInstance();
   return await emailService.sendHelpMessage(data);
 }
