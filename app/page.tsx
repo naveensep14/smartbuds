@@ -3,7 +3,18 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { 
+  BookOpen, 
+  Trophy, 
+  Users, 
+  BarChart3, 
+  Star, 
+  ArrowRight, 
+  CheckCircle,
+  Clock,
+  Target,
+  Award
+} from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import Leaderboard from '@/components/Leaderboard';
@@ -19,8 +30,42 @@ export default function HomePage() {
     router.push('/');
   };
 
+  const features = [
+    {
+      icon: BookOpen,
+      title: "Interactive Tests",
+      description: "Comprehensive multiple choice tests covering all subjects and grade levels",
+      color: "from-blue-500 to-blue-600"
+    },
+    {
+      icon: BarChart3,
+      title: "Progress Tracking",
+      description: "Detailed analytics and performance insights to monitor learning growth",
+      color: "from-green-500 to-green-600"
+    },
+    {
+      icon: Trophy,
+      title: "Achievements",
+      description: "Gamified learning with badges, leaderboards, and achievement rewards",
+      color: "from-yellow-500 to-yellow-600"
+    },
+    {
+      icon: Users,
+      title: "Parent Dashboard",
+      description: "Comprehensive tools for parents to monitor and support their child's learning",
+      color: "from-purple-500 to-purple-600"
+    }
+  ];
+
+  const stats = [
+    { number: "10,000+", label: "Students" },
+    { number: "500+", label: "Tests" },
+    { number: "50+", label: "Schools" },
+    { number: "95%", label: "Success Rate" }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+    <div className="min-h-screen bg-white">
       {/* SEO Structured Data */}
       <script
         type="application/ld+json"
@@ -43,99 +88,289 @@ export default function HomePage() {
       <NavigationHeader />
 
       {/* Hero Section */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl md:text-6xl font-bold text-gray-900 mt-8 mb-4"
-          >
-            Welcome to{' '}
-            <span className="text-gradient bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-              SuccessBuds
-            </span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto"
-          >
-            The leading online educational platform for students, parents, and teachers. Take interactive multiple choice tests, track academic progress, and improve learning outcomes with our comprehensive assessment tools.
-          </motion.p>
+      <section className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-white to-red-50">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+          <div className="text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="mb-8"
+            >
+              <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-orange-100 text-orange-800 mb-6">
+                <Star className="w-4 h-4 mr-2" />
+                Trusted by 10,000+ students worldwide
+              </span>
+            </motion.div>
+            
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight"
+            >
+              Learn Better with{' '}
+              <span className="bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text text-transparent">
+                SuccessBuds
+              </span>
+            </motion.h1>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed"
+            >
+              The ultimate educational platform that makes learning fun, engaging, and effective. 
+              Take interactive tests, track progress, and achieve academic excellence.
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            >
+              {user ? (
+                <Link
+                  href="/tests"
+                  className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white font-semibold rounded-xl hover:from-orange-700 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                >
+                  Start Learning
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white font-semibold rounded-xl hover:from-orange-700 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  >
+                    Get Started Free
+                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="inline-flex items-center px-8 py-4 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-all duration-300"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex justify-center"
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-8"
           >
-            {user ? (
-              <Link
-                href="/tests"
-                className="btn-primary"
-              >
-                Take Tests
-              </Link>
-            ) : (
-              <Link
-                href="/login"
-                className="btn-primary"
-              >
-                Get Started
-              </Link>
-            )}
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+                  {stat.number}
+                </div>
+                <div className="text-gray-600 font-medium">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
           </motion.div>
         </div>
+      </section>
 
-        {/* Features Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="mt-20 grid md:grid-cols-3 gap-8"
-        >
-          <div className="card">
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Interactive Multiple Choice Tests</h3>
-            <p className="text-gray-600">Take comprehensive online tests covering various subjects and grade levels. Perfect for exam preparation, practice assessments, and skill evaluation.</p>
-          </div>
-          <div className="card">
-            <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Student Progress Analytics</h3>
-            <p className="text-gray-600">Track academic performance with detailed progress reports, score analytics, and learning insights. Monitor improvement over time and identify areas for growth.</p>
-          </div>
-          <div className="card">
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Parent & Teacher Dashboard</h3>
-            <p className="text-gray-600">Comprehensive dashboard for parents and teachers to monitor student progress, assign tests, and access detailed performance analytics and reports.</p>
-          </div>
-        </motion.div>
+      {/* Features Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Why Choose SuccessBuds?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              We provide everything you need to succeed in your educational journey
+            </p>
+          </motion.div>
 
-        {/* Leaderboard Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.0 }}
-          className="mt-20"
-        >
-          <div className="max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="group"
+              >
+                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                  <div className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                    <feature.icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              How It Works
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Get started in just three simple steps
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                step: "01",
+                title: "Sign Up",
+                description: "Create your free account in seconds",
+                icon: Users
+              },
+              {
+                step: "02", 
+                title: "Take Tests",
+                description: "Choose from hundreds of interactive tests",
+                icon: BookOpen
+              },
+              {
+                step: "03",
+                title: "Track Progress",
+                description: "Monitor your improvement and achievements",
+                icon: Target
+              }
+            ].map((step, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                className="text-center"
+              >
+                <div className="relative">
+                  <div className="w-20 h-20 bg-gradient-to-r from-orange-600 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl">
+                    {step.step}
+                  </div>
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                    <step.icon className="w-8 h-8 text-orange-600" />
+                  </div>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  {step.title}
+                </h3>
+                <p className="text-gray-600 text-lg">
+                  {step.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Leaderboard Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Top Performers
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              See who&apos;s leading the way in academic excellence
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="max-w-4xl mx-auto"
+          >
             <Leaderboard limit={5} />
-          </div>
-        </motion.div>
-      </main>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-orange-600 to-red-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Ready to Start Learning?
+            </h2>
+            <p className="text-xl text-orange-100 mb-8 max-w-3xl mx-auto">
+              Join thousands of students who are already improving their academic performance with SuccessBuds
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {user ? (
+                <Link
+                  href="/tests"
+                  className="inline-flex items-center px-8 py-4 bg-white text-orange-600 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                >
+                  Browse Tests
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
+              ) : (
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center px-8 py-4 bg-white text-orange-600 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                >
+                  Get Started Free
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
+              )}
+              <Link
+                href="/help"
+                className="inline-flex items-center px-8 py-4 border-2 border-white text-white font-semibold rounded-xl hover:bg-white hover:text-orange-600 transition-all duration-300"
+              >
+                Learn More
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 } 
