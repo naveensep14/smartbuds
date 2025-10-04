@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 
@@ -31,10 +32,12 @@ export default function NavigationHeader({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-3">
-            <img
+            <Image
               src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
               alt="SuccessBuds Logo"
-              className="w-12 h-12 rounded-lg object-cover"
+              width={48}
+              height={48}
+              className="rounded-lg object-cover"
             />
             <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
           </div>
@@ -48,10 +51,12 @@ export default function NavigationHeader({
                   Dashboard
                 </Link>
                 <div className="flex items-center space-x-2">
-                  <img
+                  <Image
                     src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=orange&color=white`}
                     alt="Profile"
-                    className="w-8 h-8 rounded-full"
+                    width={32}
+                    height={32}
+                    className="rounded-full"
                   />
                   <div className="text-right">
                     <span className="text-sm font-medium text-gray-700 block">
