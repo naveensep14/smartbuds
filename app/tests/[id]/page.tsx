@@ -44,18 +44,23 @@ export default function TestPage() {
           setTimeRemaining(fetchedTest.duration * 60);
           
           // Check for existing progress
-          const existingProgress = await TestProgressService.getProgress(user.email, testId);
-          if (existingProgress && !existingProgress.isCompleted) {
-            setTestProgress(existingProgress);
-            setIsResuming(true);
-            // Restore progress
-            setCurrentQuestionIndex(existingProgress.currentQuestionIndex);
-            setSelectedAnswers(existingProgress.selectedAnswers);
-            setStartTime(existingProgress.startTime);
-            // Calculate remaining time based on time spent
-            const timeSpent = TestProgressService.calculateTimeSpent(existingProgress.startTime);
-            const remainingTime = (fetchedTest.duration * 60) - timeSpent;
-            setTimeRemaining(Math.max(0, remainingTime));
+          try {
+            const existingProgress = await TestProgressService.getProgress(user.email, testId);
+            if (existingProgress && !existingProgress.isCompleted) {
+              setTestProgress(existingProgress);
+              setIsResuming(true);
+              // Restore progress
+              setCurrentQuestionIndex(existingProgress.currentQuestionIndex);
+              setSelectedAnswers(existingProgress.selectedAnswers);
+              setStartTime(existingProgress.startTime);
+              // Calculate remaining time based on time spent
+              const timeSpent = TestProgressService.calculateTimeSpent(existingProgress.startTime);
+              const remainingTime = (fetchedTest.duration * 60) - timeSpent;
+              setTimeRemaining(Math.max(0, remainingTime));
+            }
+          } catch (error) {
+            console.log('Progress tracking not available - database table may not exist yet');
+            // Continue without progress tracking
           }
         }
         setLoading(false);

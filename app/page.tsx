@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Menu, X, LogOut, User } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import Leaderboard from '@/components/Leaderboard';
+import NavigationHeader from '@/components/NavigationHeader';
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -38,115 +39,8 @@ export default function HomePage() {
           })
         }}
       />
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <img
-                src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
-                alt="SuccessBuds Logo"
-                className="w-12 h-12 rounded-lg object-cover"
-              />
-              <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
-            </div>
-            <nav className="hidden md:flex items-center space-x-8">
-              {user ? (
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <img
-                      src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=orange&color=white`}
-                      alt="Profile"
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <span className="text-sm font-medium text-gray-700">
-                      {user.user_metadata?.full_name || user.email?.split('@')[0]}
-                    </span>
-                  </div>
-                  <Link href="/dashboard" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
-                    Dashboard
-                  </Link>
-                  <button
-                    onClick={handleSignOut}
-                    className="flex items-center space-x-1 text-gray-600 hover:text-red-600 transition-colors"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span className="text-sm">Sign Out</span>
-                  </button>
-                </div>
-              ) : (
-                <Link href="/login" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
-                  Get Started
-                </Link>
-              )}
-            </nav>
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button 
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="text-gray-600 hover:text-orange-600 transition-colors p-2 rounded-lg hover:bg-gray-100"
-              >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
-          </div>
-          
-          {/* Mobile menu */}
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="md:hidden border-t border-gray-200 py-4"
-            >
-              <div className="flex flex-col space-y-4">
-                {user ? (
-                  <>
-                    <Link 
-                      href="/dashboard" 
-                      className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-center"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Dashboard
-                    </Link>
-                    <div className="border-t border-gray-200 pt-4 mt-4">
-                      <div className="flex items-center space-x-2 px-4 py-2">
-                        <img
-                          src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=orange&color=white`}
-                          alt="Profile"
-                          className="w-8 h-8 rounded-full"
-                        />
-                        <span className="text-sm font-medium text-gray-700">
-                          {user.user_metadata?.full_name || user.email?.split('@')[0]}
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => {
-                          handleSignOut();
-                          setMobileMenuOpen(false);
-                        }}
-                        className="flex items-center space-x-2 text-gray-600 hover:text-red-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50 w-full text-left"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span className="text-sm">Sign Out</span>
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <Link 
-                    href="/login" 
-                    className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-center"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Get Started
-                  </Link>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </div>
-      </header>
+      
+      <NavigationHeader />
 
       {/* Hero Section */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

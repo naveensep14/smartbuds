@@ -2,17 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Clock, Trophy, User, LogOut, Menu, X, Settings } from 'lucide-react';
+import { BookOpen, Clock, Trophy, User, Menu, X, Settings } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ActivityService, Activity } from '@/lib/activity';
+import NavigationHeader from '@/components/NavigationHeader';
 
 export default function DashboardPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [activitiesLoading, setActivitiesLoading] = useState(true);
-  const { user, signOut, loading, isAdmin } = useAuth();
+  const { user, loading, isAdmin } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -40,10 +41,6 @@ export default function DashboardPage() {
     loadActivities();
   }, [user]);
 
-  const handleSignOut = async () => {
-    await signOut();
-    router.push('/');
-  };
 
   if (loading) {
     return (
@@ -62,87 +59,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <Link href="/" className="flex items-center space-x-3">
-                <img
-                  src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
-                  alt="SuccessBuds Logo"
-                  className="w-12 h-12 rounded-lg object-cover"
-                />
-                <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
-              </Link>
-            </div>
-            
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              {/* User Menu */}
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <img
-                    src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=orange&color=white`}
-                    alt="Profile"
-                    className="w-8 h-8 rounded-full"
-                  />
-                  <span className="text-sm font-medium text-gray-700">
-                    {user.user_metadata?.full_name || user.email?.split('@')[0]}
-                  </span>
-                </div>
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center space-x-1 text-gray-600 hover:text-red-600 transition-colors"
-                >
-                  <LogOut className="w-3 h-3" />
-                  <span className="text-xs">Sign Out</span>
-                </button>
-              </div>
-            </nav>
-
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-
-          {/* Mobile menu */}
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="md:hidden border-t border-gray-100 pt-4 pb-2"
-            >
-              <div className="flex flex-col space-y-3">
-                <div className="border-t border-gray-200 pt-3 mt-3">
-                  <div className="flex items-center space-x-2 px-4 py-2">
-                    <img
-                      src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=orange&color=white`}
-                      alt="Profile"
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <span className="text-sm font-medium text-gray-700">
-                      {user.user_metadata?.full_name || user.email?.split('@')[0]}
-                    </span>
-                  </div>
-                  <button
-                    onClick={handleSignOut}
-                    className="flex items-center space-x-2 text-gray-600 hover:text-red-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50 w-full text-left"
-                  >
-                    <LogOut className="w-3 h-3" />
-                    <span className="text-xs">Sign Out</span>
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </div>
-      </header>
+      <NavigationHeader />
 
       {/* Dashboard Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

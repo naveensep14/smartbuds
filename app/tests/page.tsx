@@ -105,6 +105,9 @@ export default function TestsPage() {
               </Link>
             </div>
             <nav className="hidden md:flex items-center space-x-8">
+              <Link href="/help" className="text-gray-600 hover:text-orange-600 transition-colors">
+                Help
+              </Link>
               {user ? (
                 <div className="flex items-center space-x-4">
                   <Link href="/dashboard" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
@@ -158,6 +161,13 @@ export default function TestsPage() {
               className="md:hidden border-t border-gray-100 pt-4 pb-2"
             >
               <div className="flex flex-col space-y-3">
+                <Link 
+                  href="/help" 
+                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Help
+                </Link>
                 {user ? (
                   <>
                     <Link 
