@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { ADMIN_EMAILS } from './admin-config';
 
 export interface LeaderboardEntry {
   rank: number;
@@ -44,6 +45,22 @@ export class LeaderboardService {
         return [];
       }
 
+      // Filter out admin results
+      const nonAdminResults = results.filter(result => {
+        const isAdmin = ADMIN_EMAILS.includes(result.studentName.toLowerCase() as any);
+        if (isAdmin) {
+          console.log('LeaderboardService - Filtering out admin result:', result.studentName);
+        }
+        return !isAdmin;
+      });
+
+      console.log('LeaderboardService - Non-admin results:', nonAdminResults.length, 'out of', results.length);
+
+      if (nonAdminResults.length === 0) {
+        console.log('LeaderboardService - No non-admin results found for last 30 days');
+        return [];
+      }
+
       // Group results by student and calculate statistics
       const studentStats = new Map<string, {
         scores: number[];
@@ -53,7 +70,7 @@ export class LeaderboardService {
       }>();
 
       // Get unique student emails for profile lookup
-      const studentEmails = Array.from(new Set(results.map(result => result.studentName)));
+      const studentEmails = Array.from(new Set(nonAdminResults.map(result => result.studentName)));
       
       // Fetch profiles for all students
       const { data: profiles, error: profileError } = await supabase
@@ -73,7 +90,7 @@ export class LeaderboardService {
         });
       }
 
-      results.forEach(result => {
+      nonAdminResults.forEach(result => {
         const studentName = result.studentName;
         
         if (!studentStats.has(studentName)) {
