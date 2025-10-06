@@ -7,7 +7,7 @@ export interface Question {
   image?: string;
 }
 
-export type Board = 'IB' | 'ICSE' | 'IGCSE' | 'CBSE';
+export type Board = 'US' | 'IB' | 'ICSE' | 'IGCSE' | 'CBSE';
 
 export interface Test {
   id: string;

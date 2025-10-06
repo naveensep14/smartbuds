@@ -1,0 +1,120 @@
+{
+  "title": "Class 3 Math - Grouping and Classification",
+  "description": "Test covering grouping objects, classification, and pattern recognition from Chapter 1",
+  "subject": "Mathematics",
+  "grade": "Class 3",
+  "board": "US",
+  "duration": 20,
+  "questions": [
+    {
+      "question": "Which objects need electricity to work?",
+      "options": [
+        "TV and Fan",
+        "Pillow and Blanket",
+        "Chair and Bed",
+        "Clock and Lamp"
+      ],
+      "correctAnswer": 0,
+      "explanation": "TV and Fan need electricity to work, while Pillow, Blanket, Chair, and Bed don't need electricity."
+    },
+    {
+      "question": "How can you group household objects differently?",
+      "options": [
+        "By color",
+        "By size",
+        "By material",
+        "All of the above"
+      ],
+      "correctAnswer": 3,
+      "explanation": "Objects can be grouped by color, size, material, or any other common characteristic."
+    },
+    {
+      "question": "If you have 10 toys and group them into 'soft toys' and 'hard toys', which grouping method are you using?",
+      "options": [
+        "By color",
+        "By material",
+        "By size",
+        "By shape"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Grouping by soft and hard is grouping by material properties."
+    },
+    {
+      "question": "Which of these animals would be in the same group as 'tiger'?",
+      "options": [
+        "elephant",
+        "lion",
+        "deer",
+        "rat"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Tiger and lion are both big cats and predators, so they would be in the same group."
+    },
+    {
+      "question": "If you group animals by size, which animals would be in the 'small' group?",
+      "options": [
+        "elephant and tiger",
+        "rat and deer",
+        "rat and dog",
+        "tiger and lion"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Rat and dog are both smaller animals compared to elephant, tiger, and lion."
+    },
+    {
+      "question": "How many different ways can you group the same objects?",
+      "options": [
+        "Only one way",
+        "Two ways",
+        "Many different ways",
+        "Three ways"
+      ],
+      "correctAnswer": 2,
+      "explanation": "The same objects can be grouped in many different ways based on different characteristics."
+    },
+    {
+      "question": "Which objects belong together because they are used for sleeping?",
+      "options": [
+        "TV and Fan",
+        "Pillow and Blanket",
+        "Chair and Table",
+        "Clock and Lamp"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Pillow and Blanket are both used for sleeping and comfort."
+    },
+    {
+      "question": "If you group objects by 'things you can sit on', which objects would be in this group?",
+      "options": [
+        "TV and Fan",
+        "Chair and Bed",
+        "Pillow and Blanket",
+        "Clock and Lamp"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Chair and Bed are both objects you can sit on."
+    },
+    {
+      "question": "Which grouping method would put 'apple' and 'banana' together?",
+      "options": [
+        "By color",
+        "By size",
+        "By type (fruits)",
+        "By shape"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Apple and banana are both fruits, so they would be grouped together by type."
+    },
+    {
+      "question": "If you have 12 pencils and group them by color, how many groups might you have?",
+      "options": [
+        "Only 2 groups",
+        "Only 3 groups",
+        "It depends on the colors",
+        "Always 12 groups"
+      ],
+      "correctAnswer": 2,
+      "explanation": "The number of groups depends on how many different colors of pencils you have."
+    }
+  ]
+}

@@ -16,7 +16,7 @@ export default function CreateTestForm({ onClose, onSave }: CreateTestFormProps)
     description: '',
     subject: '',
     grade: '',
-    board: 'CBSE' as const,
+    board: 'US' as const,
     duration: 30,
   });
 
@@ -175,6 +175,7 @@ export default function CreateTestForm({ onClose, onSave }: CreateTestFormProps)
                   onChange={(e) => handleTestDataChange('board', e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
+                  <option value="US">US</option>
                   <option value="CBSE">CBSE</option>
                   <option value="ICSE">ICSE</option>
                   <option value="IB">IB</option>
