@@ -199,6 +199,7 @@ export default function EditTestForm({ test, onClose, onSave }: EditTestFormProp
                   errors.board ? 'border-red-500' : 'border-gray-300'
                 }`}
               >
+                <option value="US">US</option>
                 <option value="CBSE">CBSE</option>
                 <option value="ICSE">ICSE</option>
                 <option value="IB">IB</option>

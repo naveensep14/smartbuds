@@ -26,7 +26,14 @@ export const testService = {
         grade: test.grade,
         board: test.board || 'ICSE', // Default to ICSE if not set
         duration: test.timelimit,
-        questions: test.questions,
+        questions: test.questions?.map((q: any) => ({
+          id: q.id || Date.now().toString(),
+          text: q.question || q.text || '',
+          options: q.options || [],
+          correctAnswer: q.correctAnswer || 0,
+          explanation: q.explanation || '',
+          image: q.image || undefined,
+        })) || [],
         createdAt: new Date(test.createdat),
         updatedAt: new Date(test.updatedat),
       })) || [];
@@ -57,7 +64,14 @@ export const testService = {
         grade: data.grade,
         board: data.board || 'ICSE', // Default to ICSE if not set
         duration: data.timelimit,
-        questions: data.questions,
+        questions: data.questions?.map((q: any) => ({
+          id: q.id || Date.now().toString(),
+          text: q.question || q.text || '',
+          options: q.options || [],
+          correctAnswer: q.correctAnswer || 0,
+          explanation: q.explanation || '',
+          image: q.image || undefined,
+        })) || [],
         createdAt: new Date(data.createdat),
         updatedAt: new Date(data.updatedat),
       };
@@ -79,7 +93,14 @@ export const testService = {
           grade: test.grade,
           board: test.board,
           timelimit: test.duration,
-          questions: test.questions,
+          questions: test.questions?.map(q => ({
+            id: q.id,
+            question: q.text,
+            options: q.options,
+            correctAnswer: q.correctAnswer,
+            explanation: q.explanation,
+            image: q.image,
+          })),
         })
         .select()
         .single();
@@ -94,7 +115,14 @@ export const testService = {
         grade: data.grade,
         board: data.board || 'ICSE', // Default to ICSE if not set
         duration: data.timelimit,
-        questions: data.questions,
+        questions: data.questions?.map((q: any) => ({
+          id: q.id || Date.now().toString(),
+          text: q.question || q.text || '',
+          options: q.options || [],
+          correctAnswer: q.correctAnswer || 0,
+          explanation: q.explanation || '',
+          image: q.image || undefined,
+        })) || [],
         createdAt: new Date(data.createdat),
         updatedAt: new Date(data.updatedat),
       };
@@ -116,7 +144,14 @@ export const testService = {
           grade: updates.grade,
           board: updates.board,
           timelimit: updates.duration,
-          questions: updates.questions,
+          questions: updates.questions?.map(q => ({
+            id: q.id,
+            question: q.text,
+            options: q.options,
+            correctAnswer: q.correctAnswer,
+            explanation: q.explanation,
+            image: q.image,
+          })),
           updatedat: new Date().toISOString(),
         })
         .eq('id', id)
@@ -133,7 +168,14 @@ export const testService = {
         grade: data.grade,
         board: data.board || 'ICSE', // Default to ICSE if not set
         duration: data.timelimit,
-        questions: data.questions,
+        questions: data.questions?.map((q: any) => ({
+          id: q.id || Date.now().toString(),
+          text: q.question || q.text || '',
+          options: q.options || [],
+          correctAnswer: q.correctAnswer || 0,
+          explanation: q.explanation || '',
+          image: q.image || undefined,
+        })) || [],
         createdAt: new Date(data.createdat),
         updatedAt: new Date(data.updatedat),
       };
