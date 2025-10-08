@@ -36,16 +36,18 @@ export async function POST(request: NextRequest) {
     console.log('✅ AI generation completed successfully');
 
     // Update duration for all tests
-    result.tests.forEach((test: any) => {
-      test.duration = duration;
-      test.timelimit = duration;
-    });
+    if (result.tests && Array.isArray(result.tests)) {
+      result.tests.forEach((test: any) => {
+        test.duration = duration;
+        test.timelimit = duration;
+      });
+    }
 
     return NextResponse.json({
       success: true,
-      tests: result.tests,
-      extractedText: result.extractedText,
-      concepts: result.concepts,
+      tests: result.tests || [],
+      extractedText: result.extractedText || '',
+      concepts: result.concepts || [],
     });
 
   } catch (error) {
