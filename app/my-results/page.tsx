@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import { TestResult, Test } from '@/types';
 import { supabase } from '@/lib/supabase';
+import TestReview from '@/components/TestReview';
 
 
 export default function MyResultsPage() {
@@ -16,6 +17,7 @@ export default function MyResultsPage() {
   const [selectedTest, setSelectedTest] = useState('');
   const [dateRange, setDateRange] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [reviewingResult, setReviewingResult] = useState<{ test: Test; result: TestResult } | null>(null);
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
 
@@ -331,6 +333,9 @@ export default function MyResultsPage() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Completed
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -363,6 +368,15 @@ export default function MyResultsPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           {result.completedAt.toLocaleDateString()} {result.completedAt.toLocaleTimeString()}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <button
+                            onClick={() => setReviewingResult({ test: test!, result })}
+                            className="flex items-center space-x-2 px-3 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                          >
+                            <Eye className="w-4 h-4" />
+                            <span>Review</span>
+                          </button>
                         </td>
                       </motion.tr>
                     );
@@ -446,6 +460,15 @@ export default function MyResultsPage() {
           </div>
         )}
       </main>
+
+      {/* Test Review Modal */}
+      {reviewingResult && (
+        <TestReview
+          test={reviewingResult.test}
+          testResult={reviewingResult.result}
+          onClose={() => setReviewingResult(null)}
+        />
+      )}
     </div>
   );
 }

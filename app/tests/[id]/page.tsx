@@ -9,6 +9,7 @@ import { Test, Question, TestResult } from '@/types';
 import { testService, resultService } from '@/lib/database';
 import { useAuth } from '@/lib/auth';
 import PrintableTest from '@/components/PrintableTest';
+import TestReview from '@/components/TestReview';
 import { TestProgressService, TestProgress } from '@/lib/test-progress';
 
 export default function TestPage() {
@@ -30,6 +31,7 @@ export default function TestPage() {
   const [printMode, setPrintMode] = useState<'test' | 'answer-key'>('test');
   const [testProgress, setTestProgress] = useState<TestProgress | null>(null);
   const [isResuming, setIsResuming] = useState(false);
+  const [showReview, setShowReview] = useState(false);
 
   // Load test from database
   useEffect(() => {
@@ -439,7 +441,14 @@ export default function TestPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/tests" className="btn-primary">
+              <button
+                onClick={() => setShowReview(true)}
+                className="btn-primary flex items-center justify-center space-x-2"
+              >
+                <BookOpen className="w-5 h-5" />
+                <span>Review Test</span>
+              </button>
+              <Link href="/tests" className="btn-secondary">
                 Take Another Test
               </Link>
               <Link href="/" className="btn-secondary">
@@ -730,6 +739,15 @@ export default function TestPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Test Review Modal */}
+      {showReview && test && testResult && (
+        <TestReview
+          test={test}
+          testResult={testResult}
+          onClose={() => setShowReview(false)}
+        />
+      )}
     </div>
   );
 } 

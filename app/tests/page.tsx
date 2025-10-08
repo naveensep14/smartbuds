@@ -18,6 +18,7 @@ export default function TestsPage() {
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedBoard, setSelectedBoard] = useState('');
+  const [selectedChapter, setSelectedChapter] = useState('');
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [selectedTestForPrint, setSelectedTestForPrint] = useState<Test | null>(null);
   const [printMode, setPrintMode] = useState<'test' | 'answer-key'>('test');
@@ -67,19 +68,31 @@ export default function TestsPage() {
     loadCompletedTests();
   }, [user]);
 
+  // Function to extract chapter from test title
+  const extractChapter = (title: string): string | null => {
+    const chapterMatch = title.match(/Chapter (\d+)/);
+    return chapterMatch ? `Chapter ${chapterMatch[1]}` : null;
+  };
+
   const filteredTests = tests.filter(test => {
     const matchesSearch = test.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          test.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSubject = !selectedSubject || test.subject === selectedSubject;
     const matchesGrade = !selectedGrade || test.grade === selectedGrade;
     const matchesBoard = !selectedBoard || test.board === selectedBoard;
+    const matchesChapter = !selectedChapter || extractChapter(test.title) === selectedChapter;
     
-    return matchesSearch && matchesSubject && matchesGrade && matchesBoard;
+    return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter;
   });
 
   const subjects = Array.from(new Set(tests.map(test => test.subject)));
   const grades = Array.from(new Set(tests.map(test => test.grade)));
   const boards = Array.from(new Set(tests.map(test => test.board)));
+  const chapters = Array.from(new Set(tests.map(test => extractChapter(test.title)).filter(Boolean))).sort((a, b) => {
+    const aNum = parseInt(a?.match(/\d+/)?.[0] || '0');
+    const bNum = parseInt(b?.match(/\d+/)?.[0] || '0');
+    return aNum - bNum;
+  });
 
   const handlePrintTest = (test: Test) => {
     setSelectedTestForPrint(test);
@@ -169,6 +182,17 @@ export default function TestsPage() {
                 <option key={board} value={board}>{board}</option>
               ))}
             </select>
+
+            <select
+              value={selectedChapter}
+              onChange={(e) => setSelectedChapter(e.target.value)}
+                className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            >
+              <option value="">All Chapters</option>
+              {chapters.map(chapter => (
+                <option key={chapter} value={chapter!}>{chapter}</option>
+              ))}
+            </select>
             </div>
           </div>
         </div>
@@ -213,8 +237,16 @@ export default function TestsPage() {
                     <div className="flex items-center space-x-1">
                       <Users className="w-4 h-4" />
                       <span>{test.grade}</span>
+                    </div>
                   </div>
-                </div>
+                  
+                  {extractChapter(test.title) && (
+                    <div className="mb-4">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {extractChapter(test.title)}
+                      </span>
+                    </div>
+                  )}
                 
                   <div className="flex items-center justify-between">
                     <div className="flex space-x-2">

@@ -1,0 +1,119 @@
+# Test Generation Prompts
+
+## 🎯 **Prompt for Generating Multiple Tests per Chapter:**
+
+```
+I need you to generate tests for Class 3 Math chapters 2-14 based on PDF files in the /tmp folder. 
+
+Requirements:
+- Generate 3 tests per chapter
+- Each test should have 10 questions
+- Each question should have 4 multiple choice options
+- Include detailed explanations for each answer
+- Set board to "CBSE" and grade to "Class 3"
+- Duration should be 30 minutes per test
+- Save individual JSON files for each chapter (containing all 3 tests)
+- Also create a combined JSON file with all tests
+
+The PDF files are named: cemm102.pdf, cemm103.pdf, cemm104.pdf, etc. (through cemm114.pdf)
+
+Please create a Python script that:
+1. Extracts text from each PDF
+2. Generates 3 comprehensive tests per chapter
+3. Creates realistic questions based on the chapter content
+4. Saves the results in JSON format
+5. Provides a summary of what was generated
+
+Expected output:
+- 13 chapters × 3 tests = 39 total tests
+- 39 tests × 10 questions = 390 total questions
+- Individual chapter files and one combined file
+```
+
+## 🔧 **Alternative Shorter Prompt:**
+
+```
+Generate Class 3 Math tests from PDFs in /tmp folder:
+- 3 tests per chapter (chapters 2-14)
+- 10 questions per test
+- 4 options per question
+- CBSE board, Class 3 grade
+- 30 minutes duration
+- Save as JSON files
+- Include explanations
+
+PDFs: cemm102.pdf through cemm114.pdf
+```
+
+## 📝 **Key Elements to Include:**
+
+1. **Specific requirements** (3 tests, 10 questions, etc.)
+2. **File locations** (/tmp folder, PDF naming pattern)
+3. **Output format** (JSON files)
+4. **Test specifications** (board, grade, duration)
+5. **Expected deliverables** (individual + combined files)
+6. **Content requirements** (explanations, realistic questions)
+
+## 🎯 **General Test Generation Prompt Template:**
+
+```
+Generate [SUBJECT] tests for [GRADE] based on [SOURCE]:
+
+Requirements:
+- Generate [X] tests per [UNIT/CHAPTER]
+- Each test should have [Y] questions
+- Each question should have [Z] multiple choice options
+- Include detailed explanations for each answer
+- Set board to "[BOARD]" and grade to "[GRADE]"
+- Duration should be [TIME] minutes per test
+- Save individual JSON files for each [UNIT/CHAPTER]
+- Also create a combined JSON file with all tests
+
+Source files: [FILE_PATTERN]
+
+Please create a Python script that:
+1. Extracts content from source files
+2. Generates comprehensive tests per unit
+3. Creates realistic questions based on the content
+4. Saves the results in JSON format
+5. Provides a summary of what was generated
+
+Expected output:
+- [UNITS] × [TESTS_PER_UNIT] = [TOTAL_TESTS] tests
+- [TOTAL_TESTS] × [QUESTIONS_PER_TEST] = [TOTAL_QUESTIONS] questions
+- Individual unit files and one combined file
+```
+
+## 📋 **Usage Examples:**
+
+### For Grade 4 Science:
+```
+Generate Grade 4 Science tests from PDFs in /tmp folder:
+- 2 tests per chapter (chapters 1-8)
+- 8 questions per test
+- 4 options per question
+- CBSE board, Grade 4
+- 25 minutes duration
+- Save as JSON files
+- Include explanations
+
+PDFs: science_chapter_1.pdf through science_chapter_8.pdf
+```
+
+### For Class 5 English:
+```
+Generate Class 5 English tests from text files in /chapters folder:
+- 4 tests per chapter (chapters 1-10)
+- 15 questions per test
+- 4 options per question
+- CBSE board, Class 5
+- 45 minutes duration
+- Save as JSON files
+- Include explanations
+
+Files: english_ch1.txt through english_ch10.txt
+```
+
+---
+
+*This prompt template can be customized for any subject, grade level, and content source.*

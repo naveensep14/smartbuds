@@ -19,3 +19,4 @@ echo ""
 echo "After running the SQL script, the resume functionality will work!"
 echo ""
 echo "📁 SQL file location: setup-test-progress-table.sql"
+

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Plus, Edit, Trash2, Eye, BarChart3, Users, Settings, Menu, X, LogOut } from 'lucide-react';
+import { BookOpen, Plus, Edit, Trash2, Eye, BarChart3, Users, Settings, Menu, X, LogOut, Upload } from 'lucide-react';
 import Link from 'next/link';
 import AdminRoute from '@/components/AdminRoute';
 import CreateTestForm from '@/components/CreateTestForm';
@@ -215,14 +215,23 @@ function AdminPageContent() {
               <h1 className="text-4xl font-bold text-gradient mb-2">Admin Dashboard</h1>
               <p className="text-xl text-gray-600">Manage tests and monitor student progress</p>
             </div>
-            <button
-              onClick={() => setShowCreateForm(true)}
-              disabled={!isSupabaseConfigured}
-              className="btn-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Plus className="w-5 h-5" />
-              <span>Create New Test</span>
-            </button>
+            <div className="flex gap-3">
+              <Link
+                href="/admin/pdf-upload"
+                className="btn-secondary flex items-center space-x-2"
+              >
+                <Upload className="w-5 h-5" />
+                <span>Upload PDF</span>
+              </Link>
+              <button
+                onClick={() => setShowCreateForm(true)}
+                disabled={!isSupabaseConfigured}
+                className="btn-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Plus className="w-5 h-5" />
+                <span>Create New Test</span>
+              </button>
+            </div>
           </div>
 
           {/* Stats Cards */}
