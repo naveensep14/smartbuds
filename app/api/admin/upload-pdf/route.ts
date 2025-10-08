@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFileSync, unlinkSync } from 'fs';
-import { join } from 'path';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
+import PDFProcessor from '@/lib/pdf-processor';
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,54 +14,39 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    // Save uploaded file temporarily
-    const tempFilePath = join('/tmp', `upload_${Date.now()}.pdf`);
-    const arrayBuffer = await file.arrayBuffer();
-    writeFileSync(tempFilePath, Buffer.from(arrayBuffer));
-
-    try {
-              // Call Python script to process PDF (using free Gemini AI)
-              const pythonScriptPath = join(process.cwd(), 'pdf_processor_gemini.py');
-              const command = `GEMINI_API_KEY=AIzaSyAbDKdsJ_eRFUWh5c2p3y0_F0Owrvmh-KY python3 "${pythonScriptPath}" "${tempFilePath}" "${subject}" "${grade}" "${board}"`;
-      
-      console.log('🤖 Starting AI-powered test generation...');
-      console.log('📁 PDF uploaded successfully, processing...');
-      
-      const { stdout, stderr } = await execAsync(command);
-      
-      if (stderr) {
-        console.log('AI Generation Log:', stderr);
-      }
-
-      console.log('✅ AI generation completed successfully');
-      
-      const result = JSON.parse(stdout);
-      
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to process PDF');
-      }
-
-      // Update duration for all tests
-      result.tests.forEach((test: any) => {
-        test.duration = duration;
-        test.timelimit = duration;
-      });
-
-      return NextResponse.json({
-        success: true,
-        tests: result.tests,
-        extractedText: result.extractedText,
-        concepts: result.concepts,
-      });
-
-    } finally {
-      // Clean up temporary file
-      try {
-        unlinkSync(tempFilePath);
-      } catch (error) {
-        console.error('Error deleting temp file:', error);
-      }
+    if (!process.env.GEMINI_API_KEY) {
+      return NextResponse.json({ error: 'Gemini API key not configured' }, { status: 500 });
     }
+
+    console.log('🤖 Starting AI-powered test generation...');
+    console.log('📁 PDF uploaded successfully, processing...');
+
+    // Convert file to buffer
+    const arrayBuffer = await file.arrayBuffer();
+    const pdfBuffer = Buffer.from(arrayBuffer);
+
+    // Process PDF using Node.js processor
+    const processor = new PDFProcessor();
+    const result = await processor.processPDF(pdfBuffer, subject, grade, board);
+
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to process PDF');
+    }
+
+    console.log('✅ AI generation completed successfully');
+
+    // Update duration for all tests
+    result.tests.forEach((test: any) => {
+      test.duration = duration;
+      test.timelimit = duration;
+    });
+
+    return NextResponse.json({
+      success: true,
+      tests: result.tests,
+      extractedText: result.extractedText,
+      concepts: result.concepts,
+    });
 
   } catch (error) {
     console.error('PDF processing error:', error);

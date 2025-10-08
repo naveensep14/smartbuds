@@ -12,6 +12,7 @@
     "restore": "node scripts/restore-supabase.js"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.0",
     "@types/node": "^20.0.0",
@@ -23,6 +24,7 @@
     "framer-motion": "^10.16.0",
     "lucide-react": "^0.292.0",
     "next": "^14.0.0",
+    "pdf-parse": "^1.1.1",
     "postcss": "^8.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

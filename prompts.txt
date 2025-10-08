@@ -34,13 +34,14 @@ Expected output:
 
 ```
 Generate Class 3 Math tests from PDFs in /tmp folder:
-- 3 tests per chapter (chapters 2-14)
-- 10 questions per test
+- Create tests based concepts within the chapters
+- 10 questions per test based on pdf content per every concept
 - 4 options per question
 - CBSE board, Class 3 grade
 - 30 minutes duration
 - Save as JSON files
 - Include explanations
+- Avoid duplicate questions
 
 PDFs: cemm102.pdf through cemm114.pdf
 ```
