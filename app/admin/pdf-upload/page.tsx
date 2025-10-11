@@ -125,16 +125,35 @@ export default function PDFUploadPage() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     
+    console.log('🎯 [FRONTEND LOG] Submit handler started');
+    console.log('🎯 [FRONTEND LOG] Form data:', {
+      file: formData.file?.name || 'No file',
+      fileSize: formData.file?.size || 'No file',
+      subject: formData.subject,
+      grade: formData.grade,
+      chapter: formData.chapter,
+      board: formData.board,
+      duration: formData.duration,
+      customPrompt: formData.customPrompt ? formData.customPrompt.substring(0, 50) + '...' : 'None'
+    });
+    
     if (!formData.file) {
+      console.error('❌ [FRONTEND LOG] No file selected');
       setError('Please select a PDF file to upload.');
       return;
     }
 
     if (!formData.subject || !formData.grade || !formData.chapter) {
+      console.error('❌ [FRONTEND LOG] Missing required fields:', {
+        subject: formData.subject,
+        grade: formData.grade,
+        chapter: formData.chapter
+      });
       setError('Please fill in all required fields.');
       return;
     }
 
+    console.log('✅ [FRONTEND LOG] Validation passed, starting upload process');
     setIsUploading(true);
     setUploadProgress(0);
     setCurrentStep('Preparing upload...');
@@ -166,20 +185,31 @@ export default function PDFUploadPage() {
       addLog('📤 Uploading PDF file to server...');
 
       // Upload and process PDF
+      console.log('🚀 [FRONTEND LOG] Starting fetch request to /api/admin/upload-pdf');
+      console.log('🚀 [FRONTEND LOG] FormData size:', uploadData.get('file')?.size || 'No file');
+      console.log('🚀 [FRONTEND LOG] FormData entries:', Array.from(uploadData.entries()).map(([key, value]) => 
+        key === 'file' ? [key, `File: ${(value as File).name} (${(value as File).size} bytes)`] : [key, value]
+      ));
+      
       const response = await fetch('/api/admin/upload-pdf', {
         method: 'POST',
         body: uploadData,
       });
+
+      console.log('📡 [FRONTEND LOG] Response received:', response.status, response.statusText);
+      console.log('📡 [FRONTEND LOG] Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (!response.ok) {
         let errorMessage = 'Failed to process PDF';
         try {
           const errorData = await response.json();
           errorMessage = errorData.error || errorMessage;
+          console.error('🚨 [FRONTEND LOG] Error response JSON:', errorData);
         } catch (jsonError) {
           // If response is not JSON (e.g., "Request Entity Too Large"), use status text
           errorMessage = response.statusText || errorMessage;
-          console.error('Non-JSON error response:', response.statusText);
+          console.error('🚨 [FRONTEND LOG] Non-JSON error response:', response.statusText);
+          console.error('🚨 [FRONTEND LOG] Response text:', await response.text());
         }
         throw new Error(errorMessage);
       }
@@ -254,8 +284,15 @@ export default function PDFUploadPage() {
       });
 
     } catch (err) {
+      console.error('🚨 [FRONTEND LOG] Upload error caught:');
+      console.error('🚨 [FRONTEND LOG] Error message:', err instanceof Error ? err.message : 'Unknown error');
+      console.error('🚨 [FRONTEND LOG] Error type:', err instanceof Error ? err.name : 'Unknown');
+      console.error('🚨 [FRONTEND LOG] Error stack:', err instanceof Error ? err.stack : 'No stack trace');
+      console.error('🚨 [FRONTEND LOG] Full error object:', err);
+      
       setError(err instanceof Error ? err.message : 'An error occurred while processing the PDF');
     } finally {
+      console.log('🏁 [FRONTEND LOG] Upload process finished, setting isUploading to false');
       setIsUploading(false);
     }
   };
