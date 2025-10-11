@@ -134,9 +134,9 @@ function AdminPageContent() {
   };
 
   // Get unique values for filter options
-  const getUniqueSubjects = () => [...new Set(tests.map(test => test.subject))];
-  const getUniqueGrades = () => [...new Set(tests.map(test => test.grade))];
-  const getUniqueBoards = () => [...new Set(tests.map(test => test.board))];
+  const getUniqueSubjects = () => Array.from(new Set(tests.map(test => test.subject)));
+  const getUniqueGrades = () => Array.from(new Set(tests.map(test => test.grade)));
+  const getUniqueBoards = () => Array.from(new Set(tests.map(test => test.board)));
 
   // Clear all filters
   const clearFilters = () => {
