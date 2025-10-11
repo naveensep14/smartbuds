@@ -300,7 +300,7 @@ export default function PDFUploadPage() {
                 High-quality tests will be generated using AI based on PDF content. Questions are accurate, educational, and appropriate for the selected grade level.
                 {formData.customPrompt && (
                   <span className="block mt-2 font-medium">
-                    ✨ Custom instructions will be applied: "{formData.customPrompt.substring(0, 50)}..."
+                    ✨ Custom instructions will be applied: &quot;{formData.customPrompt.substring(0, 50)}...&quot;
                   </span>
                 )}
               </p>
