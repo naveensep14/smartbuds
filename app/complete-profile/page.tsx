@@ -137,7 +137,8 @@ export default function CompleteProfilePage() {
       router.push('/dashboard');
     } catch (error) {
       console.error('🚨 [PROFILE LOG] Error completing profile:', error);
-      setError(`Failed to save profile: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setError(`Failed to save profile: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
