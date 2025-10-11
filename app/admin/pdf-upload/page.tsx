@@ -51,12 +51,9 @@ export default function PDFUploadPage() {
       return;
     }
     
-    // Check file size (4MB limit due to Vercel platform constraints)
-    if (file && file.size > 4 * 1024 * 1024) {
-      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
-      setError(`PDF file is too large (${fileSizeMB} MB). Vercel has a 4MB limit for file uploads. Please use a smaller PDF file or compress it further.`);
-      return;
-    }
+    // No size limit - chunked upload handles large files
+    const fileSizeMB = file ? (file.size / (1024 * 1024)).toFixed(2) : '0';
+    console.log('📏 [FRONTEND LOG] File size:', fileSizeMB, 'MB - chunked upload will be used if > 4MB');
     
     handleInputChange('file', file);
     setError(''); // Clear any previous errors
@@ -147,11 +144,9 @@ export default function PDFUploadPage() {
     const fileSizeMB = formData.file.size / (1024 * 1024);
     console.log('📏 [FRONTEND LOG] File size:', fileSizeMB.toFixed(2), 'MB');
     
-    if (fileSizeMB > 4) {
-      console.error('❌ [FRONTEND LOG] File too large:', fileSizeMB.toFixed(2), 'MB');
-      setError(`File is too large (${fileSizeMB.toFixed(2)} MB). Vercel has a 4MB limit for file uploads. Please use a smaller PDF file or compress it further.`);
-      return;
-    }
+    // For files larger than 4MB, we'll use chunked upload
+    const useChunkedUpload = fileSizeMB > 4;
+    console.log('📦 [FRONTEND LOG] Use chunked upload:', useChunkedUpload);
 
     if (!formData.subject || !formData.grade || !formData.chapter) {
       console.error('❌ [FRONTEND LOG] Missing required fields:', {
@@ -194,19 +189,27 @@ export default function PDFUploadPage() {
       setUploadProgress(20);
       addLog('📤 Uploading PDF file to server...');
 
-      // Upload and process PDF
-      console.log('🚀 [FRONTEND LOG] Starting fetch request to /api/admin/upload-pdf');
-      const fileEntry = uploadData.get('file');
-      const fileSize = fileEntry instanceof File ? fileEntry.size : 'No file';
-      console.log('🚀 [FRONTEND LOG] FormData size:', fileSize);
-      console.log('🚀 [FRONTEND LOG] FormData entries:', Array.from(uploadData.entries()).map(([key, value]) => 
-        key === 'file' && value instanceof File ? [key, `File: ${value.name} (${value.size} bytes)`] : [key, value]
-      ));
+      let response;
       
-      const response = await fetch('/api/admin/upload-pdf', {
-        method: 'POST',
-        body: uploadData,
-      });
+      if (useChunkedUpload) {
+        console.log('📦 [FRONTEND LOG] Starting chunked upload...');
+        response = await uploadFileInChunks(formData.file, formData, setUploadProgress, addLog, setCurrentStep);
+      } else {
+        console.log('🚀 [FRONTEND LOG] Starting regular upload...');
+        // Upload and process PDF
+        console.log('🚀 [FRONTEND LOG] Starting fetch request to /api/admin/upload-pdf');
+        const fileEntry = uploadData.get('file');
+        const fileSize = fileEntry instanceof File ? fileEntry.size : 'No file';
+        console.log('🚀 [FRONTEND LOG] FormData size:', fileSize);
+        console.log('🚀 [FRONTEND LOG] FormData entries:', Array.from(uploadData.entries()).map(([key, value]) => 
+          key === 'file' && value instanceof File ? [key, `File: ${value.name} (${value.size} bytes)`] : [key, value]
+        ));
+        
+        response = await fetch('/api/admin/upload-pdf', {
+          method: 'POST',
+          body: uploadData,
+        });
+      }
 
       console.log('📡 [FRONTEND LOG] Response received:', response.status, response.statusText);
       console.log('📡 [FRONTEND LOG] Response headers:', Object.fromEntries(response.headers.entries()));
@@ -320,6 +323,92 @@ export default function PDFUploadPage() {
     }
   };
 
+  // Chunked upload function
+  const uploadFileInChunks = async (
+    file: File, 
+    formData: any, 
+    setUploadProgress: (progress: number) => void,
+    addLog: (message: string) => void,
+    setCurrentStep: (step: string) => void
+  ) => {
+    const CHUNK_SIZE = 1024 * 1024; // 1MB chunks
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+    const uploadId = `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    console.log('📦 [CHUNK LOG] Starting chunked upload:', {
+      fileName: file.name,
+      fileSize: file.size,
+      chunkSize: CHUNK_SIZE,
+      totalChunks,
+      uploadId
+    });
+
+    addLog(`📦 Uploading ${totalChunks} chunks (${(file.size / (1024 * 1024)).toFixed(2)} MB total)...`);
+
+    // Upload chunks
+    for (let i = 0; i < totalChunks; i++) {
+      const start = i * CHUNK_SIZE;
+      const end = Math.min(start + CHUNK_SIZE, file.size);
+      const chunk = file.slice(start, end);
+      
+      console.log(`📦 [CHUNK LOG] Uploading chunk ${i + 1}/${totalChunks}`, {
+        start,
+        end,
+        chunkSize: chunk.size
+      });
+
+      setCurrentStep(`📤 Uploading chunk ${i + 1}/${totalChunks}...`);
+      addLog(`📤 Uploading chunk ${i + 1}/${totalChunks}...`);
+
+      const chunkFormData = new FormData();
+      chunkFormData.append('chunk', chunk);
+      chunkFormData.append('chunkIndex', i.toString());
+      chunkFormData.append('totalChunks', totalChunks.toString());
+      chunkFormData.append('fileName', file.name);
+      chunkFormData.append('uploadId', uploadId);
+
+      const chunkResponse = await fetch('/api/admin/upload-chunk', {
+        method: 'POST',
+        body: chunkFormData,
+      });
+
+      if (!chunkResponse.ok) {
+        const errorData = await chunkResponse.json();
+        throw new Error(errorData.error || `Failed to upload chunk ${i + 1}`);
+      }
+
+      // Update progress (20% to 30% for chunk upload)
+      const chunkProgress = 20 + (i / totalChunks) * 10;
+      setUploadProgress(chunkProgress);
+    }
+
+    console.log('✅ [CHUNK LOG] All chunks uploaded, reassembling...');
+    setCurrentStep('🔧 Reassembling file chunks...');
+    addLog('🔧 Reassembling file chunks...');
+
+    // Reassemble chunks
+    const reassembleResponse = await fetch('/api/admin/reassemble-chunks', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        uploadId,
+        fileName: file.name,
+        totalChunks,
+        subject: formData.subject,
+        grade: formData.grade,
+        board: formData.board,
+        duration: formData.duration,
+        customPrompt: formData.customPrompt,
+        chapter: formData.chapter,
+      }),
+    });
+
+    console.log('🔧 [CHUNK LOG] Reassemble response:', reassembleResponse.status);
+    return reassembleResponse;
+  };
+
   const handleSaveTests = async () => {
     if (selectedTests.size === 0) {
       setError('Please select at least one test to save.');
@@ -372,7 +461,7 @@ export default function PDFUploadPage() {
                 required
               />
               <p className="text-sm text-gray-500 mt-1">
-                Upload a PDF file (max 4MB due to Vercel limits) to extract content and generate tests
+                Upload a PDF file (any size - uses chunked upload for large files) to extract content and generate tests
               </p>
             </div>
 
