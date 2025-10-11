@@ -219,7 +219,7 @@ export default function PDFUploadPage() {
             const responseText = await responseClone.text();
             console.error('🚨 [FRONTEND LOG] Response text:', responseText);
           } catch (textError) {
-            console.error('🚨 [FRONTEND LOG] Could not read response text:', textError.message);
+            console.error('🚨 [FRONTEND LOG] Could not read response text:', textError instanceof Error ? textError.message : 'Unknown error');
           }
         }
         throw new Error(errorMessage);
