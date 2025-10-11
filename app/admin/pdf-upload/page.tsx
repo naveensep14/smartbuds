@@ -186,9 +186,11 @@ export default function PDFUploadPage() {
 
       // Upload and process PDF
       console.log('🚀 [FRONTEND LOG] Starting fetch request to /api/admin/upload-pdf');
-      console.log('🚀 [FRONTEND LOG] FormData size:', uploadData.get('file')?.size || 'No file');
+      const fileEntry = uploadData.get('file');
+      const fileSize = fileEntry instanceof File ? fileEntry.size : 'No file';
+      console.log('🚀 [FRONTEND LOG] FormData size:', fileSize);
       console.log('🚀 [FRONTEND LOG] FormData entries:', Array.from(uploadData.entries()).map(([key, value]) => 
-        key === 'file' ? [key, `File: ${(value as File).name} (${(value as File).size} bytes)`] : [key, value]
+        key === 'file' && value instanceof File ? [key, `File: ${value.name} (${value.size} bytes)`] : [key, value]
       ));
       
       const response = await fetch('/api/admin/upload-pdf', {
