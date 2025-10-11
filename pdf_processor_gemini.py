@@ -72,6 +72,21 @@ Requirements:
 - Make questions self-contained and clear using only text content
 - Focus on concepts and ideas, not visual elements
 
+QUESTION DISTRIBUTION:
+- 70% DIRECT QUESTIONS: Straightforward questions that test basic understanding and recall
+  * Simple calculations, definitions, basic facts
+  * Direct application of formulas or concepts
+  * Clear, unambiguous answers based on PDF content
+  * Examples: "What is 25 + 17?", "How many sides does a triangle have?"
+
+- 30% ANALYTICAL QUESTIONS: Complex, tricky questions requiring critical thinking
+  * Multi-step problem solving
+  * Logical reasoning and analysis
+  * Comparison and evaluation of options
+  * Real-world application scenarios
+  * Questions that test deeper understanding
+  * Examples: "If A happens, what would be the most logical next step?", "Which approach would be most efficient?"
+
 Return ONLY a valid JSON array:
 [
   {{
