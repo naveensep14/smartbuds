@@ -15,11 +15,11 @@ The error `"Unexpected token 'R', "Request En"... is not valid JSON"` occurs bec
 Add these environment variables to Vercel:
 
 ```
-GEMINI_API_KEY=AIzaSyAbDKdsJ_eRFUWh5c2p3y0_F0Owrvmh-KY
-NEXT_PUBLIC_SUPABASE_URL=https://mewkuspabjwrzkbbyxrw.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ld2t1c3BhYmp3cnprYmJ5eHJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY4NDI0MjQsImV4cCI6MjA3MjQxODQyNH0.SdC8jlZRZe5aEu8aEaanlA3-BaFrGTmxp3kcJTht3wM
-SUPABASE_SERVICE_ROLE_KEY=sb_secret_8ItqvYd7vBBenk7neMcx5A_7WNDxleK
-RESEND_API_KEY=re_i75cUwuJ_Er494VBgvs3JHHokgf4UoXyZ
+GEMINI_API_KEY=your_gemini_api_key_here
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+RESEND_API_KEY=your_resend_api_key_here
 ```
 
 ### Step 3: Set Environment Scope
@@ -46,13 +46,13 @@ vercel link
 
 # Add environment variables
 vercel env add GEMINI_API_KEY
-# Enter: AIzaSyAbDKdsJ_eRFUWh5c2p3y0_F0Owrvmh-KY
+# Enter: your_gemini_api_key_here
 
 vercel env add NEXT_PUBLIC_SUPABASE_URL
-# Enter: https://mewkuspabjwrzkbbyxrw.supabase.co
+# Enter: your_supabase_url_here
 
 vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY
-# Enter: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ld2t1c3BhYmp3cnprYmJ5eHJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY4NDI0MjQsImV4cCI6MjA3MjQxODQyNH0.SdC8jlZRZe5aEu8aEaanlA3-BaFrGTmxp3kcJTht3wM
+# Enter: your_supabase_anon_key_here
 
 # Deploy
 vercel --prod
