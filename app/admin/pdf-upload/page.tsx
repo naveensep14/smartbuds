@@ -55,9 +55,16 @@ export default function PDFUploadPage() {
       return;
     }
     
-    // No size limit - chunked upload handles large files
+    // Check file size limit (4.5MB = 4.5 * 1024 * 1024 bytes)
+    const maxSizeBytes = 4.5 * 1024 * 1024;
+    if (file && file.size >= maxSizeBytes) {
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      setError(`File size (${fileSizeMB} MB) exceeds the maximum limit of 4.5 MB. Please compress your PDF or use a smaller file.`);
+      return;
+    }
+    
     const fileSizeMB = file ? (file.size / (1024 * 1024)).toFixed(2) : '0';
-    console.log('📏 [FRONTEND LOG] File size:', fileSizeMB, 'MB - chunked upload will be used if > 4MB');
+    console.log('📏 [FRONTEND LOG] File size:', fileSizeMB, 'MB - within size limit');
     
     handleInputChange('file', file);
     setError(''); // Clear any previous errors
@@ -148,9 +155,13 @@ export default function PDFUploadPage() {
     const fileSizeMB = formData.file.size / (1024 * 1024);
     console.log('📏 [FRONTEND LOG] File size:', fileSizeMB.toFixed(2), 'MB');
     
-    // For files larger than 4MB, we'll use chunked upload
-    const useChunkedUpload = fileSizeMB > 4;
-    console.log('📦 [FRONTEND LOG] Use chunked upload:', useChunkedUpload);
+    // Check file size limit (4.5MB = 4.5 * 1024 * 1024 bytes)
+    const maxSizeBytes = 4.5 * 1024 * 1024;
+    if (formData.file.size >= maxSizeBytes) {
+      const fileSizeMB = (formData.file.size / (1024 * 1024)).toFixed(2);
+      setError(`File size (${fileSizeMB} MB) exceeds the maximum limit of 4.5 MB. Please compress your PDF or use a smaller file.`);
+      return;
+    }
 
     if (!formData.subject || !formData.grade || !formData.chapter) {
       console.error('❌ [FRONTEND LOG] Missing required fields:', {
@@ -185,6 +196,8 @@ export default function PDFUploadPage() {
       uploadData.append('duration', formData.duration.toString());
       uploadData.append('customPrompt', formData.customPrompt);
       uploadData.append('chapter', formData.chapter.toString());
+      uploadData.append('numTests', formData.numTests.toString());
+      uploadData.append('questionsPerTest', formData.questionsPerTest.toString());
       
       setUploadProgress(15);
 
@@ -193,27 +206,20 @@ export default function PDFUploadPage() {
       setUploadProgress(20);
       addLog('📤 Uploading PDF file to server...');
 
-      let response;
+      console.log('🚀 [FRONTEND LOG] Starting regular upload...');
+      // Upload and process PDF
+      console.log('🚀 [FRONTEND LOG] Starting fetch request to /api/admin/upload-pdf');
+      const fileEntry = uploadData.get('file');
+      const fileSize = fileEntry instanceof File ? fileEntry.size : 'No file';
+      console.log('🚀 [FRONTEND LOG] FormData size:', fileSize);
+      console.log('🚀 [FRONTEND LOG] FormData entries:', Array.from(uploadData.entries()).map(([key, value]) => 
+        key === 'file' && value instanceof File ? [key, `File: ${value.name} (${value.size} bytes)`] : [key, value]
+      ));
       
-      if (useChunkedUpload) {
-        console.log('🔗 [FRONTEND LOG] Starting direct Gemini upload...');
-        response = await uploadFileToGemini(formData.file, formData, setUploadProgress, addLog, setCurrentStep);
-      } else {
-        console.log('🚀 [FRONTEND LOG] Starting regular upload...');
-        // Upload and process PDF
-        console.log('🚀 [FRONTEND LOG] Starting fetch request to /api/admin/upload-pdf');
-        const fileEntry = uploadData.get('file');
-        const fileSize = fileEntry instanceof File ? fileEntry.size : 'No file';
-        console.log('🚀 [FRONTEND LOG] FormData size:', fileSize);
-        console.log('🚀 [FRONTEND LOG] FormData entries:', Array.from(uploadData.entries()).map(([key, value]) => 
-          key === 'file' && value instanceof File ? [key, `File: ${value.name} (${value.size} bytes)`] : [key, value]
-        ));
-        
-        response = await fetch('/api/admin/upload-pdf', {
-          method: 'POST',
-          body: uploadData,
-        });
-      }
+      const response = await fetch('/api/admin/upload-pdf', {
+        method: 'POST',
+        body: uploadData,
+      });
 
       console.log('📡 [FRONTEND LOG] Response received:', response.status, response.statusText);
       console.log('📡 [FRONTEND LOG] Response headers:', Object.fromEntries(response.headers.entries()));
@@ -327,101 +333,6 @@ export default function PDFUploadPage() {
     }
   };
 
-  // Direct Gemini upload function
-  const uploadFileToGemini = async (
-    file: File, 
-    formData: any, 
-    setUploadProgress: (progress: number) => void,
-    addLog: (message: string) => void,
-    setCurrentStep: (step: string) => void
-  ) => {
-    console.log('🔗 [GEMINI LOG] Starting direct Gemini upload:', {
-      fileName: file.name,
-      fileSize: file.size
-    });
-
-    // Step 1: Get upload URL
-    setCurrentStep('🔗 Getting Gemini upload URL...');
-    addLog('🔗 Getting Gemini upload URL...');
-    setUploadProgress(20);
-
-    const urlResponse = await fetch('/api/admin/gemini-upload-url', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        fileName: file.name,
-        fileSize: file.size
-      }),
-    });
-
-    if (!urlResponse.ok) {
-      const errorData = await urlResponse.json();
-      throw new Error(errorData.error || 'Failed to get upload URL');
-    }
-
-    const { uploadUrl, geminiFileName, apiKey } = await urlResponse.json();
-    console.log('✅ [GEMINI LOG] Upload URL received:', geminiFileName);
-
-    // Step 2: Upload directly to Gemini
-    setCurrentStep('📤 Uploading to Gemini File API...');
-    addLog('📤 Uploading directly to Gemini...');
-    setUploadProgress(30);
-
-    const geminiFormData = new FormData();
-    geminiFormData.append('file', file);
-
-    const geminiResponse = await fetch(`${uploadUrl}`, {
-      method: 'POST',
-      body: geminiFormData,
-    });
-
-    if (!geminiResponse.ok) {
-      const errorText = await geminiResponse.text();
-      console.error('❌ [GEMINI LOG] Gemini upload failed:', errorText);
-      throw new Error(`Gemini upload failed: ${geminiResponse.statusText}`);
-    }
-
-    const geminiResult = await geminiResponse.json();
-    console.log('✅ [GEMINI LOG] File uploaded to Gemini:', geminiResult);
-    
-    // Extract the actual file name from Gemini's response
-    const actualGeminiFileName = geminiResult.name;
-    console.log('✅ [GEMINI LOG] Actual Gemini file name:', actualGeminiFileName);
-
-    // Step 3: Process the file
-    setCurrentStep('🤖 Processing PDF with Gemini...');
-    addLog('🤖 Processing PDF with Gemini AI...');
-    setUploadProgress(50);
-
-    const processPayload = {
-      geminiFileName: actualGeminiFileName,
-      subject: formData.subject,
-      grade: formData.grade,
-      board: formData.board,
-      duration: formData.duration,
-      customPrompt: formData.customPrompt,
-      chapter: formData.chapter,
-      numTests: formData.numTests,
-      questionsPerTest: formData.questionsPerTest,
-    };
-    
-    console.log('🤖 [GEMINI LOG] Process payload:', processPayload);
-    console.log('🤖 [GEMINI LOG] Chapter type:', typeof formData.chapter);
-    console.log('🤖 [GEMINI LOG] Chapter value:', formData.chapter);
-
-    const processResponse = await fetch('/api/admin/process-gemini-file', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(processPayload),
-    });
-
-    console.log('🤖 [GEMINI LOG] Process response:', processResponse.status);
-    return processResponse;
-  };
 
   const handleSaveTests = async () => {
     if (selectedTests.size === 0) {
@@ -478,9 +389,29 @@ export default function PDFUploadPage() {
         </nav>
 
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">
             📚 Upload PDF to Generate Tests
           </h1>
+          
+          {/* File size limit notice */}
+          <div className="mb-8 bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-red-400 p-4 rounded-r-lg">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <svg className="h-6 w-6 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-lg font-semibold text-red-800">
+                  Important: File Size Limit
+                </h3>
+                <div className="mt-1 text-sm text-red-700">
+                  <p className="font-medium">Maximum file size: 4.5 MB</p>
+                  <p>Files larger than 4.5 MB will be automatically rejected to prevent upload failures.</p>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* File Upload */}
@@ -488,16 +419,75 @@ export default function PDFUploadPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 PDF File *
               </label>
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={handleFileChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                required
-              />
-              <p className="text-sm text-gray-500 mt-1">
-                Upload a PDF file (any size - uses chunked upload for large files) to extract content and generate tests
-              </p>
+              <div className="relative">
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={handleFileChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  required
+                />
+                {/* File size limit badge */}
+                <div className="absolute top-2 right-2">
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+                    <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    Max 4.5MB
+                  </span>
+                </div>
+              </div>
+              
+              <div className="mt-3 space-y-2">
+                <p className="text-sm text-gray-500">
+                  Upload a PDF file to extract content and generate tests
+                </p>
+                
+                {/* Prominent file size warning */}
+                <div className="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-200 rounded-lg p-4">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                      <div className="flex items-center justify-center w-8 h-8 bg-red-100 rounded-full">
+                        <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="ml-3 flex-1">
+                      <h3 className="text-sm font-semibold text-red-800 mb-1">
+                        ⚠️ File Size Limit: 4.5 MB Maximum
+                      </h3>
+                      <div className="text-sm text-red-700 space-y-1">
+                        <p className="font-medium">Files ≥ 4.5 MB will be automatically rejected</p>
+                        <p>This prevents upload failures and ensures reliable processing.</p>
+                        <div className="mt-2 p-2 bg-white rounded border border-red-200">
+                          <p className="text-xs font-medium text-gray-600 mb-1">💡 Need to compress your PDF?</p>
+                          <p className="text-xs text-gray-600">Try online tools like SmallPDF, ILovePDF, or Adobe Acrobat Online</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* File size indicator */}
+                {formData.file && (
+                  <div className={`inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium ${
+                    formData.file.size >= 4.5 * 1024 * 1024 
+                      ? 'bg-red-100 text-red-800 border border-red-200' 
+                      : 'bg-green-100 text-green-800 border border-green-200'
+                  }`}>
+                    <svg className={`w-4 h-4 mr-2 ${formData.file.size >= 4.5 * 1024 * 1024 ? 'text-red-600' : 'text-green-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                      {formData.file.size >= 4.5 * 1024 * 1024 ? (
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      ) : (
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      )}
+                    </svg>
+                    File Size: {(formData.file.size / (1024 * 1024)).toFixed(2)} MB
+                    {formData.file.size >= 4.5 * 1024 * 1024 ? ' (Too Large)' : ' (OK)'}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Test Generation Options */}

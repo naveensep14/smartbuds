@@ -16,6 +16,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing fileName or fileSize' }, { status: 400 });
     }
 
+    // Check file size limit (4.5MB = 4.5 * 1024 * 1024 bytes)
+    const maxSizeBytes = 4.5 * 1024 * 1024;
+    if (fileSize >= maxSizeBytes) {
+      const fileSizeMB = (fileSize / (1024 * 1024)).toFixed(2);
+      console.error('❌ [GEMINI URL LOG] File too large:', fileSizeMB, 'MB');
+      return NextResponse.json(
+        { error: `File size (${fileSizeMB} MB) exceeds the maximum limit of 4.5 MB. Please compress your PDF or use a smaller file.` },
+        { status: 413 }
+      );
+    }
+
     if (!process.env.GEMINI_API_KEY) {
       console.error('❌ [GEMINI URL LOG] Gemini API key not configured');
       return NextResponse.json({ error: 'Gemini API key not configured' }, { status: 500 });
