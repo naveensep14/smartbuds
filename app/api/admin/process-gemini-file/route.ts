@@ -12,11 +12,28 @@ export async function POST(request: NextRequest) {
       subject,
       grade,
       board,
-      chapter
+      chapter,
+      duration,
+      customPrompt
     });
 
-    if (!geminiFileName || !subject || !grade || !chapter) {
-      console.error('❌ [GEMINI PROCESS LOG] Missing required fields');
+    console.log('🤖 [GEMINI PROCESS LOG] Field validation:', {
+      geminiFileName: !!geminiFileName,
+      subject: !!subject,
+      grade: !!grade,
+      chapter: !!chapter,
+      chapterType: typeof chapter,
+      chapterValue: chapter
+    });
+
+    if (!geminiFileName || !subject || !grade || chapter === undefined || chapter === null) {
+      console.error('❌ [GEMINI PROCESS LOG] Missing required fields:', {
+        geminiFileName: !!geminiFileName,
+        subject: !!subject,
+        grade: !!grade,
+        chapter: chapter,
+        chapterType: typeof chapter
+      });
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 

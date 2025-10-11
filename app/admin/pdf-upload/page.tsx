@@ -391,20 +391,26 @@ export default function PDFUploadPage() {
     addLog('🤖 Processing PDF with Gemini AI...');
     setUploadProgress(50);
 
+    const processPayload = {
+      geminiFileName: actualGeminiFileName,
+      subject: formData.subject,
+      grade: formData.grade,
+      board: formData.board,
+      duration: formData.duration,
+      customPrompt: formData.customPrompt,
+      chapter: formData.chapter,
+    };
+    
+    console.log('🤖 [GEMINI LOG] Process payload:', processPayload);
+    console.log('🤖 [GEMINI LOG] Chapter type:', typeof formData.chapter);
+    console.log('🤖 [GEMINI LOG] Chapter value:', formData.chapter);
+
     const processResponse = await fetch('/api/admin/process-gemini-file', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        geminiFileName: actualGeminiFileName,
-        subject: formData.subject,
-        grade: formData.grade,
-        board: formData.board,
-        duration: formData.duration,
-        customPrompt: formData.customPrompt,
-        chapter: formData.chapter,
-      }),
+      body: JSON.stringify(processPayload),
     });
 
     console.log('🤖 [GEMINI LOG] Process response:', processResponse.status);
