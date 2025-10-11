@@ -121,7 +121,7 @@ export default function PDFUploadPage() {
       return;
     }
 
-    if (!formData.subject || !formData.grade) {
+    if (!formData.subject || !formData.grade || !formData.chapter) {
       setError('Please fill in all required fields.');
       return;
     }
@@ -147,6 +147,7 @@ export default function PDFUploadPage() {
       uploadData.append('board', formData.board);
       uploadData.append('duration', formData.duration.toString());
       uploadData.append('customPrompt', formData.customPrompt);
+      uploadData.append('chapter', formData.chapter.toString());
       
       setUploadProgress(15);
 
@@ -362,6 +363,24 @@ export default function PDFUploadPage() {
                   <option value="3rd Grade">3rd Grade</option>
                   <option value="4th Grade">4th Grade</option>
                   <option value="5th Grade">5th Grade</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Chapter *
+                </label>
+                <select
+                  value={formData.chapter}
+                  onChange={(e) => handleInputChange('chapter', parseInt(e.target.value))}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  required
+                >
+                  {Array.from({ length: 20 }, (_, i) => i + 1).map(chapter => (
+                    <option key={chapter} value={chapter}>
+                      Chapter {chapter}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
