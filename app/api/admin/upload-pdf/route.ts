@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
     const grade = formData.get('grade') as string;
     const board = formData.get('board') as string;
     const duration = parseInt(formData.get('duration') as string);
+    const customPrompt = formData.get('customPrompt') as string;
 
     if (!file) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     // Process PDF using Node.js processor
     const processor = new PDFProcessor();
-    const result = await processor.processPDF(pdfBuffer, subject, grade, board);
+    const result = await processor.processPDF(pdfBuffer, subject, grade, board, customPrompt);
 
     if (!result.success) {
       throw new Error(result.error || 'Failed to process PDF');

@@ -11,6 +11,7 @@ interface PDFUploadFormData {
   board: string;
   duration: number;
   file: File | null;
+  customPrompt: string;
 }
 
 export default function PDFUploadPage() {
@@ -23,6 +24,7 @@ export default function PDFUploadPage() {
     board: 'CBSE',
     duration: 30,
     file: null,
+    customPrompt: '',
   });
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -30,6 +32,8 @@ export default function PDFUploadPage() {
   const [currentConcept, setCurrentConcept] = useState('');
   const [generatedTests, setGeneratedTests] = useState<any[]>([]);
   const [selectedTests, setSelectedTests] = useState<Set<number>>(new Set());
+  const [editingTest, setEditingTest] = useState<number | null>(null);
+  const [editingQuestion, setEditingQuestion] = useState<{testIndex: number, questionIndex: number} | null>(null);
   const [error, setError] = useState('');
 
   const handleInputChange = (field: keyof PDFUploadFormData, value: string | number | File | null) => {
@@ -67,6 +71,37 @@ export default function PDFUploadPage() {
   const handleClearAll = () => {
     setGeneratedTests([]);
     setSelectedTests(new Set());
+    setEditingTest(null);
+    setEditingQuestion(null);
+  };
+
+  const handleEditTest = (testIndex: number) => {
+    setEditingTest(testIndex);
+  };
+
+  const handleEditQuestion = (testIndex: number, questionIndex: number) => {
+    setEditingQuestion({ testIndex, questionIndex });
+  };
+
+  const handleUpdateTest = (testIndex: number, updatedTest: any) => {
+    setGeneratedTests(prev => prev.map((test, index) => 
+      index === testIndex ? updatedTest : test
+    ));
+    setEditingTest(null);
+  };
+
+  const handleUpdateQuestion = (testIndex: number, questionIndex: number, updatedQuestion: any) => {
+    setGeneratedTests(prev => prev.map((test, index) => 
+      index === testIndex 
+        ? {
+            ...test,
+            questions: test.questions.map((q: any, qIndex: number) => 
+              qIndex === questionIndex ? updatedQuestion : q
+            )
+          }
+        : test
+    ));
+    setEditingQuestion(null);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -99,6 +134,7 @@ export default function PDFUploadPage() {
       uploadData.append('grade', formData.grade);
       uploadData.append('board', formData.board);
       uploadData.append('duration', formData.duration.toString());
+      uploadData.append('customPrompt', formData.customPrompt);
       
       setUploadProgress(15);
 
@@ -174,6 +210,7 @@ export default function PDFUploadPage() {
         board: 'CBSE',
         duration: 30,
         file: null,
+        customPrompt: '',
       });
 
     } catch (err) {
@@ -239,11 +276,33 @@ export default function PDFUploadPage() {
               </p>
             </div>
 
+            {/* Custom Prompt Section */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Custom Prompt (Optional)
+              </label>
+              <textarea
+                value={formData.customPrompt}
+                onChange={(e) => handleInputChange('customPrompt', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                rows={4}
+                placeholder="Add custom instructions for AI test generation (e.g., 'Focus on practical applications', 'Include word problems', 'Make questions more challenging')"
+              />
+              <p className="text-sm text-gray-500 mt-1">
+                Optional: Provide specific instructions to customize how AI generates questions from the PDF
+              </p>
+            </div>
+
             {/* Auto-generated Title and Description Info */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <h3 className="text-sm font-medium text-blue-800 mb-2">🤖 AI-Powered Test Generation</h3>
               <p className="text-sm text-blue-700">
                 High-quality tests will be generated using AI based on PDF content. Questions are accurate, educational, and appropriate for the selected grade level.
+                {formData.customPrompt && (
+                  <span className="block mt-2 font-medium">
+                    ✨ Custom instructions will be applied: "{formData.customPrompt.substring(0, 50)}..."
+                  </span>
+                )}
               </p>
             </div>
 
@@ -457,7 +516,15 @@ export default function PDFUploadPage() {
                           />
                         </div>
                         <div className="flex-1">
-                          <h3 className="text-xl font-semibold text-gray-900 mb-2">{test.title}</h3>
+                          <div className="flex items-center justify-between mb-2">
+                            <h3 className="text-xl font-semibold text-gray-900">{test.title}</h3>
+                            <button
+                              onClick={() => handleEditTest(index)}
+                              className="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors"
+                            >
+                              ✏️ Edit Test
+                            </button>
+                          </div>
                           <p className="text-gray-600 mb-3">{test.description}</p>
                           <div className="flex items-center gap-6 text-sm text-gray-500">
                             <span>📊 {test.questions.length} questions</span>
@@ -477,9 +544,17 @@ export default function PDFUploadPage() {
                         {test.questions.map((question: any, qIndex: number) => (
                           <div key={qIndex} className="border border-gray-200 rounded-lg p-4">
                             <div className="mb-3">
-                              <h5 className="text-md font-medium text-gray-800 mb-2">
-                                Question {qIndex + 1}
-                              </h5>
+                              <div className="flex items-center justify-between mb-2">
+                                <h5 className="text-md font-medium text-gray-800">
+                                  Question {qIndex + 1}
+                                </h5>
+                                <button
+                                  onClick={() => handleEditQuestion(index, qIndex)}
+                                  className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded hover:bg-gray-200 transition-colors"
+                                >
+                                  ✏️ Edit
+                                </button>
+                              </div>
                               <p className="text-gray-700 mb-3">{question.question}</p>
                             </div>
                             
@@ -567,6 +642,188 @@ export default function PDFUploadPage() {
                 >
                   Start Over
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* Edit Test Modal */}
+          {editingTest !== null && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+              <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                  <h2 className="text-xl font-semibold text-gray-800">Edit Test</h2>
+                  <button
+                    onClick={() => setEditingTest(null)}
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="p-6">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Test Title
+                      </label>
+                      <input
+                        type="text"
+                        value={generatedTests[editingTest]?.title || ''}
+                        onChange={(e) => {
+                          const updatedTest = { ...generatedTests[editingTest], title: e.target.value };
+                          setGeneratedTests(prev => prev.map((test, index) => 
+                            index === editingTest ? updatedTest : test
+                          ));
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Description
+                      </label>
+                      <textarea
+                        value={generatedTests[editingTest]?.description || ''}
+                        onChange={(e) => {
+                          const updatedTest = { ...generatedTests[editingTest], description: e.target.value };
+                          setGeneratedTests(prev => prev.map((test, index) => 
+                            index === editingTest ? updatedTest : test
+                          ));
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        rows={3}
+                      />
+                    </div>
+                    <div className="flex gap-4">
+                      <button
+                        onClick={() => setEditingTest(null)}
+                        className="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => setEditingTest(null)}
+                        className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors"
+                      >
+                        Save Changes
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Edit Question Modal */}
+          {editingQuestion && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+              <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                  <h2 className="text-xl font-semibold text-gray-800">Edit Question</h2>
+                  <button
+                    onClick={() => setEditingQuestion(null)}
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="p-6">
+                  {(() => {
+                    const test = generatedTests[editingQuestion.testIndex];
+                    const question = test?.questions[editingQuestion.questionIndex];
+                    if (!question) return null;
+
+                    return (
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Question Text
+                          </label>
+                          <textarea
+                            value={question.question}
+                            onChange={(e) => {
+                              const updatedQuestion = { ...question, question: e.target.value };
+                              handleUpdateQuestion(editingQuestion.testIndex, editingQuestion.questionIndex, updatedQuestion);
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                            rows={3}
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Answer Options
+                          </label>
+                          <div className="space-y-2">
+                            {question.options.map((option: string, optionIndex: number) => (
+                              <div key={optionIndex} className="flex items-center gap-3">
+                                <span className="text-sm font-medium text-gray-600 min-w-[60px]">
+                                  {String.fromCharCode(65 + optionIndex)}:
+                                </span>
+                                <input
+                                  type="text"
+                                  value={option}
+                                  onChange={(e) => {
+                                    const updatedOptions = [...question.options];
+                                    updatedOptions[optionIndex] = e.target.value;
+                                    const updatedQuestion = { ...question, options: updatedOptions };
+                                    handleUpdateQuestion(editingQuestion.testIndex, editingQuestion.questionIndex, updatedQuestion);
+                                  }}
+                                  className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
+                                    question.correctAnswer === optionIndex 
+                                      ? 'border-green-500 bg-green-50' 
+                                      : 'border-gray-300'
+                                  }`}
+                                />
+                                <input
+                                  type="radio"
+                                  name={`correct${editingQuestion.testIndex}-${editingQuestion.questionIndex}`}
+                                  checked={question.correctAnswer === optionIndex}
+                                  onChange={() => {
+                                    const updatedQuestion = { ...question, correctAnswer: optionIndex };
+                                    handleUpdateQuestion(editingQuestion.testIndex, editingQuestion.questionIndex, updatedQuestion);
+                                  }}
+                                  className="w-4 h-4 text-green-600 focus:ring-green-500"
+                                />
+                                <span className="text-xs text-gray-500">Correct</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Explanation
+                          </label>
+                          <textarea
+                            value={question.explanation || ''}
+                            onChange={(e) => {
+                              const updatedQuestion = { ...question, explanation: e.target.value };
+                              handleUpdateQuestion(editingQuestion.testIndex, editingQuestion.questionIndex, updatedQuestion);
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                            rows={2}
+                            placeholder="Add explanation for the correct answer..."
+                          />
+                        </div>
+
+                        <div className="flex gap-4">
+                          <button
+                            onClick={() => setEditingQuestion(null)}
+                            className="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={() => setEditingQuestion(null)}
+                            className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors"
+                          >
+                            Save Changes
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
               </div>
             </div>
           )}
