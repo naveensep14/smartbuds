@@ -230,6 +230,7 @@ export default function PDFUploadPage() {
         duration: 30,
         file: null,
         customPrompt: '',
+        chapter: 1,
       });
 
     } catch (err) {
