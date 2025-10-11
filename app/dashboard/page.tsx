@@ -2,20 +2,28 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Clock, Trophy, User, Menu, X, Settings } from 'lucide-react';
+import { BookOpen, Clock, Trophy, User, Menu, X, Settings, Edit3, Save, X as CloseIcon } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ActivityService, Activity } from '@/lib/activity';
 import NavigationHeader from '@/components/NavigationHeader';
 import { supabase } from '@/lib/supabase';
-import { normalizeGrade } from '@/lib/grade-utils';
+import { normalizeGrade, VALID_GRADES, type ValidGrade } from '@/lib/grade-utils';
 
 export default function DashboardPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [activitiesLoading, setActivitiesLoading] = useState(true);
   const [userProfile, setUserProfile] = useState<{student_name: string, grade: string, board: string} | null>(null);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileFormData, setProfileFormData] = useState({
+    studentName: '',
+    grade: '' as ValidGrade | '',
+    board: 'CBSE'
+  });
+  const [profileUpdateLoading, setProfileUpdateLoading] = useState(false);
+  const [profileUpdateError, setProfileUpdateError] = useState('');
   const { user, loading, isAdmin } = useAuth();
   const router = useRouter();
 
@@ -47,6 +55,13 @@ export default function DashboardPage() {
             grade: data.grade ? normalizeGrade(data.grade) || data.grade : data.grade
           };
           setUserProfile(normalizedData);
+          
+          // Initialize form data
+          setProfileFormData({
+            studentName: normalizedData.student_name || '',
+            grade: normalizedData.grade || '',
+            board: normalizedData.board || 'CBSE'
+          });
         } catch (error) {
           console.error('Error loading user profile:', error);
         }
@@ -74,6 +89,65 @@ export default function DashboardPage() {
 
     loadActivities();
   }, [user]);
+
+  const handleProfileInputChange = (field: keyof typeof profileFormData, value: string) => {
+    setProfileFormData(prev => ({ ...prev, [field]: value }));
+    setProfileUpdateError('');
+  };
+
+  const handleSaveProfile = async () => {
+    if (!profileFormData.studentName.trim() || !profileFormData.grade || !profileFormData.board) {
+      setProfileUpdateError('Please fill in all required fields.');
+      return;
+    }
+
+    setProfileUpdateLoading(true);
+    setProfileUpdateError('');
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          student_name: profileFormData.studentName.trim(),
+          grade: profileFormData.grade,
+          board: profileFormData.board,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', user?.id);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setUserProfile({
+        student_name: profileFormData.studentName.trim(),
+        grade: profileFormData.grade,
+        board: profileFormData.board
+      });
+
+      setIsEditingProfile(false);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setProfileUpdateError(`Failed to update profile: ${errorMessage}`);
+    } finally {
+      setProfileUpdateLoading(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    // Reset form data to current profile
+    if (userProfile) {
+      setProfileFormData({
+        studentName: userProfile.student_name || '',
+        grade: userProfile.grade || '',
+        board: userProfile.board || 'CBSE'
+      });
+    }
+    setIsEditingProfile(false);
+    setProfileUpdateError('');
+  };
 
 
   if (loading) {
@@ -134,21 +208,113 @@ export default function DashboardPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl shadow-lg p-6 mb-8"
           >
-            <div className="flex items-center space-x-4">
-              <div className="bg-blue-100 p-3 rounded-xl">
-                <User className="w-8 h-8 text-blue-600" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900">Student Profile</h3>
-                <div className="flex items-center space-x-4 mt-2">
-                  <span className="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-medium">
-                    {userProfile.grade}
-                  </span>
-                  <span className="text-sm bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-medium">
-                    {userProfile.board}
-                  </span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="bg-blue-100 p-3 rounded-xl">
+                  <User className="w-8 h-8 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900">Student Profile</h3>
+                  {!isEditingProfile ? (
+                    <div className="flex items-center space-x-4 mt-2">
+                      <span className="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-medium">
+                        {userProfile.grade}
+                      </span>
+                      <span className="text-sm bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-medium">
+                        {userProfile.board}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="mt-4 space-y-4">
+                      {/* Student Name */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Student Name *
+                        </label>
+                        <input
+                          type="text"
+                          value={profileFormData.studentName}
+                          onChange={(e) => handleProfileInputChange('studentName', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="Enter your full name"
+                        />
+                      </div>
+
+                      {/* Grade and Board */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Grade *
+                          </label>
+                          <select
+                            value={profileFormData.grade}
+                            onChange={(e) => handleProfileInputChange('grade', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          >
+                            <option value="">Select your grade</option>
+                            {VALID_GRADES.map(grade => (
+                              <option key={grade} value={grade}>{grade}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Board *
+                          </label>
+                          <select
+                            value={profileFormData.board}
+                            onChange={(e) => handleProfileInputChange('board', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          >
+                            <option value="CBSE">CBSE</option>
+                            <option value="ICSE">ICSE</option>
+                            <option value="State Board">State Board</option>
+                            <option value="IB">IB</option>
+                            <option value="IGCSE">IGCSE</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Error Message */}
+                      {profileUpdateError && (
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                          <p className="text-red-800 text-sm">{profileUpdateError}</p>
+                        </div>
+                      )}
+
+                      {/* Action Buttons */}
+                      <div className="flex items-center space-x-3">
+                        <button
+                          onClick={handleSaveProfile}
+                          disabled={profileUpdateLoading}
+                          className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                          <Save className="w-4 h-4" />
+                          <span>{profileUpdateLoading ? 'Saving...' : 'Save Changes'}</span>
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          disabled={profileUpdateLoading}
+                          className="flex items-center space-x-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                          <CloseIcon className="w-4 h-4" />
+                          <span>Cancel</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
+              {!isEditingProfile && (
+                <button
+                  onClick={() => setIsEditingProfile(true)}
+                  className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                >
+                  <Edit3 className="w-4 h-4" />
+                  <span>Edit Profile</span>
+                </button>
+              )}
             </div>
           </motion.div>
         )}
