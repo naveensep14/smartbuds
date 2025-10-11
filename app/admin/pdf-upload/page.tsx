@@ -50,7 +50,16 @@ export default function PDFUploadPage() {
       setError('Please upload a PDF file only.');
       return;
     }
+    
+    // Check file size (50MB limit for File API support)
+    if (file && file.size > 50 * 1024 * 1024) {
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      setError(`PDF file is too large (${fileSizeMB} MB). Please use a PDF file smaller than 50 MB.`);
+      return;
+    }
+    
     handleInputChange('file', file);
+    setError(''); // Clear any previous errors
   };
 
   const handleTestSelection = (index: number) => {
@@ -163,8 +172,16 @@ export default function PDFUploadPage() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to process PDF');
+        let errorMessage = 'Failed to process PDF';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (jsonError) {
+          // If response is not JSON (e.g., "Request Entity Too Large"), use status text
+          errorMessage = response.statusText || errorMessage;
+          console.error('Non-JSON error response:', response.statusText);
+        }
+        throw new Error(errorMessage);
       }
 
       setUploadProgress(30);
@@ -295,7 +312,7 @@ export default function PDFUploadPage() {
                 required
               />
               <p className="text-sm text-gray-500 mt-1">
-                Upload a PDF file to extract content and generate tests
+                Upload a PDF file (max 50MB) to extract content and generate tests
               </p>
             </div>
 
