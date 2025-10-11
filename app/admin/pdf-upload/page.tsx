@@ -381,6 +381,10 @@ export default function PDFUploadPage() {
 
     const geminiResult = await geminiResponse.json();
     console.log('✅ [GEMINI LOG] File uploaded to Gemini:', geminiResult);
+    
+    // Extract the actual file name from Gemini's response
+    const actualGeminiFileName = geminiResult.name;
+    console.log('✅ [GEMINI LOG] Actual Gemini file name:', actualGeminiFileName);
 
     // Step 3: Process the file
     setCurrentStep('🤖 Processing PDF with Gemini...');
@@ -393,7 +397,7 @@ export default function PDFUploadPage() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        geminiFileName,
+        geminiFileName: actualGeminiFileName,
         subject: formData.subject,
         grade: formData.grade,
         board: formData.board,

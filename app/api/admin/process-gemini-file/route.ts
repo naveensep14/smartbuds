@@ -25,13 +25,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Gemini API key not configured' }, { status: 500 });
     }
 
-    // Get file info from Gemini
+    // Get file info from Gemini using the actual file name returned by Gemini
     console.log('🔍 [GEMINI PROCESS LOG] Getting file info from Gemini...');
+    console.log('🔍 [GEMINI PROCESS LOG] Using Gemini file name:', geminiFileName);
+    
     const fileInfoResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/files/${geminiFileName}?key=${process.env.GEMINI_API_KEY}`);
     
     if (!fileInfoResponse.ok) {
       const errorText = await fileInfoResponse.text();
       console.error('❌ [GEMINI PROCESS LOG] Failed to get file info:', errorText);
+      console.error('❌ [GEMINI PROCESS LOG] Response status:', fileInfoResponse.status);
+      console.error('❌ [GEMINI PROCESS LOG] Response headers:', Object.fromEntries(fileInfoResponse.headers.entries()));
+      
+      // Try to list all files to see what's available
+      console.log('🔍 [GEMINI PROCESS LOG] Listing all files to debug...');
+      const listResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/files?key=${process.env.GEMINI_API_KEY}`);
+      if (listResponse.ok) {
+        const listData = await listResponse.json();
+        console.log('📋 [GEMINI PROCESS LOG] Available files:', listData);
+      }
+      
       throw new Error(`Failed to get file info: ${fileInfoResponse.statusText}`);
     }
 
