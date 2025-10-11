@@ -6,6 +6,7 @@ export async function GET() {
       hasGeminiKey: !!process.env.GEMINI_API_KEY,
       geminiKeyPrefix: process.env.GEMINI_API_KEY?.substring(0, 10) || 'NOT_SET',
       geminiKeyLength: process.env.GEMINI_API_KEY?.length || 0,
+      geminiKeyValid: false,
       hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
       hasSupabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       hasServiceRoleKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -18,8 +19,6 @@ export async function GET() {
     // Check if Gemini API key is valid format
     if (process.env.GEMINI_API_KEY) {
       envStatus.geminiKeyValid = process.env.GEMINI_API_KEY.startsWith('AIza');
-    } else {
-      envStatus.geminiKeyValid = false;
     }
 
     return NextResponse.json({
