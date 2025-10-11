@@ -25,6 +25,16 @@ export async function POST(request: NextRequest) {
     console.log('📋 [VERCEL LOG] Chapter:', chapter);
     console.log('📋 [VERCEL LOG] Custom Prompt:', customPrompt ? customPrompt.substring(0, 50) + '...' : 'None');
 
+    // Check file size limit (Vercel has 4.5MB limit for Hobby, 6MB for Pro)
+    if (file && file.size > 4 * 1024 * 1024) {
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      console.error('❌ [VERCEL LOG] File too large:', fileSizeMB, 'MB');
+      return NextResponse.json(
+        { error: `File is too large (${fileSizeMB} MB). Vercel has a 4MB limit for file uploads. Please use a smaller PDF file or compress it further.` },
+        { status: 413 }
+      );
+    }
+
     if (!file) {
       console.error('❌ [VERCEL LOG] No file uploaded');
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });

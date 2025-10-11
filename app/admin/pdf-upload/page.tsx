@@ -51,10 +51,10 @@ export default function PDFUploadPage() {
       return;
     }
     
-    // Check file size (50MB limit for File API support)
-    if (file && file.size > 50 * 1024 * 1024) {
+    // Check file size (4MB limit due to Vercel platform constraints)
+    if (file && file.size > 4 * 1024 * 1024) {
       const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
-      setError(`PDF file is too large (${fileSizeMB} MB). Please use a PDF file smaller than 50 MB.`);
+      setError(`PDF file is too large (${fileSizeMB} MB). Vercel has a 4MB limit for file uploads. Please use a smaller PDF file or compress it further.`);
       return;
     }
     
@@ -140,6 +140,16 @@ export default function PDFUploadPage() {
     if (!formData.file) {
       console.error('❌ [FRONTEND LOG] No file selected');
       setError('Please select a PDF file to upload.');
+      return;
+    }
+
+    // Check file size limit (Vercel has 4.5MB limit for Hobby, 6MB for Pro)
+    const fileSizeMB = formData.file.size / (1024 * 1024);
+    console.log('📏 [FRONTEND LOG] File size:', fileSizeMB.toFixed(2), 'MB');
+    
+    if (fileSizeMB > 4) {
+      console.error('❌ [FRONTEND LOG] File too large:', fileSizeMB.toFixed(2), 'MB');
+      setError(`File is too large (${fileSizeMB.toFixed(2)} MB). Vercel has a 4MB limit for file uploads. Please use a smaller PDF file or compress it further.`);
       return;
     }
 
@@ -362,7 +372,7 @@ export default function PDFUploadPage() {
                 required
               />
               <p className="text-sm text-gray-500 mt-1">
-                Upload a PDF file (max 50MB) to extract content and generate tests
+                Upload a PDF file (max 4MB due to Vercel limits) to extract content and generate tests
               </p>
             </div>
 
