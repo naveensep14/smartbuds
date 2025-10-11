@@ -24,7 +24,39 @@ export default function TestsPage() {
   const [printMode, setPrintMode] = useState<'test' | 'answer-key'>('test');
   const [completedTestIds, setCompletedTestIds] = useState<Set<string>>(new Set());
   const [incompleteTestIds, setIncompleteTestIds] = useState<Set<string>>(new Set());
-  const { user, loading } = useAuth();
+  const [userProfile, setUserProfile] = useState<{student_name: string, grade: string, board: string} | null>(null);
+  const { user, loading, isAdmin } = useAuth();
+
+  // Load user profile for non-admin users
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      if (user && !isAdmin) {
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('student_name, grade, board')
+            .eq('id', user.id)
+            .single();
+
+          if (error) {
+            console.error('Error loading user profile:', error);
+            return;
+          }
+
+          setUserProfile(data);
+          // Set default filters based on user profile
+          if (data) {
+            setSelectedGrade(data.grade);
+            setSelectedBoard(data.board);
+          }
+        } catch (error) {
+          console.error('Error loading user profile:', error);
+        }
+      }
+    };
+
+    loadUserProfile();
+  }, [user, isAdmin]);
 
   // Load tests from database on component mount
   useEffect(() => {
@@ -82,12 +114,28 @@ export default function TestsPage() {
     const matchesBoard = !selectedBoard || test.board === selectedBoard;
     const matchesChapter = !selectedChapter || extractChapter(test.title) === selectedChapter;
     
+    // For non-admin users, only show tests matching their grade and board
+    if (!isAdmin && userProfile) {
+      const matchesUserGrade = test.grade === userProfile.grade;
+      const matchesUserBoard = test.board === userProfile.board;
+      return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter && matchesUserGrade && matchesUserBoard;
+    }
+    
     return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter;
   });
 
+  // Filter options based on user role
   const subjects = Array.from(new Set(tests.map(test => test.subject)));
-  const grades = Array.from(new Set(tests.map(test => test.grade)));
-  const boards = Array.from(new Set(tests.map(test => test.board)));
+  const grades = isAdmin 
+    ? Array.from(new Set(tests.map(test => test.grade)))
+    : userProfile 
+      ? [userProfile.grade]
+      : [];
+  const boards = isAdmin 
+    ? Array.from(new Set(tests.map(test => test.board)))
+    : userProfile 
+      ? [userProfile.board]
+      : [];
   const chapters = Array.from(new Set(tests.map(test => extractChapter(test.title)).filter(Boolean))).sort((a, b) => {
     const aNum = parseInt(a?.match(/\d+/)?.[0] || '0');
     const bNum = parseInt(b?.match(/\d+/)?.[0] || '0');
@@ -164,7 +212,10 @@ export default function TestsPage() {
             <select
               value={selectedGrade}
               onChange={(e) => setSelectedGrade(e.target.value)}
-                className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              disabled={!isAdmin}
+              className={`px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                !isAdmin ? 'bg-gray-100 cursor-not-allowed' : ''
+              }`}
             >
               <option value="">All Grades</option>
               {grades.map(grade => (
@@ -175,7 +226,10 @@ export default function TestsPage() {
             <select
               value={selectedBoard}
               onChange={(e) => setSelectedBoard(e.target.value)}
-                className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              disabled={!isAdmin}
+              className={`px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                !isAdmin ? 'bg-gray-100 cursor-not-allowed' : ''
+              }`}
             >
               <option value="">All Boards</option>
               {boards.map(board => (

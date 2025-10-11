@@ -8,11 +8,13 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ActivityService, Activity } from '@/lib/activity';
 import NavigationHeader from '@/components/NavigationHeader';
+import { supabase } from '@/lib/supabase';
 
 export default function DashboardPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [activitiesLoading, setActivitiesLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<{student_name: string, grade: string, board: string} | null>(null);
   const { user, loading, isAdmin } = useAuth();
   const router = useRouter();
 
@@ -21,6 +23,32 @@ export default function DashboardPage() {
       router.push('/login');
     }
   }, [user, loading, router]);
+
+  // Load user profile for non-admin users
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      if (user && !isAdmin) {
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('student_name, grade, board')
+            .eq('id', user.id)
+            .single();
+
+          if (error) {
+            console.error('Error loading user profile:', error);
+            return;
+          }
+
+          setUserProfile(data);
+        } catch (error) {
+          console.error('Error loading user profile:', error);
+        }
+      }
+    };
+
+    loadUserProfile();
+  }, [user, isAdmin]);
 
   useEffect(() => {
     const loadActivities = async () => {
@@ -78,10 +106,15 @@ export default function DashboardPage() {
             />
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Welcome back, {user.user_metadata?.full_name || user.email?.split('@')[0]}!
+                Welcome back, {isAdmin ? (user.user_metadata?.full_name || user.email?.split('@')[0]) : (userProfile?.student_name || user.user_metadata?.full_name || user.email?.split('@')[0])}!
               </h1>
               <p className="text-gray-600 mt-1">
-                Ready to continue your learning journey?
+                {isAdmin 
+                  ? "Ready to continue your learning journey?"
+                  : userProfile 
+                    ? `Ready to continue your ${userProfile.grade} ${userProfile.board} learning journey?`
+                    : "Ready to continue your learning journey?"
+                }
               </p>
             </div>
           </div>

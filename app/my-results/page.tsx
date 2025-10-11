@@ -18,7 +18,8 @@ export default function MyResultsPage() {
   const [dateRange, setDateRange] = useState('all');
   const [loading, setLoading] = useState(true);
   const [reviewingResult, setReviewingResult] = useState<{ test: Test; result: TestResult } | null>(null);
-  const { user, loading: authLoading } = useAuth();
+  const [userProfile, setUserProfile] = useState<{student_name: string, grade: string, board: string} | null>(null);
+  const { user, loading: authLoading, isAdmin } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -26,6 +27,32 @@ export default function MyResultsPage() {
       router.push('/login');
     }
   }, [user, authLoading, router]);
+
+  // Load user profile for non-admin users
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      if (user && !isAdmin) {
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('student_name, grade, board')
+            .eq('id', user.id)
+            .single();
+
+          if (error) {
+            console.error('Error loading user profile:', error);
+            return;
+          }
+
+          setUserProfile(data);
+        } catch (error) {
+          console.error('Error loading user profile:', error);
+        }
+      }
+    };
+
+    loadUserProfile();
+  }, [user, isAdmin]);
 
   // Load user's test results and available tests
   useEffect(() => {
@@ -72,11 +99,20 @@ export default function MyResultsPage() {
           setResults(formattedResults);
         }
 
-        // Load available tests
-        const { data: testsData, error: testsError } = await supabase
+        // Load available tests (filtered by user's grade for non-admin users)
+        let testsQuery = supabase
           .from('tests')
           .select('*')
           .order('title');
+
+        // For non-admin users, only show tests matching their grade and board
+        if (!isAdmin && userProfile) {
+          testsQuery = testsQuery
+            .eq('grade', userProfile.grade)
+            .eq('board', userProfile.board);
+        }
+
+        const { data: testsData, error: testsError } = await testsQuery;
 
         if (testsError) {
           console.error('Error loading tests:', testsError);

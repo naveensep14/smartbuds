@@ -56,6 +56,19 @@ export async function middleware(request: NextRequest) {
     if (!user) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
+
+    // Check profile completion for non-admin users
+    if (user.email && !ADMIN_EMAILS.includes(user.email.toLowerCase() as any)) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('profile_completed')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile?.profile_completed) {
+        return NextResponse.redirect(new URL('/complete-profile', request.url));
+      }
+    }
   }
 
   // Protect tests routes (require authentication)
@@ -63,12 +76,38 @@ export async function middleware(request: NextRequest) {
     if (!user) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
+
+    // Check profile completion for non-admin users
+    if (user.email && !ADMIN_EMAILS.includes(user.email.toLowerCase() as any)) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('profile_completed')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile?.profile_completed) {
+        return NextResponse.redirect(new URL('/complete-profile', request.url));
+      }
+    }
   }
 
   // Protect my-results route (require authentication)
   if (request.nextUrl.pathname.startsWith('/my-results')) {
     if (!user) {
       return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    // Check profile completion for non-admin users
+    if (user.email && !ADMIN_EMAILS.includes(user.email.toLowerCase() as any)) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('profile_completed')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile?.profile_completed) {
+        return NextResponse.redirect(new URL('/complete-profile', request.url));
+      }
     }
   }
 
@@ -81,6 +120,7 @@ export const config = {
     '/dashboard/:path*',
     '/tests/:path*',
     '/my-results/:path*',
+    '/complete-profile/:path*',
     '/api/admin/:path*'
   ],
 };
