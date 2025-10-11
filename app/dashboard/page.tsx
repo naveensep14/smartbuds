@@ -57,9 +57,10 @@ export default function DashboardPage() {
           setUserProfile(normalizedData);
           
           // Initialize form data
+          const formGrade = normalizedData.grade ? normalizeGrade(normalizedData.grade) || '' : '';
           setProfileFormData({
             studentName: normalizedData.student_name || '',
-            grade: normalizedData.grade || '',
+            grade: formGrade as ValidGrade | '',
             board: normalizedData.board || 'CBSE'
           });
         } catch (error) {
@@ -139,9 +140,10 @@ export default function DashboardPage() {
   const handleCancelEdit = () => {
     // Reset form data to current profile
     if (userProfile) {
+      const normalizedGrade = userProfile.grade ? normalizeGrade(userProfile.grade) || '' : '';
       setProfileFormData({
         studentName: userProfile.student_name || '',
-        grade: userProfile.grade || '',
+        grade: normalizedGrade as ValidGrade | '',
         board: userProfile.board || 'CBSE'
       });
     }
