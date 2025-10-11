@@ -204,14 +204,23 @@ export default function PDFUploadPage() {
       if (!response.ok) {
         let errorMessage = 'Failed to process PDF';
         try {
-          const errorData = await response.json();
+          // Clone the response to avoid "body stream already read" error
+          const responseClone = response.clone();
+          const errorData = await responseClone.json();
           errorMessage = errorData.error || errorMessage;
           console.error('🚨 [FRONTEND LOG] Error response JSON:', errorData);
         } catch (jsonError) {
           // If response is not JSON (e.g., "Request Entity Too Large"), use status text
           errorMessage = response.statusText || errorMessage;
           console.error('🚨 [FRONTEND LOG] Non-JSON error response:', response.statusText);
-          console.error('🚨 [FRONTEND LOG] Response text:', await response.text());
+          try {
+            // Clone the response to avoid "body stream already read" error
+            const responseClone = response.clone();
+            const responseText = await responseClone.text();
+            console.error('🚨 [FRONTEND LOG] Response text:', responseText);
+          } catch (textError) {
+            console.error('🚨 [FRONTEND LOG] Could not read response text:', textError.message);
+          }
         }
         throw new Error(errorMessage);
       }
@@ -224,7 +233,9 @@ export default function PDFUploadPage() {
       setUploadProgress(35);
       addLog('🔍 AI is analyzing PDF content...');
 
-      const result = await response.json();
+      // Clone the response to avoid "body stream already read" error
+      const responseClone = response.clone();
+      const result = await responseClone.json();
       
       setUploadProgress(50);
 
