@@ -252,9 +252,9 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
                 {showAnswerKey && (
                   <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                     <h4 className="font-semibold text-blue-800 mb-2">Explanation</h4>
-                    <p className="text-blue-700">
+                    <p className="text-blue-700 mb-3">
                       {isCorrect 
-                        ? "Great job! You selected the correct answer." 
+                        ? "✓ Great job! You selected the correct answer." 
                         : `The correct answer is ${String.fromCharCode(65 + currentQuestion.correctAnswer)}. ${
                             selectedAnswerIndex !== undefined 
                               ? `You selected ${String.fromCharCode(65 + selectedAnswerIndex)}.` 
@@ -262,6 +262,12 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
                           }`
                       }
                     </p>
+                    {currentQuestion.explanation && (
+                      <div className="mt-3 pt-3 border-t border-blue-200">
+                        <p className="text-blue-900 font-medium mb-1">Detailed Explanation:</p>
+                        <p className="text-blue-800">{currentQuestion.explanation}</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

@@ -135,15 +135,31 @@ export default function PrintableTest({ test, showAnswers = false }: PrintableTe
           ))}
         </div>
 
-        {/* Answer Key Summary */}
+        {/* Answer Key with Detailed Explanations */}
         {showAnswers && (
-          <div className="answer-key">
-            <h3 className="text-lg font-semibold mb-3">Answer Key Summary</h3>
-            <div className="grid grid-cols-2 gap-4">
+          <div className="answer-key mt-8 page-break-before">
+            <h3 className="text-xl font-bold mb-6 text-orange-600 border-b-2 border-orange-600 pb-2">
+              Answer Key with Explanations
+            </h3>
+            <div className="space-y-6">
               {test.questions.map((question: Question, index: number) => (
-                <div key={question.id} className="text-sm">
-                  <span className="font-medium">Q{index + 1}:</span> 
-                  <span className="ml-2">{String.fromCharCode(65 + question.correctAnswer)}</span>
+                <div key={question.id} className="border-l-4 border-orange-500 pl-4">
+                  <div className="flex items-start mb-2">
+                    <span className="font-bold text-lg text-gray-800">Q{index + 1}:</span>
+                    <span className="ml-2 font-bold text-lg text-green-600">
+                      {String.fromCharCode(65 + question.correctAnswer)}
+                    </span>
+                    <span className="ml-2 text-gray-600">
+                      ({question.options[question.correctAnswer]})
+                    </span>
+                  </div>
+                  {question.explanation && (
+                    <div className="mt-2 pl-0">
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        <span className="font-semibold">Explanation:</span> {question.explanation}
+                      </p>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
