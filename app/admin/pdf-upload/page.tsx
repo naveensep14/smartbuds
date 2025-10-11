@@ -12,6 +12,7 @@ interface PDFUploadFormData {
   duration: number;
   file: File | null;
   customPrompt: string;
+  chapter: number;
 }
 
 export default function PDFUploadPage() {
@@ -25,6 +26,7 @@ export default function PDFUploadPage() {
     duration: 30,
     file: null,
     customPrompt: '',
+    chapter: 1,
   });
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
