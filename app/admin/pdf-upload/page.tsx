@@ -323,7 +323,7 @@ export default function PDFUploadPage() {
     }
   };
 
-  // Chunked upload function
+  // Chunked upload function - upload all chunks in a single request
   const uploadFileInChunks = async (
     file: File, 
     formData: any, 
@@ -333,80 +333,57 @@ export default function PDFUploadPage() {
   ) => {
     const CHUNK_SIZE = 1024 * 1024; // 1MB chunks
     const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
-    const uploadId = `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     console.log('📦 [CHUNK LOG] Starting chunked upload:', {
       fileName: file.name,
       fileSize: file.size,
       chunkSize: CHUNK_SIZE,
-      totalChunks,
-      uploadId
+      totalChunks
     });
 
-    addLog(`📦 Uploading ${totalChunks} chunks (${(file.size / (1024 * 1024)).toFixed(2)} MB total)...`);
+    addLog(`📦 Preparing ${totalChunks} chunks (${(file.size / (1024 * 1024)).toFixed(2)} MB total)...`);
 
-    // Upload chunks
+    // Prepare all chunks
+    const chunks = [];
     for (let i = 0; i < totalChunks; i++) {
       const start = i * CHUNK_SIZE;
       const end = Math.min(start + CHUNK_SIZE, file.size);
       const chunk = file.slice(start, end);
+      chunks.push(chunk);
       
-      console.log(`📦 [CHUNK LOG] Uploading chunk ${i + 1}/${totalChunks}`, {
+      console.log(`📦 [CHUNK LOG] Prepared chunk ${i + 1}/${totalChunks}`, {
         start,
         end,
         chunkSize: chunk.size
       });
-
-      setCurrentStep(`📤 Uploading chunk ${i + 1}/${totalChunks}...`);
-      addLog(`📤 Uploading chunk ${i + 1}/${totalChunks}...`);
-
-      const chunkFormData = new FormData();
-      chunkFormData.append('chunk', chunk);
-      chunkFormData.append('chunkIndex', i.toString());
-      chunkFormData.append('totalChunks', totalChunks.toString());
-      chunkFormData.append('fileName', file.name);
-      chunkFormData.append('uploadId', uploadId);
-
-      const chunkResponse = await fetch('/api/admin/upload-chunk', {
-        method: 'POST',
-        body: chunkFormData,
-      });
-
-      if (!chunkResponse.ok) {
-        const errorData = await chunkResponse.json();
-        throw new Error(errorData.error || `Failed to upload chunk ${i + 1}`);
-      }
-
-      // Update progress (20% to 30% for chunk upload)
-      const chunkProgress = 20 + (i / totalChunks) * 10;
-      setUploadProgress(chunkProgress);
     }
 
-    console.log('✅ [CHUNK LOG] All chunks uploaded, reassembling...');
-    setCurrentStep('🔧 Reassembling file chunks...');
-    addLog('🔧 Reassembling file chunks...');
+    setCurrentStep('📤 Uploading all chunks...');
+    addLog('📤 Uploading all chunks in single request...');
 
-    // Reassemble chunks
-    const reassembleResponse = await fetch('/api/admin/reassemble-chunks', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        uploadId,
-        fileName: file.name,
-        totalChunks,
-        subject: formData.subject,
-        grade: formData.grade,
-        board: formData.board,
-        duration: formData.duration,
-        customPrompt: formData.customPrompt,
-        chapter: formData.chapter,
-      }),
+    // Upload all chunks in a single request
+    const uploadFormData = new FormData();
+    uploadFormData.append('totalChunks', totalChunks.toString());
+    uploadFormData.append('fileName', file.name);
+    uploadFormData.append('subject', formData.subject);
+    uploadFormData.append('grade', formData.grade);
+    uploadFormData.append('board', formData.board);
+    uploadFormData.append('duration', formData.duration.toString());
+    uploadFormData.append('customPrompt', formData.customPrompt);
+    uploadFormData.append('chapter', formData.chapter.toString());
+
+    // Add all chunks to FormData
+    chunks.forEach((chunk, index) => {
+      uploadFormData.append(`chunk_${index}`, chunk);
     });
 
-    console.log('🔧 [CHUNK LOG] Reassemble response:', reassembleResponse.status);
-    return reassembleResponse;
+    const uploadResponse = await fetch('/api/admin/upload-chunks-batch', {
+      method: 'POST',
+      body: uploadFormData,
+    });
+
+    console.log('📦 [CHUNK LOG] Batch upload response:', uploadResponse.status);
+    return uploadResponse;
   };
 
   const handleSaveTests = async () => {
