@@ -548,18 +548,6 @@ export default function PDFUploadPage() {
               </p>
             </div>
 
-            {/* Auto-generated Title and Description Info */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-blue-800 mb-2">🤖 AI-Powered Test Generation</h3>
-              <p className="text-sm text-blue-700">
-                High-quality tests will be generated using AI based on PDF content. Questions are accurate, educational, and appropriate for the selected grade level.
-                {formData.customPrompt && (
-                  <span className="block mt-2 font-medium">
-                    ✨ Custom instructions will be applied: &quot;{formData.customPrompt.substring(0, 50)}...&quot;
-                  </span>
-                )}
-              </p>
-            </div>
 
             {/* Subject and Grade */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
