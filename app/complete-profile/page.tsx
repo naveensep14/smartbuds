@@ -40,24 +40,31 @@ export default function CompleteProfilePage() {
 
   const checkProfileCompletion = async () => {
     try {
+      console.log('🔍 [PROFILE LOG] Checking profile completion for user:', user?.id);
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('profile_completed, student_name, grade, board')
         .eq('id', user?.id)
         .single();
 
+      console.log('🔍 [PROFILE LOG] Profile check result:', { data, error });
+
       if (error) {
-        console.error('Error checking profile:', error);
+        console.error('❌ [PROFILE LOG] Error checking profile:', error);
         setIsChecking(false);
         return;
       }
 
       if (data?.profile_completed) {
+        console.log('✅ [PROFILE LOG] Profile already completed, redirecting to dashboard');
         // Profile already completed, redirect to dashboard
         router.push('/dashboard');
         return;
       }
 
+      console.log('📝 [PROFILE LOG] Profile not completed, showing form');
+      
       // Pre-fill form with existing data if any
       if (data) {
         setFormData({
@@ -69,7 +76,7 @@ export default function CompleteProfilePage() {
 
       setIsChecking(false);
     } catch (error) {
-      console.error('Error checking profile completion:', error);
+      console.error('🚨 [PROFILE LOG] Error checking profile completion:', error);
       setIsChecking(false);
     }
   };
@@ -82,7 +89,12 @@ export default function CompleteProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('🚀 [PROFILE LOG] Form submitted');
+    console.log('🚀 [PROFILE LOG] Form data:', formData);
+    console.log('🚀 [PROFILE LOG] User:', user?.id, user?.email);
+    
     if (!formData.studentName.trim() || !formData.grade || !formData.board) {
+      console.log('❌ [PROFILE LOG] Validation failed');
       setError('Please fill in all required fields.');
       return;
     }
@@ -91,7 +103,8 @@ export default function CompleteProfilePage() {
     setError('');
 
     try {
-      const { error } = await supabase
+      console.log('📝 [PROFILE LOG] Updating profile...');
+      const { data, error } = await supabase
         .from('profiles')
         .update({
           student_name: formData.studentName.trim(),
@@ -100,17 +113,24 @@ export default function CompleteProfilePage() {
           profile_completed: true,
           updated_at: new Date().toISOString(),
         })
-        .eq('id', user?.id);
+        .eq('id', user?.id)
+        .select();
+
+      console.log('📝 [PROFILE LOG] Update result:', { data, error });
 
       if (error) {
+        console.error('❌ [PROFILE LOG] Update error:', error);
         throw error;
       }
 
+      console.log('✅ [PROFILE LOG] Profile updated successfully');
+      console.log('🔄 [PROFILE LOG] Redirecting to dashboard...');
+      
       // Profile completed successfully, redirect to dashboard
       router.push('/dashboard');
     } catch (error) {
-      console.error('Error completing profile:', error);
-      setError('Failed to save profile. Please try again.');
+      console.error('🚨 [PROFILE LOG] Error completing profile:', error);
+      setError(`Failed to save profile: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
