@@ -13,6 +13,8 @@ interface PDFUploadFormData {
   file: File | null;
   customPrompt: string;
   chapter: number;
+  numTests: number;
+  questionsPerTest: number;
 }
 
 export default function PDFUploadPage() {
@@ -27,6 +29,8 @@ export default function PDFUploadPage() {
     file: null,
     customPrompt: '',
     chapter: 1,
+    numTests: 5,
+    questionsPerTest: 10,
   });
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -399,6 +403,8 @@ export default function PDFUploadPage() {
       duration: formData.duration,
       customPrompt: formData.customPrompt,
       chapter: formData.chapter,
+      numTests: formData.numTests,
+      questionsPerTest: formData.questionsPerTest,
     };
     
     console.log('🤖 [GEMINI LOG] Process payload:', processPayload);
@@ -450,6 +456,27 @@ export default function PDFUploadPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
+        {/* Navigation */}
+        <nav className="mb-6">
+          <div className="flex items-center space-x-4 text-sm text-gray-600">
+            <button
+              onClick={() => router.push('/admin')}
+              className="hover:text-orange-600 transition-colors"
+            >
+              ← Back to Admin
+            </button>
+            <span>|</span>
+            <button
+              onClick={() => router.push('/dashboard')}
+              className="hover:text-orange-600 transition-colors"
+            >
+              Dashboard
+            </button>
+            <span>|</span>
+            <span className="text-orange-600 font-medium">PDF Upload</span>
+          </div>
+        </nav>
+
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">
             📚 Upload PDF to Generate Tests
@@ -471,6 +498,67 @@ export default function PDFUploadPage() {
               <p className="text-sm text-gray-500 mt-1">
                 Upload a PDF file (any size - uses chunked upload for large files) to extract content and generate tests
               </p>
+            </div>
+
+            {/* Test Generation Options */}
+            <div className="bg-orange-50 border border-orange-200 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                🎯 Test Generation Options
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Number of Tests
+                  </label>
+                  <select
+                    value={formData.numTests}
+                    onChange={(e) => handleInputChange('numTests', parseInt(e.target.value))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  >
+                    <option value={1}>1 Test</option>
+                    <option value={2}>2 Tests</option>
+                    <option value={3}>3 Tests</option>
+                    <option value={4}>4 Tests</option>
+                    <option value={5}>5 Tests</option>
+                    <option value={6}>6 Tests</option>
+                    <option value={7}>7 Tests</option>
+                    <option value={8}>8 Tests</option>
+                    <option value={9}>9 Tests</option>
+                    <option value={10}>10 Tests</option>
+                  </select>
+                  <p className="text-sm text-gray-500 mt-1">
+                    How many different tests to generate from the PDF
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Questions per Test
+                  </label>
+                  <select
+                    value={formData.questionsPerTest}
+                    onChange={(e) => handleInputChange('questionsPerTest', parseInt(e.target.value))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  >
+                    <option value={5}>5 Questions</option>
+                    <option value={8}>8 Questions</option>
+                    <option value={10}>10 Questions</option>
+                    <option value={12}>12 Questions</option>
+                    <option value={15}>15 Questions</option>
+                    <option value={20}>20 Questions</option>
+                    <option value={25}>25 Questions</option>
+                    <option value={30}>30 Questions</option>
+                  </select>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Number of questions in each generated test
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-orange-100 rounded-lg">
+                <p className="text-sm text-orange-800">
+                  <strong>Total Questions:</strong> {formData.numTests * formData.questionsPerTest} questions across {formData.numTests} tests
+                </p>
+              </div>
             </div>
 
             {/* Custom Prompt Section */}

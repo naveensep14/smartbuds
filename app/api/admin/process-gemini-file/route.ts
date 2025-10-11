@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
   try {
     console.log('🤖 [GEMINI PROCESS LOG] Starting Gemini file processing...');
     
-    const { geminiFileName, subject, grade, board, duration, customPrompt, chapter } = await request.json();
+    const { geminiFileName, subject, grade, board, duration, customPrompt, chapter, numTests, questionsPerTest } = await request.json();
 
     console.log('🤖 [GEMINI PROCESS LOG] Processing details:', {
       geminiFileName,
@@ -14,7 +14,9 @@ export async function POST(request: NextRequest) {
       board,
       chapter,
       duration,
-      customPrompt
+      customPrompt,
+      numTests: numTests || 5,
+      questionsPerTest: questionsPerTest || 10
     });
 
     console.log('🤖 [GEMINI PROCESS LOG] Field validation:', {
@@ -74,7 +76,7 @@ export async function POST(request: NextRequest) {
     
     // Use a dummy buffer since we'll use the file URI
     const dummyBuffer = Buffer.from('dummy');
-    const result = await processor.processPDFWithFileURI(dummyBuffer, subject, grade, board, customPrompt, chapter, geminiFileName);
+    const result = await processor.processPDFWithFileURI(dummyBuffer, subject, grade, board, customPrompt, chapter, geminiFileName, numTests || 5, questionsPerTest || 10);
 
     if (!result.success) {
       console.error('❌ [GEMINI PROCESS LOG] PDF processing failed:', result.error);

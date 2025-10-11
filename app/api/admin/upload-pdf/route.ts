@@ -15,6 +15,8 @@ export async function POST(request: NextRequest) {
     const duration = parseInt(formData.get('duration') as string);
     const customPrompt = formData.get('customPrompt') as string;
     const chapter = parseInt(formData.get('chapter') as string);
+    const numTests = parseInt(formData.get('numTests') as string) || 5;
+    const questionsPerTest = parseInt(formData.get('questionsPerTest') as string) || 10;
 
     console.log('📋 [VERCEL LOG] Form data received:');
     console.log('📋 [VERCEL LOG] File name:', file?.name || 'No file');
@@ -23,6 +25,8 @@ export async function POST(request: NextRequest) {
     console.log('📋 [VERCEL LOG] Grade:', grade);
     console.log('📋 [VERCEL LOG] Board:', board);
     console.log('📋 [VERCEL LOG] Chapter:', chapter);
+    console.log('📋 [VERCEL LOG] Number of Tests:', numTests);
+    console.log('📋 [VERCEL LOG] Questions per Test:', questionsPerTest);
     console.log('📋 [VERCEL LOG] Custom Prompt:', customPrompt ? customPrompt.substring(0, 50) + '...' : 'None');
 
     // Check file size limit (Vercel has 4.5MB limit for Hobby, 6MB for Pro)
@@ -59,7 +63,7 @@ export async function POST(request: NextRequest) {
     const processor = new PDFProcessor();
     console.log('🔧 [VERCEL LOG] PDF processor initialized, calling processPDF...');
     
-    const result = await processor.processPDF(pdfBuffer, subject, grade, board, customPrompt, chapter);
+    const result = await processor.processPDF(pdfBuffer, subject, grade, board, customPrompt, chapter, numTests, questionsPerTest);
     console.log('🔧 [VERCEL LOG] processPDF completed, result.success:', result.success);
 
     if (!result.success) {
