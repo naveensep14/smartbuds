@@ -209,6 +209,8 @@ export default function PDFUploadPage() {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       setGeneratedTests(result.tests);
+      // Auto-select all tests by default
+      setSelectedTests(new Set(result.tests.map((_: any, index: number) => index)));
       setCurrentStep('✅ Tests generated successfully!');
       setCurrentConcept('');
       setUploadProgress(100);
