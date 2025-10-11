@@ -192,8 +192,8 @@ export default function PDFUploadPage() {
       let response;
       
       if (useChunkedUpload) {
-        console.log('📦 [FRONTEND LOG] Starting chunked upload...');
-        response = await uploadFileInChunks(formData.file, formData, setUploadProgress, addLog, setCurrentStep);
+        console.log('🔗 [FRONTEND LOG] Starting direct Gemini upload...');
+        response = await uploadFileToGemini(formData.file, formData, setUploadProgress, addLog, setCurrentStep);
       } else {
         console.log('🚀 [FRONTEND LOG] Starting regular upload...');
         // Upload and process PDF
@@ -323,67 +323,88 @@ export default function PDFUploadPage() {
     }
   };
 
-  // Chunked upload function - upload all chunks in a single request
-  const uploadFileInChunks = async (
+  // Direct Gemini upload function
+  const uploadFileToGemini = async (
     file: File, 
     formData: any, 
     setUploadProgress: (progress: number) => void,
     addLog: (message: string) => void,
     setCurrentStep: (step: string) => void
   ) => {
-    const CHUNK_SIZE = 1024 * 1024; // 1MB chunks
-    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
-    
-    console.log('📦 [CHUNK LOG] Starting chunked upload:', {
+    console.log('🔗 [GEMINI LOG] Starting direct Gemini upload:', {
       fileName: file.name,
-      fileSize: file.size,
-      chunkSize: CHUNK_SIZE,
-      totalChunks
+      fileSize: file.size
     });
 
-    addLog(`📦 Preparing ${totalChunks} chunks (${(file.size / (1024 * 1024)).toFixed(2)} MB total)...`);
+    // Step 1: Get upload URL
+    setCurrentStep('🔗 Getting Gemini upload URL...');
+    addLog('🔗 Getting Gemini upload URL...');
+    setUploadProgress(20);
 
-    // Prepare all chunks
-    const chunks = [];
-    for (let i = 0; i < totalChunks; i++) {
-      const start = i * CHUNK_SIZE;
-      const end = Math.min(start + CHUNK_SIZE, file.size);
-      const chunk = file.slice(start, end);
-      chunks.push(chunk);
-      
-      console.log(`📦 [CHUNK LOG] Prepared chunk ${i + 1}/${totalChunks}`, {
-        start,
-        end,
-        chunkSize: chunk.size
-      });
+    const urlResponse = await fetch('/api/admin/gemini-upload-url', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        fileName: file.name,
+        fileSize: file.size
+      }),
+    });
+
+    if (!urlResponse.ok) {
+      const errorData = await urlResponse.json();
+      throw new Error(errorData.error || 'Failed to get upload URL');
     }
 
-    setCurrentStep('📤 Uploading all chunks...');
-    addLog('📤 Uploading all chunks in single request...');
+    const { uploadUrl, geminiFileName, apiKey } = await urlResponse.json();
+    console.log('✅ [GEMINI LOG] Upload URL received:', geminiFileName);
 
-    // Upload all chunks in a single request
-    const uploadFormData = new FormData();
-    uploadFormData.append('totalChunks', totalChunks.toString());
-    uploadFormData.append('fileName', file.name);
-    uploadFormData.append('subject', formData.subject);
-    uploadFormData.append('grade', formData.grade);
-    uploadFormData.append('board', formData.board);
-    uploadFormData.append('duration', formData.duration.toString());
-    uploadFormData.append('customPrompt', formData.customPrompt);
-    uploadFormData.append('chapter', formData.chapter.toString());
+    // Step 2: Upload directly to Gemini
+    setCurrentStep('📤 Uploading to Gemini File API...');
+    addLog('📤 Uploading directly to Gemini...');
+    setUploadProgress(30);
 
-    // Add all chunks to FormData
-    chunks.forEach((chunk, index) => {
-      uploadFormData.append(`chunk_${index}`, chunk);
-    });
+    const geminiFormData = new FormData();
+    geminiFormData.append('file', file);
 
-    const uploadResponse = await fetch('/api/admin/upload-chunks-batch', {
+    const geminiResponse = await fetch(`${uploadUrl}`, {
       method: 'POST',
-      body: uploadFormData,
+      body: geminiFormData,
     });
 
-    console.log('📦 [CHUNK LOG] Batch upload response:', uploadResponse.status);
-    return uploadResponse;
+    if (!geminiResponse.ok) {
+      const errorText = await geminiResponse.text();
+      console.error('❌ [GEMINI LOG] Gemini upload failed:', errorText);
+      throw new Error(`Gemini upload failed: ${geminiResponse.statusText}`);
+    }
+
+    const geminiResult = await geminiResponse.json();
+    console.log('✅ [GEMINI LOG] File uploaded to Gemini:', geminiResult);
+
+    // Step 3: Process the file
+    setCurrentStep('🤖 Processing PDF with Gemini...');
+    addLog('🤖 Processing PDF with Gemini AI...');
+    setUploadProgress(50);
+
+    const processResponse = await fetch('/api/admin/process-gemini-file', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        geminiFileName,
+        subject: formData.subject,
+        grade: formData.grade,
+        board: formData.board,
+        duration: formData.duration,
+        customPrompt: formData.customPrompt,
+        chapter: formData.chapter,
+      }),
+    });
+
+    console.log('🤖 [GEMINI LOG] Process response:', processResponse.status);
+    return processResponse;
   };
 
   const handleSaveTests = async () => {
