@@ -17,6 +17,8 @@ This directory contains automated backups of your SuccessBuds Supabase data.
 Each backup includes:
 - **Tests**: All test data including questions, options, and metadata
 - **Results**: Student test results and scores
+- **Profiles**: User profile information including grades and boards
+- **Test Progress**: Student progress tracking (if available)
 - **Metadata**: Backup timestamp, table counts, and source information
 
 ## How to Restore
@@ -37,7 +39,7 @@ node scripts/restore-supabase.js successbuds_backup_2025-10-03.json
 
 **Manual Backup:**
 ```bash
-node scripts/backup-supabase.js
+node backup-database.js
 ```
 
 **Automated Backup (recommended):**
@@ -71,7 +73,7 @@ backups/
 
 ## Backup Script
 
-The backup script (`scripts/backup-supabase.js`) automatically:
+The backup script (`backup-database.js`) automatically:
 1. Connects to your Supabase database
 2. Exports all tables (tests, results)
 3. Creates multiple backup formats
@@ -80,9 +82,11 @@ The backup script (`scripts/backup-supabase.js`) automatically:
 
 ## Last Backup
 
-**Date:** October 3, 2025  
-**Tests:** 5 records  
-**Results:** 0 records  
+**Date:** October 11, 2025  
+**Tests:** 59 records  
+**Results:** 3 records  
+**Profiles:** 5 records  
+**Test Progress:** 0 records  
 **Status:** ✅ Successful
 
 ---

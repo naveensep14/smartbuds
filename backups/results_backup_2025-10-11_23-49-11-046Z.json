@@ -1,0 +1,178 @@
+[
+  {
+    "id": "5a972ec5-4793-4760-bc56-cc5023c78e24",
+    "testId": "53066e13-d438-4619-b556-c0db9f2d96be",
+    "studentName": "nethramukund2015@gmail.com",
+    "score": 60,
+    "totalQuestions": 10,
+    "correctAnswers": 6,
+    "answers": [
+      {
+        "isCorrect": false,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      }
+    ],
+    "timeTaken": 457,
+    "completedAt": "2025-10-07T00:52:55.899973+00:00"
+  },
+  {
+    "id": "6d20144c-fb4e-4985-88dd-03a7e2362fc4",
+    "testId": "d6101d3a-c6df-49b4-be4e-e724ad1eaf6c",
+    "studentName": "nethramukund2015@gmail.com",
+    "score": 20,
+    "totalQuestions": 10,
+    "correctAnswers": 2,
+    "answers": [
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      }
+    ],
+    "timeTaken": 30961,
+    "completedAt": "2025-10-07T00:44:16.417447+00:00"
+  },
+  {
+    "id": "c462fa26-b21c-4af6-b93f-4dde3cae7a84",
+    "testId": "d6101d3a-c6df-49b4-be4e-e724ad1eaf6c",
+    "studentName": "naveensep14@gmail.com",
+    "score": 0,
+    "totalQuestions": 10,
+    "correctAnswers": 0,
+    "answers": [
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      }
+    ],
+    "timeTaken": 6,
+    "completedAt": "2025-10-06T04:06:11.62455+00:00"
+  }
+]

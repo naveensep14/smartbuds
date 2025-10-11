@@ -1,0 +1,72 @@
+[
+  {
+    "id": "f7a27dec-015d-452f-93ec-3b1e647ee175",
+    "email": "niveditha.2587@gmail.com",
+    "full_name": "Niveditha S",
+    "first_name": null,
+    "last_name": null,
+    "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocJp7Bkv5XeHl6PlXDQxePqXsjwKt5qniwesmaNRYUuVXdzVfg=s96-c",
+    "created_at": "2025-10-06T18:33:29.905696+00:00",
+    "updated_at": "2025-10-11T21:29:58.694751+00:00",
+    "student_name": null,
+    "grade": null,
+    "board": "CBSE",
+    "profile_completed": false
+  },
+  {
+    "id": "aaa5ce20-18d2-499c-92d3-d320ac1a47c1",
+    "email": "nethramukund2015@gmail.com",
+    "full_name": "nethra mukund",
+    "first_name": null,
+    "last_name": null,
+    "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocIeKodKGga0qV9t0xfCzJRaZCMijMQPOmOcn2JJsiDDdvWC2Ppk=s96-c",
+    "created_at": "2025-10-06T16:02:54.15765+00:00",
+    "updated_at": "2025-10-07T04:54:42.428382+00:00",
+    "student_name": null,
+    "grade": null,
+    "board": "CBSE",
+    "profile_completed": false
+  },
+  {
+    "id": "8147947a-d3b7-4d2e-8f69-3d033d296086",
+    "email": "naveen.gowda@cruxinformatics.com",
+    "full_name": "Naveen Shambu Gowda",
+    "first_name": null,
+    "last_name": null,
+    "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocJCmJeyipdbSMiXfsj5Cdm5WA1_iZSj2DDqz5TZI9TUEMf5gw=s96-c",
+    "created_at": "2025-10-03T05:12:25.660462+00:00",
+    "updated_at": "2025-10-11T23:46:02.279+00:00",
+    "student_name": "Naveen",
+    "grade": "5th Grade",
+    "board": "CBSE",
+    "profile_completed": true
+  },
+  {
+    "id": "7f76083c-c33c-4023-8e4e-847cbf65bc87",
+    "email": "admin@smartbuds.com",
+    "full_name": null,
+    "first_name": null,
+    "last_name": null,
+    "avatar_url": null,
+    "created_at": "2025-10-03T05:07:50.621067+00:00",
+    "updated_at": "2025-10-03T05:07:50.621067+00:00",
+    "student_name": null,
+    "grade": null,
+    "board": null,
+    "profile_completed": false
+  },
+  {
+    "id": "71ea5b66-ca97-4d63-8ab9-d792771d368c",
+    "email": "naveensep14@gmail.com",
+    "full_name": "Naveen S",
+    "first_name": null,
+    "last_name": null,
+    "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocJledfhX4aiKOFMOSJP9d32f7kKc5-7SgUh8WAbLks6V0jW0Nqv=s96-c",
+    "created_at": "2025-10-03T05:07:50.621067+00:00",
+    "updated_at": "2025-10-11T23:45:25.823672+00:00",
+    "student_name": null,
+    "grade": null,
+    "board": "CBSE",
+    "profile_completed": false
+  }
+]
