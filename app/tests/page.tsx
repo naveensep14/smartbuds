@@ -11,6 +11,7 @@ import PrintableTest from '@/components/PrintableTest';
 import { supabase } from '@/lib/supabase';
 import { TestProgressService } from '@/lib/test-progress';
 import NavigationHeader from '@/components/NavigationHeader';
+import { normalizeGrade } from '@/lib/grade-utils';
 
 export default function TestsPage() {
   const [tests, setTests] = useState<Test[]>([]);
@@ -43,11 +44,16 @@ export default function TestsPage() {
             return;
           }
 
-          setUserProfile(data);
+          // Normalize grade value
+          const normalizedData = {
+            ...data,
+            grade: data.grade ? normalizeGrade(data.grade) || data.grade : data.grade
+          };
+          setUserProfile(normalizedData);
           // Set default filters based on user profile
-          if (data) {
-            setSelectedGrade(data.grade);
-            setSelectedBoard(data.board);
+          if (normalizedData) {
+            setSelectedGrade(normalizedData.grade);
+            setSelectedBoard(normalizedData.board);
           }
         } catch (error) {
           console.error('Error loading user profile:', error);

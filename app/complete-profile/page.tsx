@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
+import { VALID_GRADES, normalizeGrade, type ValidGrade } from '@/lib/grade-utils';
 
 interface ProfileFormData {
   studentName: string;
-  grade: string;
+  grade: ValidGrade | '';
   board: string;
 }
 
@@ -67,9 +68,10 @@ export default function CompleteProfilePage() {
       
       // Pre-fill form with existing data if any
       if (data) {
+        const normalizedGrade = data.grade ? normalizeGrade(data.grade) : '';
         setFormData({
           studentName: data.student_name || '',
-          grade: data.grade || '',
+          grade: normalizedGrade || '',
           board: data.board || 'CBSE',
         });
       }
@@ -82,7 +84,12 @@ export default function CompleteProfilePage() {
   };
 
   const handleInputChange = (field: keyof ProfileFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === 'grade') {
+      const normalizedGrade = normalizeGrade(value) || value as ValidGrade;
+      setFormData(prev => ({ ...prev, [field]: normalizedGrade }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
     setError('');
   };
 
@@ -188,11 +195,9 @@ export default function CompleteProfilePage() {
                 required
               >
                 <option value="">Select your grade</option>
-                <option value="Class 1">Class 1</option>
-                <option value="Class 2">Class 2</option>
-                <option value="Class 3">Class 3</option>
-                <option value="Class 4">Class 4</option>
-                <option value="Class 5">Class 5</option>
+                {VALID_GRADES.map(grade => (
+                  <option key={grade} value={grade}>{grade}</option>
+                ))}
               </select>
             </div>
 

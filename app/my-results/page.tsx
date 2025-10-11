@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { TestResult, Test } from '@/types';
 import { supabase } from '@/lib/supabase';
 import TestReview from '@/components/TestReview';
+import { normalizeGrade } from '@/lib/grade-utils';
 
 
 export default function MyResultsPage() {
@@ -44,7 +45,12 @@ export default function MyResultsPage() {
             return;
           }
 
-          setUserProfile(data);
+          // Normalize grade value
+          const normalizedData = {
+            ...data,
+            grade: data.grade ? normalizeGrade(data.grade) || data.grade : data.grade
+          };
+          setUserProfile(normalizedData);
         } catch (error) {
           console.error('Error loading user profile:', error);
         }

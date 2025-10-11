@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { ActivityService, Activity } from '@/lib/activity';
 import NavigationHeader from '@/components/NavigationHeader';
 import { supabase } from '@/lib/supabase';
+import { normalizeGrade } from '@/lib/grade-utils';
 
 export default function DashboardPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -40,7 +41,12 @@ export default function DashboardPage() {
             return;
           }
 
-          setUserProfile(data);
+          // Normalize grade value
+          const normalizedData = {
+            ...data,
+            grade: data.grade ? normalizeGrade(data.grade) || data.grade : data.grade
+          };
+          setUserProfile(normalizedData);
         } catch (error) {
           console.error('Error loading user profile:', error);
         }
