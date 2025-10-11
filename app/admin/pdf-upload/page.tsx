@@ -317,6 +317,8 @@ export default function PDFUploadPage() {
         file: null,
         customPrompt: '',
         chapter: 1,
+        numTests: 5,
+        questionsPerTest: 10,
       });
 
     } catch (err) {
