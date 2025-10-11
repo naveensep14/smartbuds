@@ -6,6 +6,7 @@ import { Eye, EyeOff, Lock, Mail, Menu, X, UserPlus } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);

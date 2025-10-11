@@ -34,6 +34,7 @@ export default function PDFUploadPage() {
   const [selectedTests, setSelectedTests] = useState<Set<number>>(new Set());
   const [editingTest, setEditingTest] = useState<number | null>(null);
   const [editingQuestion, setEditingQuestion] = useState<{testIndex: number, questionIndex: number} | null>(null);
+  const [logs, setLogs] = useState<string[]>([]);
   const [error, setError] = useState('');
 
   const handleInputChange = (field: keyof PDFUploadFormData, value: string | number | File | null) => {
@@ -73,6 +74,12 @@ export default function PDFUploadPage() {
     setSelectedTests(new Set());
     setEditingTest(null);
     setEditingQuestion(null);
+    setLogs([]);
+  };
+
+  const addLog = (message: string) => {
+    const timestamp = new Date().toLocaleTimeString();
+    setLogs(prev => [...prev, `[${timestamp}] ${message}`]);
   };
 
   const handleEditTest = (testIndex: number) => {
@@ -121,11 +128,14 @@ export default function PDFUploadPage() {
     setUploadProgress(0);
     setCurrentStep('Preparing upload...');
     setError('');
+    setLogs([]);
+    addLog('🚀 Starting PDF upload and AI processing...');
 
     try {
       // Step 1: Prepare upload (0-15%)
       setCurrentStep('📁 Preparing PDF file for upload...');
       setUploadProgress(5);
+      addLog('📁 Preparing PDF file for upload...');
       
       // Create FormData for file upload
       const uploadData = new FormData();
@@ -141,6 +151,7 @@ export default function PDFUploadPage() {
       // Step 2: Upload file (15-30%)
       setCurrentStep('📤 Uploading PDF file to server...');
       setUploadProgress(20);
+      addLog('📤 Uploading PDF file to server...');
 
       // Upload and process PDF
       const response = await fetch('/api/admin/upload-pdf', {
@@ -154,10 +165,12 @@ export default function PDFUploadPage() {
       }
 
       setUploadProgress(30);
+      addLog('✅ PDF uploaded successfully');
 
       // Step 3: AI Analysis (30-50%)
       setCurrentStep('🔍 AI is analyzing PDF content...');
       setUploadProgress(35);
+      addLog('🔍 AI is analyzing PDF content...');
 
       const result = await response.json();
       
@@ -166,6 +179,7 @@ export default function PDFUploadPage() {
       // Step 4: AI Generation (50-90%)
       setCurrentStep('🤖 AI is generating high-quality questions...');
       setUploadProgress(60);
+      addLog('🤖 AI is generating high-quality questions...');
       
       // More accurate progress simulation based on actual concepts
       const totalConcepts = result.concepts ? result.concepts.length : 3;
@@ -178,11 +192,13 @@ export default function PDFUploadPage() {
           const conceptName = result.concepts ? result.concepts[currentConceptIndex] : `Concept ${currentConceptIndex + 1}`;
           setCurrentConcept(`Processing: ${conceptName}`);
           setUploadProgress(60 + (currentConceptIndex * progressPerConcept));
+          addLog(`📚 Processing concept: ${conceptName}`);
           currentConceptIndex++;
         } else {
           clearInterval(conceptInterval);
           setCurrentConcept('Finalizing questions...');
           setUploadProgress(90);
+          addLog('🔧 Finalizing questions...');
         }
       }, 800); // Update every 800ms per concept
 
@@ -193,6 +209,7 @@ export default function PDFUploadPage() {
       setCurrentStep('✅ Tests generated successfully!');
       setCurrentConcept('');
       setUploadProgress(100);
+      addLog(`✅ Successfully generated ${result.tests.length} tests with ${result.tests.reduce((total: number, test: any) => total + test.questions.length, 0)} total questions`);
       
       clearInterval(conceptInterval);
       
@@ -444,6 +461,25 @@ export default function PDFUploadPage() {
                             <strong>Current:</strong> {currentConcept}
                           </p>
                         )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Live Logs Viewer */}
+                {logs.length > 0 && (
+                  <div className="mt-4 p-3 bg-gray-900 rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-sm font-medium text-green-400">📋 Live Processing Logs</h4>
+                      <span className="text-xs text-gray-400">{logs.length} entries</span>
+                    </div>
+                    <div className="bg-black rounded p-3 max-h-40 overflow-y-auto">
+                      <div className="space-y-1">
+                        {logs.slice(-10).map((log, index) => (
+                          <div key={index} className="text-xs text-green-300 font-mono">
+                            {log}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
