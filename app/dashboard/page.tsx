@@ -106,7 +106,7 @@ export default function DashboardPage() {
         >
           <div className="flex items-center space-x-4">
             <img
-              src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=orange&color=white`}
+              src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${isAdmin ? (user.user_metadata?.full_name || user.email?.split('@')[0]) : (userProfile?.student_name || user.user_metadata?.full_name || user.email?.split('@')[0])}&background=orange&color=white`}
               alt="Profile"
               className="w-16 h-16 rounded-full"
             />
@@ -125,6 +125,33 @@ export default function DashboardPage() {
             </div>
           </div>
         </motion.div>
+
+        {/* Student Profile Info */}
+        {!isAdmin && userProfile && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl shadow-lg p-6 mb-8"
+          >
+            <div className="flex items-center space-x-4">
+              <div className="bg-blue-100 p-3 rounded-xl">
+                <User className="w-8 h-8 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900">Student Profile</h3>
+                <div className="flex items-center space-x-4 mt-2">
+                  <span className="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-medium">
+                    {userProfile.grade}
+                  </span>
+                  <span className="text-sm bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-medium">
+                    {userProfile.board}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">

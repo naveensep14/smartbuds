@@ -173,6 +173,11 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
                   <Clock className="w-3 h-3" />
                   <span>{LeaderboardService.formatDate(entry.lastTestDate)}</span>
                 </span>
+                {entry.grade && entry.board && (
+                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                    {entry.grade} {entry.board}
+                  </span>
+                )}
                 <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
                   Best: {entry.bestScore}%
                 </span>

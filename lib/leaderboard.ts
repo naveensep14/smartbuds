@@ -8,6 +8,8 @@ export interface LeaderboardEntry {
   totalTests: number;
   bestScore: number;
   lastTestDate: string;
+  grade?: string;
+  board?: string;
 }
 
 export class LeaderboardService {
@@ -127,7 +129,9 @@ export class LeaderboardService {
             averageScore,
             totalTests: stats.totalTests,
             bestScore,
-            lastTestDate: stats.lastTestDate
+            lastTestDate: stats.lastTestDate,
+            grade: stats.profile?.grade || undefined,
+            board: stats.profile?.board || undefined
           };
         })
         .sort((a, b) => {
@@ -191,8 +195,11 @@ export class LeaderboardService {
    * Get display name from profile or fallback to email formatting
    */
   static getDisplayName(profile: any, email: string): string {
-    // Try to get real name from profile
+    // Try to get student name from profile first (preferred)
     if (profile) {
+      if (profile.student_name) {
+        return profile.student_name;
+      }
       if (profile.full_name) {
         return profile.full_name;
       }
