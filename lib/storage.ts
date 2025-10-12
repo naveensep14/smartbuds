@@ -148,6 +148,7 @@ export const initializeStorage = () => {
         subject: 'Science',
         grade: '3rd Grade',
         board: 'ICSE',
+        type: 'coursework',
         duration: 30,
         questions: [
           {
@@ -196,6 +197,7 @@ export const initializeStorage = () => {
         subject: 'Mathematics',
         grade: '3rd Grade',
         board: 'ICSE',
+        type: 'coursework',
         duration: 45,
         questions: [
           {

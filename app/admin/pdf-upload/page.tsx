@@ -316,6 +316,7 @@ export default function PDFUploadPage() {
         subject: '',
         grade: '',
         board: 'CBSE',
+        type: 'coursework',
         duration: 30,
         file: null,
         customPrompt: '',

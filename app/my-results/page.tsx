@@ -130,6 +130,7 @@ export default function MyResultsPage() {
             subject: test.subject,
             grade: test.grade,
             board: (test as any).board || 'ICSE', // Default value if board field doesn't exist
+            type: (test as any).type || 'coursework', // Default to coursework
             duration: test.duration,
             questions: test.questions || [],
             createdAt: new Date(test.created_at),
