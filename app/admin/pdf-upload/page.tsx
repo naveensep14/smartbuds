@@ -34,6 +34,8 @@ export default function PDFUploadPage() {
     numTests: 5,
     questionsPerTest: 10,
   });
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [currentFileIndex, setCurrentFileIndex] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState('');
@@ -46,7 +48,41 @@ export default function PDFUploadPage() {
   const [error, setError] = useState('');
 
   const handleInputChange = (field: keyof PDFUploadFormData, value: string | number | File | null) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => {
+      const newData = { ...prev, [field]: value };
+      
+      // Auto-adjust settings for weekly tests
+      if (field === 'type' && value === 'weekly') {
+        newData.numTests = 1;
+        newData.questionsPerTest = 25;
+        newData.duration = 45;
+      }
+      
+      return newData;
+    });
+    setError('');
+  };
+
+  const handleFileUpload = (files: FileList | null) => {
+    if (!files) return;
+    
+    const pdfFiles = Array.from(files).filter(file => file.type === 'application/pdf');
+    
+    if (pdfFiles.length === 0) {
+      setError('Please select PDF files only');
+      return;
+    }
+    
+    if (formData.type === 'weekly') {
+      // For weekly tests, store multiple files and process one at a time
+      setUploadedFiles(pdfFiles);
+      setCurrentFileIndex(0);
+      setFormData(prev => ({ ...prev, file: pdfFiles[0] }));
+    } else {
+      // For coursework tests, use single file as before
+      setFormData(prev => ({ ...prev, file: pdfFiles[0] }));
+    }
+    
     setError('');
   };
 
@@ -132,6 +168,56 @@ export default function PDFUploadPage() {
     setEditingQuestion(null);
   };
 
+  const processSingleFile = async (file: File, fileIndex: number, totalFiles: number) => {
+    console.log(`🎯 [FRONTEND LOG] Processing file ${fileIndex + 1}/${totalFiles}: ${file.name}`);
+    
+    // Create FormData for file upload
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+    uploadData.append('subject', formData.subject);
+    uploadData.append('grade', formData.grade);
+    uploadData.append('board', formData.board);
+    uploadData.append('type', formData.type);
+    uploadData.append('duration', formData.duration.toString());
+    uploadData.append('customPrompt', formData.customPrompt);
+    uploadData.append('chapter', formData.chapter.toString());
+    uploadData.append('numTests', formData.numTests.toString());
+    uploadData.append('questionsPerTest', formData.questionsPerTest.toString());
+    
+    // Update progress for this file
+    const fileProgressStart = (fileIndex / totalFiles) * 100;
+    const fileProgressEnd = ((fileIndex + 1) / totalFiles) * 100;
+    
+    setCurrentStep(`📤 Uploading file ${fileIndex + 1}/${totalFiles}: ${file.name}`);
+    setUploadProgress(fileProgressStart + 10);
+    addLog(`📤 Uploading file ${fileIndex + 1}/${totalFiles}: ${file.name}`);
+
+    const response = await fetch('/api/admin/upload-pdf', {
+      method: 'POST',
+      body: uploadData,
+    });
+
+    if (!response.ok) {
+      let errorMessage = `Failed to process file ${file.name}`;
+      try {
+        const responseClone = response.clone();
+        const errorData = await responseClone.json();
+        errorMessage = errorData.error || errorMessage;
+      } catch (e) {
+        console.error('❌ [FRONTEND LOG] Error parsing error response:', e);
+      }
+      throw new Error(errorMessage);
+    }
+
+    const result = await response.json();
+    console.log(`✅ [FRONTEND LOG] File ${fileIndex + 1} processed successfully:`, result);
+    
+    setUploadProgress(fileProgressEnd);
+    addLog(`✅ File ${fileIndex + 1}/${totalFiles} processed successfully`);
+    
+    return result;
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     
@@ -144,25 +230,33 @@ export default function PDFUploadPage() {
       chapter: formData.chapter,
       board: formData.board,
       duration: formData.duration,
-      customPrompt: formData.customPrompt ? formData.customPrompt.substring(0, 50) + '...' : 'None'
+      customPrompt: formData.customPrompt ? formData.customPrompt.substring(0, 50) + '...' : 'None',
+      type: formData.type,
+      uploadedFilesCount: uploadedFiles.length
     });
     
-    if (!formData.file) {
+    if (formData.type === 'weekly' && uploadedFiles.length === 0) {
+      console.error('❌ [FRONTEND LOG] No files selected for weekly test');
+      setError('Please select PDF files to upload for weekly test.');
+      return;
+    }
+    
+    if (formData.type === 'coursework' && !formData.file) {
       console.error('❌ [FRONTEND LOG] No file selected');
       setError('Please select a PDF file to upload.');
       return;
     }
 
-    // Check file size limit (Vercel has 4.5MB limit for Hobby, 6MB for Pro)
-    const fileSizeMB = formData.file.size / (1024 * 1024);
-    console.log('📏 [FRONTEND LOG] File size:', fileSizeMB.toFixed(2), 'MB');
-    
-    // Check file size limit (4.5MB = 4.5 * 1024 * 1024 bytes)
+    // Check file size limits
     const maxSizeBytes = 4.5 * 1024 * 1024;
-    if (formData.file.size >= maxSizeBytes) {
-      const fileSizeMB = (formData.file.size / (1024 * 1024)).toFixed(2);
-      setError(`File size (${fileSizeMB} MB) exceeds the maximum limit of 4.5 MB. Please compress your PDF or use a smaller file.`);
-      return;
+    const filesToCheck = formData.type === 'weekly' ? uploadedFiles : [formData.file!];
+    
+    for (const file of filesToCheck) {
+      if (file.size >= maxSizeBytes) {
+        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        setError(`File "${file.name}" size (${fileSizeMB} MB) exceeds the maximum limit of 4.5 MB. Please compress your PDF or use a smaller file.`);
+        return;
+      }
     }
 
     if (!formData.subject || !formData.grade || !formData.chapter) {
@@ -184,75 +278,18 @@ export default function PDFUploadPage() {
     addLog('🚀 Starting PDF upload and AI processing...');
 
     try {
-      // Step 1: Prepare upload (0-15%)
-      setCurrentStep('📁 Preparing PDF file for upload...');
-      setUploadProgress(5);
-      addLog('📁 Preparing PDF file for upload...');
+      const filesToProcess = formData.type === 'weekly' ? uploadedFiles : [formData.file!];
+      const allResults: any[] = [];
       
-      // Create FormData for file upload
-      const uploadData = new FormData();
-      uploadData.append('file', formData.file);
-      uploadData.append('subject', formData.subject);
-      uploadData.append('grade', formData.grade);
-      uploadData.append('board', formData.board);
-      uploadData.append('type', formData.type);
-      uploadData.append('duration', formData.duration.toString());
-      uploadData.append('customPrompt', formData.customPrompt);
-      uploadData.append('chapter', formData.chapter.toString());
-      uploadData.append('numTests', formData.numTests.toString());
-      uploadData.append('questionsPerTest', formData.questionsPerTest.toString());
-      
-      setUploadProgress(15);
-
-      // Step 2: Upload file (15-30%)
-      setCurrentStep('📤 Uploading PDF file to server...');
-      setUploadProgress(20);
-      addLog('📤 Uploading PDF file to server...');
-
-      console.log('🚀 [FRONTEND LOG] Starting regular upload...');
-      // Upload and process PDF
-      console.log('🚀 [FRONTEND LOG] Starting fetch request to /api/admin/upload-pdf');
-      const fileEntry = uploadData.get('file');
-      const fileSize = fileEntry instanceof File ? fileEntry.size : 'No file';
-      console.log('🚀 [FRONTEND LOG] FormData size:', fileSize);
-      console.log('🚀 [FRONTEND LOG] FormData entries:', Array.from(uploadData.entries()).map(([key, value]) => 
-        key === 'file' && value instanceof File ? [key, `File: ${value.name} (${value.size} bytes)`] : [key, value]
-      ));
-      
-      const response = await fetch('/api/admin/upload-pdf', {
-        method: 'POST',
-        body: uploadData,
-      });
-
-      console.log('📡 [FRONTEND LOG] Response received:', response.status, response.statusText);
-      console.log('📡 [FRONTEND LOG] Response headers:', Object.fromEntries(response.headers.entries()));
-
-      if (!response.ok) {
-        let errorMessage = 'Failed to process PDF';
-        try {
-          // Clone the response to avoid "body stream already read" error
-          const responseClone = response.clone();
-          const errorData = await responseClone.json();
-          errorMessage = errorData.error || errorMessage;
-          console.error('🚨 [FRONTEND LOG] Error response JSON:', errorData);
-        } catch (jsonError) {
-          // If response is not JSON (e.g., "Request Entity Too Large"), use status text
-          errorMessage = response.statusText || errorMessage;
-          console.error('🚨 [FRONTEND LOG] Non-JSON error response:', response.statusText);
-          try {
-            // Clone the response to avoid "body stream already read" error
-            const responseClone = response.clone();
-            const responseText = await responseClone.text();
-            console.error('🚨 [FRONTEND LOG] Response text:', responseText);
-          } catch (textError) {
-            console.error('🚨 [FRONTEND LOG] Could not read response text:', textError instanceof Error ? textError.message : 'Unknown error');
-          }
-        }
-        throw new Error(errorMessage);
+      // Process files sequentially
+      for (let i = 0; i < filesToProcess.length; i++) {
+        const file = filesToProcess[i];
+        const result = await processSingleFile(file, i, filesToProcess.length);
+        allResults.push(result);
       }
 
-      setUploadProgress(30);
-      addLog('✅ PDF uploaded successfully');
+      setUploadProgress(100);
+      addLog('✅ All files processed successfully');
 
       // Step 3: AI Analysis (30-50%)
       setCurrentStep('🔍 AI is analyzing PDF content...');
@@ -403,13 +440,14 @@ export default function PDFUploadPage() {
             {/* File Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                PDF File *
+                {formData.type === 'weekly' ? 'PDF Files *' : 'PDF File *'}
               </label>
               <div className="relative">
                 <input
                   type="file"
                   accept=".pdf"
-                  onChange={handleFileChange}
+                  multiple={formData.type === 'weekly'}
+                  onChange={(e) => handleFileUpload(e.target.files)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   required
                 />
@@ -424,9 +462,65 @@ export default function PDFUploadPage() {
                 </div>
               </div>
               
+              {/* Display uploaded files */}
+              {formData.type === 'weekly' && uploadedFiles.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">
+                    Uploaded Files ({uploadedFiles.length})
+                  </h4>
+                  <div className="space-y-2">
+                    {uploadedFiles.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <div className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-sm font-medium text-green-800">
+                            {file.name} ({(file.size / (1024 * 1024)).toFixed(2)} MB)
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newFiles = uploadedFiles.filter((_, i) => i !== index);
+                            setUploadedFiles(newFiles);
+                            if (newFiles.length > 0) {
+                              setFormData(prev => ({ ...prev, file: newFiles[0] }));
+                            } else {
+                              setFormData(prev => ({ ...prev, file: null }));
+                            }
+                          }}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {formData.type === 'coursework' && formData.file && (
+                <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-sm font-medium text-green-800">
+                      {formData.file.name} ({(formData.file.size / (1024 * 1024)).toFixed(2)} MB)
+                    </span>
+                  </div>
+                </div>
+              )}
+              
               <div className="mt-3 space-y-2">
                 <p className="text-sm text-gray-500">
-                  Upload a PDF file to extract content and generate tests
+                  {formData.type === 'weekly' 
+                    ? 'Upload multiple PDF files to generate one test per file' 
+                    : 'Upload a PDF file to extract content and generate tests'
+                  }
                 </p>
                 
                 {/* PDF compression help */}
@@ -488,6 +582,7 @@ export default function PDFUploadPage() {
                     value={formData.numTests}
                     onChange={(e) => handleInputChange('numTests', parseInt(e.target.value))}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    disabled={formData.type === 'weekly'}
                   >
                     <option value={1}>1 Test</option>
                     <option value={2}>2 Tests</option>
@@ -501,7 +596,10 @@ export default function PDFUploadPage() {
                     <option value={10}>10 Tests</option>
                   </select>
                   <p className="text-sm text-gray-500 mt-1">
-                    How many different tests to generate from the PDF
+                    {formData.type === 'weekly' 
+                      ? 'Weekly tests generate 1 test per PDF file' 
+                      : 'How many different tests to generate from the PDF'
+                    }
                   </p>
                 </div>
 
@@ -656,6 +754,11 @@ export default function PDFUploadPage() {
                   max="120"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
+                {formData.type === 'weekly' && (
+                  <p className="text-sm text-gray-500 mt-1">
+                    Default: 45 minutes for weekly tests
+                  </p>
+                )}
               </div>
             </div>
 
