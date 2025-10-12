@@ -485,7 +485,7 @@ export default function TestPage() {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
       <NavigationHeader />
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Test Info */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mb-4">
@@ -505,202 +505,219 @@ export default function TestPage() {
           </div>
         </div>
 
-        {/* Progress Analytics */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Your Progress</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{answeredQuestions}</div>
-              <div className="text-sm text-gray-600">Answered</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">{formatTime(timeRemaining)}</div>
-              <div className="text-sm text-gray-600">Time Left</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">{Math.round((answeredQuestions / totalQuestions) * 100)}%</div>
-              <div className="text-sm text-gray-600">Complete</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Question Navigation */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Question Navigation</h3>
-          <div className="grid grid-cols-5 sm:grid-cols-10 md:grid-cols-15 gap-2">
-            {test.questions.map((question, index) => {
-              const isAnswered = selectedAnswers[question.id] !== undefined;
-              const isCurrent = index === currentQuestionIndex;
-              
-              return (
-                <button
-                  key={question.id}
-                  onClick={() => setCurrentQuestionIndex(index)}
-                  className={`w-10 h-10 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    isCurrent
-                      ? 'bg-orange-500 text-white ring-2 ring-orange-300'
-                      : isAnswered
-                      ? 'bg-green-500 text-white hover:bg-green-600'
-                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-                  }`}
-                  aria-label={`Question ${index + 1}${isAnswered ? ', answered' : ', not answered'}`}
-                >
-                  {index + 1}
-                </button>
-              );
-            })}
-          </div>
-          <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-600">
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-gray-200 rounded"></div>
-              <span>Not answered</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-green-500 rounded"></div>
-              <span>Answered</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-orange-500 rounded"></div>
-              <span>Current</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Resume Notification */}
-        {isResuming && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6"
-          >
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <CheckCircle className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-blue-800">Resuming Test</h3>
-                <p className="text-blue-600 text-sm">
-                  You have {answeredQuestions} answered questions. Continuing from question {currentQuestionIndex + 1}.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Question */}
-        <motion.div
-          key={currentQuestionIndex}
-          className="question-card mb-8"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Question {currentQuestionIndex + 1}</h2>
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setShowReportModal(true)}
-                className="flex items-center space-x-2 px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors"
-                aria-label="Report issue with this question"
-              >
-                <Flag className="w-4 h-4" />
-                <span className="text-sm font-medium">Report Issue</span>
-              </button>
-            </div>
-          </div>
-          
-          <p id="question-text" className="text-xl text-gray-800 mb-8 leading-relaxed">{currentQuestion?.text}</p>
-          
-          <div 
-            className="space-y-4" 
-            role="radiogroup" 
-            aria-labelledby="question-text"
-            aria-describedby="question-instructions"
-          >
-            <div id="question-instructions" className="sr-only">
-              Select one option using number keys 1-4, arrow keys to navigate, or click to select.
-            </div>
-            {currentQuestion?.options.map((option, index) => (
-              <motion.button
-                key={index}
-                onClick={() => handleAnswerSelect(index)}
-                className={`option-button ${
-                  selectedAnswers[currentQuestion?.id] === index ? 'selected' : ''
-                }`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                role="radio"
-                aria-checked={selectedAnswers[currentQuestion?.id] === index}
-                aria-describedby={`option-${index}-text`}
-                aria-label={`Option ${index + 1}: ${option}`}
-              >
-                <div className="flex items-center">
-                  <div className="w-8 h-8 rounded-full border-2 border-gray-300 mr-4 flex items-center justify-center">
-                    <span className="text-sm font-bold text-gray-600">{String.fromCharCode(65 + index)}</span>
-                    {selectedAnswers[currentQuestion?.id] === index && (
-                      <div className="absolute w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                      </div>
-                    )}
+        {/* 3-Column Layout: Shortcuts | Test Content | Progress */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Left Sidebar - Keyboard Shortcuts */}
+          <div className="lg:col-span-2 hidden lg:block">
+            <div className="sticky top-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                <h4 className="font-semibold text-blue-800 mb-3">Shortcuts</h4>
+                <div className="space-y-2 text-sm text-blue-700">
+                  <div className="flex flex-col">
+                    <kbd className="px-2 py-1 bg-blue-100 rounded text-xs text-center mb-1">1-4</kbd>
+                    <span className="text-xs">Select</span>
                   </div>
-                  <span id={`option-${index}-text`} className="text-lg font-medium">{option}</span>
+                  <div className="flex flex-col">
+                    <kbd className="px-2 py-1 bg-blue-100 rounded text-xs text-center mb-1">←→</kbd>
+                    <span className="text-xs">Navigate</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <kbd className="px-2 py-1 bg-blue-100 rounded text-xs text-center mb-1">Enter</kbd>
+                    <span className="text-xs">Next</span>
+                  </div>
                 </div>
-              </motion.button>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Keyboard Shortcuts Help */}
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-          <h4 className="font-semibold text-blue-800 mb-2">Keyboard Shortcuts</h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-blue-700">
-            <div>• <kbd className="px-1 py-0.5 bg-blue-100 rounded text-xs">1-4</kbd> Select answer</div>
-            <div>• <kbd className="px-1 py-0.5 bg-blue-100 rounded text-xs">←→</kbd> Navigate questions</div>
-            <div>• <kbd className="px-1 py-0.5 bg-blue-100 rounded text-xs">Enter</kbd> Next/Submit</div>
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-          <button
-            onClick={handlePreviousQuestion}
-            disabled={currentQuestionIndex === 0}
-            className="btn-secondary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto justify-center"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Previous</span>
-          </button>
-
-          <div className="text-center w-full sm:w-auto">
-            <div className="text-sm text-gray-600 mb-2">
-              Progress: {answeredQuestions}/{totalQuestions} questions answered
-            </div>
-            <div className="w-full sm:w-64 bg-gray-200 rounded-full h-2">
-              <div 
-                className="bg-primary-500 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${(answeredQuestions / totalQuestions) * 100}%` }}
-              ></div>
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-            {currentQuestionIndex < totalQuestions - 1 && (
-              <button
-                onClick={handleNextQuestion}
-                className="btn-primary flex items-center space-x-2 w-full sm:w-auto justify-center"
+          {/* Middle - Test Content */}
+          <div className="lg:col-span-7 space-y-8">
+            {/* Question Navigation */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Question Navigation</h3>
+              <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
+                {test.questions.map((question, index) => {
+                  const isAnswered = selectedAnswers[question.id] !== undefined;
+                  const isCurrent = index === currentQuestionIndex;
+                  
+                  return (
+                    <button
+                      key={question.id}
+                      onClick={() => setCurrentQuestionIndex(index)}
+                      className={`w-10 h-10 rounded-lg text-sm font-medium transition-all duration-200 ${
+                        isCurrent
+                          ? 'bg-orange-500 text-white ring-2 ring-orange-300'
+                          : isAnswered
+                          ? 'bg-green-500 text-white hover:bg-green-600'
+                          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      }`}
+                      aria-label={`Question ${index + 1}${isAnswered ? ', answered' : ', not answered'}`}
+                    >
+                      {index + 1}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-600">
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 bg-gray-200 rounded"></div>
+                  <span>Not answered</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 bg-green-500 rounded"></div>
+                  <span>Answered</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 bg-orange-500 rounded"></div>
+                  <span>Current</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Resume Notification */}
+            {isResuming && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-blue-50 border border-blue-200 rounded-xl p-4"
               >
-                <span>Next</span>
-                <ArrowRight className="w-5 h-5" />
-              </button>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-blue-800">Resuming Test</h3>
+                    <p className="text-blue-600 text-sm">
+                      You have {answeredQuestions} answered questions. Continuing from question {currentQuestionIndex + 1}.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
             )}
-            <button
-              onClick={handleSubmitAttempt}
-              className="btn-success flex items-center space-x-2 w-full sm:w-auto justify-center"
+
+            {/* Question */}
+            <motion.div
+              key={currentQuestionIndex}
+              className="question-card"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
             >
-              <CheckCircle className="w-5 h-5" />
-              <span>Submit Test</span>
-            </button>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">Question {currentQuestionIndex + 1}</h2>
+                <button
+                  onClick={() => setShowReportModal(true)}
+                  className="flex items-center space-x-2 px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors"
+                  aria-label="Report issue with this question"
+                >
+                  <Flag className="w-4 h-4" />
+                  <span className="text-sm font-medium">Report Issue</span>
+                </button>
+              </div>
+              
+              <p id="question-text" className="text-xl text-gray-800 mb-8 leading-relaxed">{currentQuestion?.text}</p>
+              
+              <div 
+                className="space-y-4" 
+                role="radiogroup" 
+                aria-labelledby="question-text"
+                aria-describedby="question-instructions"
+              >
+                <div id="question-instructions" className="sr-only">
+                  Select one option using number keys 1-4, arrow keys to navigate, or click to select.
+                </div>
+                {currentQuestion?.options.map((option, index) => (
+                  <motion.button
+                    key={index}
+                    onClick={() => handleAnswerSelect(index)}
+                    className={`option-button ${
+                      selectedAnswers[currentQuestion?.id] === index ? 'selected' : ''
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    role="radio"
+                    aria-checked={selectedAnswers[currentQuestion?.id] === index}
+                    aria-describedby={`option-${index}-text`}
+                    aria-label={`Option ${index + 1}: ${option}`}
+                  >
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 rounded-full border-2 border-gray-300 mr-4 flex items-center justify-center">
+                        <span className="text-sm font-bold text-gray-600">{String.fromCharCode(65 + index)}</span>
+                        {selectedAnswers[currentQuestion?.id] === index && (
+                          <div className="absolute w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
+                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                          </div>
+                        )}
+                      </div>
+                      <span id={`option-${index}-text`} className="text-lg font-medium">{option}</span>
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Navigation */}
+            <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+              <button
+                onClick={handlePreviousQuestion}
+                disabled={currentQuestionIndex === 0}
+                className="btn-secondary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto justify-center"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                <span>Previous</span>
+              </button>
+
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                {currentQuestionIndex < totalQuestions - 1 && (
+                  <button
+                    onClick={handleNextQuestion}
+                    className="btn-primary flex items-center space-x-2 w-full sm:w-auto justify-center"
+                  >
+                    <span>Next</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                )}
+                <button
+                  onClick={handleSubmitAttempt}
+                  className="btn-success flex items-center space-x-2 w-full sm:w-auto justify-center"
+                >
+                  <CheckCircle className="w-5 h-5" />
+                  <span>Submit Test</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Sidebar - Progress */}
+          <div className="lg:col-span-3">
+            <div className="sticky top-4">
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Your Progress</h3>
+                <div className="space-y-6">
+                  <div className="text-center pb-4 border-b border-gray-200">
+                    <div className="text-3xl font-bold text-blue-600 mb-1">{formatTime(timeRemaining)}</div>
+                    <div className="text-sm text-gray-600">Time Remaining</div>
+                  </div>
+                  
+                  <div className="text-center pb-4 border-b border-gray-200">
+                    <div className="text-2xl font-bold text-green-600 mb-1">{answeredQuestions}/{totalQuestions}</div>
+                    <div className="text-sm text-gray-600 mb-3">Questions Answered</div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${(answeredQuestions / totalQuestions) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-600 mb-1">{Math.round((answeredQuestions / totalQuestions) * 100)}%</div>
+                    <div className="text-sm text-gray-600">Complete</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
