@@ -1,59 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { getServerUser } from '@/lib/server-auth';
+import { ADMIN_EMAILS } from '@/lib/admin-config';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
-const ADMIN_EMAILS = ['naveensep14@gmail.com', 'admin@successbuds.com'];
 
 export async function GET(request: NextRequest) {
   try {
-    // Get cookies from request headers
-    const cookieHeader = request.headers.get('cookie') || '';
-    
-    console.log('🔍 [ADMIN REPORTS] Cookie header present:', !!cookieHeader);
-    
-    // Create supabase client with cookies from request
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: {
-        headers: {
-          cookie: cookieHeader
-        }
-      }
-    });
-    
-    // Get the current user from session
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    // Get the current user using server-side auth
+    const user = await getServerUser();
     
     console.log('🔍 [ADMIN REPORTS] Auth check:', { 
       hasUser: !!user, 
       userId: user?.id,
-      email: user?.email,
-      authError: authError?.message 
+      email: user?.email
     });
     
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized', details: authError?.message }, { status: 401 });
+    if (!user || !user.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check if user is admin using service role to bypass RLS
-    const adminClient = createClient(supabaseUrl, supabaseServiceKey);
-    const { data: profile, error: profileError } = await adminClient
-      .from('profiles')
-      .select('email')
-      .eq('id', user.id)
-      .single();
+    // Check if user is admin
+    const isAdmin = ADMIN_EMAILS.includes(user.email.toLowerCase());
 
-    console.log('🔍 [ADMIN REPORTS] Profile check:', { 
-      email: profile?.email,
-      isAdmin: profile ? ADMIN_EMAILS.includes(profile.email.toLowerCase()) : false,
-      profileError: profileError?.message
+    console.log('🔍 [ADMIN REPORTS] Admin check:', { 
+      email: user.email,
+      isAdmin
     });
 
-    if (!profile || !ADMIN_EMAILS.includes(profile.email.toLowerCase())) {
+    if (!isAdmin) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
+
+    // Use service role client to bypass RLS
+    const adminClient = createClient(supabaseUrl, supabaseServiceKey);
 
     // Get query parameters
     const { searchParams } = new URL(request.url);
@@ -109,35 +90,22 @@ export async function GET(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    // Get cookies from request headers
-    const cookieHeader = request.headers.get('cookie') || '';
+    // Get the current user using server-side auth
+    const user = await getServerUser();
     
-    // Create supabase client with cookies from request
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: {
-        headers: {
-          cookie: cookieHeader
-        }
-      }
-    });
-    
-    // Get the current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    if (!user || !user.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check if user is admin using service role
-    const adminClient = createClient(supabaseUrl, supabaseServiceKey);
-    const { data: profile } = await adminClient
-      .from('profiles')
-      .select('email')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile || !ADMIN_EMAILS.includes(profile.email.toLowerCase())) {
+    // Check if user is admin
+    const isAdmin = ADMIN_EMAILS.includes(user.email.toLowerCase());
+    
+    if (!isAdmin) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
+
+    // Use service role client to bypass RLS
+    const adminClient = createClient(supabaseUrl, supabaseServiceKey);
 
     const { reportId, status, adminNotes } = await request.json();
 
@@ -182,35 +150,22 @@ export async function PATCH(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    // Get cookies from request headers
-    const cookieHeader = request.headers.get('cookie') || '';
+    // Get the current user using server-side auth
+    const user = await getServerUser();
     
-    // Create supabase client with cookies from request
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: {
-        headers: {
-          cookie: cookieHeader
-        }
-      }
-    });
-    
-    // Get the current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    if (!user || !user.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check if user is admin using service role
-    const adminClient = createClient(supabaseUrl, supabaseServiceKey);
-    const { data: profile } = await adminClient
-      .from('profiles')
-      .select('email')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile || !ADMIN_EMAILS.includes(profile.email.toLowerCase())) {
+    // Check if user is admin
+    const isAdmin = ADMIN_EMAILS.includes(user.email.toLowerCase());
+    
+    if (!isAdmin) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
+
+    // Use service role client to bypass RLS
+    const adminClient = createClient(supabaseUrl, supabaseServiceKey);
 
     const { reportId } = await request.json();
 
