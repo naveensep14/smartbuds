@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Clock, CheckCircle, XCircle, ArrowLeft, ArrowRight, Flag, Menu, X, Printer } from 'lucide-react';
+import { BookOpen, Clock, CheckCircle, XCircle, ArrowLeft, ArrowRight, Flag, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
@@ -10,7 +10,6 @@ import { createClient } from '@supabase/supabase-js';
 import { Test, Question, TestResult, CreateQuestionReportData } from '@/types';
 import { testService, resultService } from '@/lib/database';
 import { useAuth } from '@/lib/auth';
-import PrintableTest from '@/components/PrintableTest';
 import TestReview from '@/components/TestReview';
 import ReportQuestionModal from '@/components/ReportQuestionModal';
 import { TestProgressService, TestProgress } from '@/lib/test-progress';
@@ -33,8 +32,6 @@ export default function TestPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [testResult, setTestResult] = useState<TestResult | null>(null);
   const [startTime, setStartTime] = useState<Date>(new Date());
-  const [showPrintModal, setShowPrintModal] = useState(false);
-  const [printMode, setPrintMode] = useState<'test' | 'answer-key'>('test');
   const [testProgress, setTestProgress] = useState<TestProgress | null>(null);
   const [isResuming, setIsResuming] = useState(false);
   const [showReview, setShowReview] = useState(false);
@@ -654,21 +651,9 @@ export default function TestPage() {
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mb-4">
             <h1 className="text-2xl font-bold text-gray-800">{test.title}</h1>
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={() => {
-                  setPrintMode('test');
-                  setShowPrintModal(true);
-                }}
-                className="flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
-              >
-                <Printer className="w-4 h-4" />
-                <span>Print Test</span>
-              </button>
-              <div className="flex items-center space-x-2 bg-red-50 px-3 py-2 rounded-lg">
-                <Clock className="w-5 h-5 text-red-600" />
-                <span className="font-semibold text-red-600">{formatTime(timeRemaining)}</span>
-              </div>
+            <div className="flex items-center space-x-2 bg-red-50 px-3 py-2 rounded-lg">
+              <Clock className="w-5 h-5 text-red-600" />
+              <span className="font-semibold text-red-600">{formatTime(timeRemaining)}</span>
             </div>
           </div>
           <p className="text-gray-600 mb-4">{test.description}</p>
@@ -886,71 +871,6 @@ export default function TestPage() {
           </div>
         </div>
       </main>
-
-      {/* Print Modal */}
-      <AnimatePresence>
-        {showPrintModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-            onClick={() => setShowPrintModal(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-800">
-                    Print {printMode === 'test' ? 'Test' : 'Answer Key'}
-                  </h2>
-                  <button
-                    onClick={() => setShowPrintModal(false)}
-                    className="text-gray-400 hover:text-gray-600 transition-colors"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-
-                {/* Print Options */}
-                <div className="flex space-x-4 mb-6">
-                  <button
-                    onClick={() => setPrintMode('test')}
-                    className={`px-4 py-2 rounded-lg transition-colors ${
-                      printMode === 'test'
-                        ? 'bg-orange-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    Print Test
-                  </button>
-                  <button
-                    onClick={() => setPrintMode('answer-key')}
-                    className={`px-4 py-2 rounded-lg transition-colors ${
-                      printMode === 'answer-key'
-                        ? 'bg-orange-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    Print Answer Key
-                  </button>
-                </div>
-
-                {/* Printable Content */}
-                <PrintableTest 
-                  test={test} 
-                  showAnswers={printMode === 'answer-key'} 
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Test Review Modal */}
       {showReview && test && testResult && (
