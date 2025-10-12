@@ -40,8 +40,9 @@ export default function TestPage() {
   const [showReview, setShowReview] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportSubmitted, setReportSubmitted] = useState(false);
-  const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
   const [confidenceRatings, setConfidenceRatings] = useState<{ [key: string]: number }>({});
+  const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
+  const [showSubmitConfirmation, setShowSubmitConfirmation] = useState(false);
 
   // Derived values
   const currentQuestion = test?.questions[currentQuestionIndex];
@@ -111,8 +112,25 @@ export default function TestPage() {
     }
   }, [currentQuestionIndex, saveProgress]);
 
+  const handleSubmitAttempt = useCallback(() => {
+    if (!test) return;
+    
+    const allQuestionsAnswered = answeredQuestions === totalQuestions;
+    
+    if (allQuestionsAnswered) {
+      // All questions answered, submit directly
+      handleSubmitTest();
+    } else {
+      // Not all questions answered, show confirmation
+      setShowSubmitConfirmation(true);
+    }
+  }, [test, answeredQuestions, totalQuestions]);
+
   const handleSubmitTest = useCallback(async () => {
     if (!test || !user) return;
+
+    // Close confirmation dialog if open
+    setShowSubmitConfirmation(false);
 
     try {
       // Calculate test results
@@ -271,15 +289,10 @@ export default function TestPage() {
             handleAnswerSelect(optionIndex);
           }
           break;
-        case 'f':
-        case 'F':
-          e.preventDefault();
-          handleFlagQuestion(currentQuestion.id);
-          break;
         case 'Enter':
           e.preventDefault();
           if (currentQuestionIndex === totalQuestions - 1) {
-            handleSubmitTest();
+            handleSubmitAttempt();
           } else {
             handleNextQuestion();
           }
@@ -289,7 +302,7 @@ export default function TestPage() {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentQuestionIndex, totalQuestions, currentQuestion, handleAnswerSelect, handleNextQuestion, handlePreviousQuestion, handleSubmitTest, handleFlagQuestion]);
+  }, [currentQuestionIndex, totalQuestions, currentQuestion, handleAnswerSelect, handleNextQuestion, handlePreviousQuestion, handleSubmitTest]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -632,14 +645,10 @@ export default function TestPage() {
         {/* Progress Analytics */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Your Progress</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-green-600">{answeredQuestions}</div>
               <div className="text-sm text-gray-600">Answered</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">{flaggedCount}</div>
-              <div className="text-sm text-gray-600">Flagged</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600">{formatTime(timeRemaining)}</div>
@@ -658,7 +667,6 @@ export default function TestPage() {
           <div className="grid grid-cols-5 sm:grid-cols-10 md:grid-cols-15 gap-2">
             {test.questions.map((question, index) => {
               const isAnswered = selectedAnswers[question.id] !== undefined;
-              const isFlagged = flaggedQuestions.has(question.id);
               const isCurrent = index === currentQuestionIndex;
               
               return (
@@ -671,13 +679,10 @@ export default function TestPage() {
                       : isAnswered
                       ? 'bg-green-500 text-white hover:bg-green-600'
                       : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-                  } ${isFlagged ? 'ring-2 ring-orange-400' : ''}`}
-                  aria-label={`Question ${index + 1}${isAnswered ? ', answered' : ', not answered'}${isFlagged ? ', flagged' : ''}`}
+                  }`}
+                  aria-label={`Question ${index + 1}${isAnswered ? ', answered' : ', not answered'}`}
                 >
                   {index + 1}
-                  {isFlagged && (
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full"></div>
-                  )}
                 </button>
               );
             })}
@@ -694,10 +699,6 @@ export default function TestPage() {
             <div className="flex items-center space-x-2">
               <div className="w-4 h-4 bg-orange-500 rounded"></div>
               <span>Current</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-gray-200 rounded ring-2 ring-orange-400"></div>
-              <span>Flagged</span>
             </div>
           </div>
         </div>
@@ -736,20 +737,6 @@ export default function TestPage() {
             <h2 className="text-2xl font-bold text-gray-800">Question {currentQuestionIndex + 1}</h2>
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => currentQuestion && handleFlagQuestion(currentQuestion.id)}
-                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
-                  currentQuestion && flaggedQuestions.has(currentQuestion.id)
-                    ? 'bg-orange-100 text-orange-700 border-2 border-orange-300'
-                    : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-                }`}
-                aria-label={currentQuestion && flaggedQuestions.has(currentQuestion.id) ? 'Remove flag' : 'Flag question'}
-              >
-                <Flag className="w-4 h-4" />
-                <span className="text-sm font-medium">
-                  {currentQuestion && flaggedQuestions.has(currentQuestion.id) ? 'Flagged' : 'Flag'}
-                </span>
-              </button>
-              <button
                 onClick={() => setShowReportModal(true)}
                 className="flex items-center space-x-2 px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors"
                 aria-label="Report issue with this question"
@@ -769,7 +756,7 @@ export default function TestPage() {
             aria-describedby="question-instructions"
           >
             <div id="question-instructions" className="sr-only">
-              Select one option using number keys 1-4, arrow keys to navigate, or click to select. Press F to flag this question.
+              Select one option using number keys 1-4, arrow keys to navigate, or click to select.
             </div>
             {currentQuestion?.options.map((option, index) => (
               <motion.button
@@ -807,7 +794,6 @@ export default function TestPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-blue-700">
             <div>• <kbd className="px-1 py-0.5 bg-blue-100 rounded text-xs">1-4</kbd> Select answer</div>
             <div>• <kbd className="px-1 py-0.5 bg-blue-100 rounded text-xs">←→</kbd> Navigate questions</div>
-            <div>• <kbd className="px-1 py-0.5 bg-blue-100 rounded text-xs">F</kbd> Flag question</div>
             <div>• <kbd className="px-1 py-0.5 bg-blue-100 rounded text-xs">Enter</kbd> Next/Submit</div>
           </div>
         </div>
@@ -835,23 +821,24 @@ export default function TestPage() {
             </div>
           </div>
 
-          {currentQuestionIndex === totalQuestions - 1 ? (
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            {currentQuestionIndex < totalQuestions - 1 && (
+              <button
+                onClick={handleNextQuestion}
+                className="btn-primary flex items-center space-x-2 w-full sm:w-auto justify-center"
+              >
+                <span>Next</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            )}
             <button
-              onClick={handleSubmitTest}
+              onClick={handleSubmitAttempt}
               className="btn-success flex items-center space-x-2 w-full sm:w-auto justify-center"
             >
               <CheckCircle className="w-5 h-5" />
               <span>Submit Test</span>
             </button>
-          ) : (
-            <button
-              onClick={handleNextQuestion}
-              className="btn-primary flex items-center space-x-2 w-full sm:w-auto justify-center"
-            >
-              <span>Next</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          )}
+          </div>
         </div>
       </main>
 
