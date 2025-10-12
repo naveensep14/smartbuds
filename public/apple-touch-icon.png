@@ -1,0 +1,22 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with gradient -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F97316;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DC2626;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="90" cy="90" r="90" fill="url(#bg)"/>
+  
+  <!-- SuccessBuds "S" - clean design -->
+  <path d="M45 56C45 50.201 49.701 45.5 55.5 45.5H124.5C130.299 45.5 135 50.201 135 56V78C135 83.799 130.299 88.5 124.5 88.5H55.5C49.701 88.5 45 83.799 45 78V56Z" fill="white"/>
+  <path d="M45 78C45 72.201 49.701 67.5 55.5 67.5H124.5C130.299 67.5 135 72.201 135 78V100C135 105.799 130.299 110.5 124.5 110.5H55.5C49.701 110.5 45 105.799 45 100V78Z" fill="white"/>
+  <path d="M45 100C45 94.201 49.701 89.5 55.5 89.5H124.5C130.299 89.5 135 94.201 135 100V122C135 127.799 130.299 132.5 124.5 132.5H55.5C49.701 132.5 45 127.799 45 122V100Z" fill="white"/>
+  
+  <!-- Inner "S" pattern -->
+  <rect x="55.5" y="56" width="67.5" height="11.25" fill="#F97316"/>
+  <rect x="55.5" y="89.5" width="67.5" height="11.25" fill="#F97316"/>
+  <rect x="55.5" y="123" width="67.5" height="11.25" fill="#F97316"/>
+  <rect x="55.5" y="67.5" width="33.75" height="11.25" fill="#F97316"/>
+  <rect x="90" y="100" width="33.75" height="11.25" fill="#F97316"/>
+</svg>
