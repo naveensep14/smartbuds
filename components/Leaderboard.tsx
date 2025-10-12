@@ -37,11 +37,11 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Trophy className="w-5 h-5 text-yellow-500" />;
+        return <Trophy className="w-5 h-5 text-yellow" />;
       case 2:
         return <Medal className="w-5 h-5 text-gray-400" />;
       case 3:
-        return <Award className="w-5 h-5 text-amber-600" />;
+        return <Award className="w-5 h-5 text-peach" />;
       default:
         return <span className="text-lg font-bold text-gray-600">#{rank}</span>;
     }
@@ -50,11 +50,11 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
   const getRankColor = (rank: number) => {
     switch (rank) {
       case 1:
-        return 'bg-gradient-to-r from-yellow-50 to-yellow-100 border-yellow-200';
+        return 'bg-gradient-to-r from-yellow to-secondary-500 border-yellow';
       case 2:
         return 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-200';
       case 3:
-        return 'bg-gradient-to-r from-amber-50 to-amber-100 border-amber-200';
+        return 'bg-gradient-to-r from-peach to-pink border-peach';
       default:
         return 'bg-white border-gray-200';
     }
@@ -64,9 +64,9 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6">
         <div className="flex items-center space-x-3 mb-6">
-          <Trophy className="w-6 h-6 text-orange-600" />
+          <Trophy className="w-6 h-6 text-yellow" />
           <h2 className="text-2xl font-bold text-gray-900">Top Performers</h2>
-          <span className="text-sm text-gray-500 bg-orange-100 px-2 py-1 rounded-full">
+          <span className="text-sm text-gray-500 bg-yellow text-white px-2 py-1 rounded-full">
             Last 30 days
           </span>
         </div>
@@ -107,9 +107,9 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6">
         <div className="flex items-center space-x-3 mb-6">
-          <Trophy className="w-6 h-6 text-orange-600" />
+          <Trophy className="w-6 h-6 text-yellow" />
           <h2 className="text-2xl font-bold text-gray-900">Top Performers</h2>
-          <span className="text-sm text-gray-500 bg-orange-100 px-2 py-1 rounded-full">
+          <span className="text-sm text-gray-500 bg-yellow text-white px-2 py-1 rounded-full">
             Last 30 days
           </span>
         </div>
@@ -122,7 +122,7 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+            className="inline-flex items-center space-x-2 bg-navy text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
           >
             <Trophy className="w-4 h-4" />
             <span>Start Learning</span>
@@ -166,7 +166,7 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
                   {entry.displayName}
                 </h3>
                 {entry.rank <= 3 && (
-                  <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
+                  <span className="text-xs bg-yellow text-white px-2 py-1 rounded-full">
                     Top {entry.rank}
                   </span>
                 )}
