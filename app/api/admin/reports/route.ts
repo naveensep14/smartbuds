@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getServerUser } from '@/lib/server-auth';
-import { ADMIN_EMAILS } from '@/lib/admin-config';
+import { isAdminEmail } from '@/lib/admin-config';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Check if user is admin
-    const isAdmin = ADMIN_EMAILS.includes(user.email.toLowerCase());
+    const isAdmin = isAdminEmail(user.email);
 
     console.log('🔍 [ADMIN REPORTS] Admin check:', { 
       email: user.email,
@@ -98,7 +98,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Check if user is admin
-    const isAdmin = ADMIN_EMAILS.includes(user.email.toLowerCase());
+    const isAdmin = isAdminEmail(user.email);
     
     if (!isAdmin) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
@@ -158,7 +158,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Check if user is admin
-    const isAdmin = ADMIN_EMAILS.includes(user.email.toLowerCase());
+    const isAdmin = isAdminEmail(user.email);
     
     if (!isAdmin) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });

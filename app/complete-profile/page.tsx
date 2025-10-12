@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
@@ -24,22 +24,7 @@ export default function CompleteProfilePage() {
   const [error, setError] = useState('');
   const [isChecking, setIsChecking] = useState(true);
 
-  useEffect(() => {
-    if (!user) {
-      router.push('/login');
-      return;
-    }
-
-    if (isAdmin) {
-      router.push('/admin');
-      return;
-    }
-
-    // Check if profile is already completed
-    checkProfileCompletion();
-  }, [user, isAdmin, router]);
-
-  const checkProfileCompletion = async () => {
+  const checkProfileCompletion = useCallback(async () => {
     try {
       console.log('🔍 [PROFILE LOG] Checking profile completion for user:', user?.id);
       
@@ -81,7 +66,22 @@ export default function CompleteProfilePage() {
       console.error('🚨 [PROFILE LOG] Error checking profile completion:', error);
       setIsChecking(false);
     }
-  };
+  }, [user?.id, router]);
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
+    if (isAdmin) {
+      router.push('/admin');
+      return;
+    }
+
+    // Check if profile is already completed
+    checkProfileCompletion();
+  }, [user, isAdmin, router, checkProfileCompletion]);
 
   const handleInputChange = (field: keyof ProfileFormData, value: string) => {
     if (field === 'grade') {

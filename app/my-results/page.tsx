@@ -145,7 +145,7 @@ export default function MyResultsPage() {
     };
 
     loadData();
-  }, [user]);
+  }, [user, isAdmin, userProfile]);
 
   if (authLoading || loading) {
     return (

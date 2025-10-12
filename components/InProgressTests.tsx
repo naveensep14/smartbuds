@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, PlayCircle, Trash2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -19,11 +19,7 @@ export default function InProgressTests() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadInProgressTests();
-  }, [user]);
-
-  const loadInProgressTests = async () => {
+  const loadInProgressTests = useCallback(async () => {
     if (!user?.email) {
       setLoading(false);
       return;
@@ -55,7 +51,11 @@ export default function InProgressTests() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.email]);
+
+  useEffect(() => {
+    loadInProgressTests();
+  }, [user, loadInProgressTests]);
 
   const handleDelete = async (userEmail: string, testId: string) => {
     if (!confirm('Are you sure you want to delete this progress? You will start from the beginning next time.')) {

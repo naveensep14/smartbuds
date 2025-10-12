@@ -319,7 +319,7 @@ export default function TestPage() {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentQuestionIndex, totalQuestions, currentQuestion, handleAnswerSelect, handleNextQuestion, handlePreviousQuestion, handleSubmitAttempt]);
+  }, [currentQuestionIndex, totalQuestions, currentQuestion, handleAnswerSelect, handleNextQuestion, handlePreviousQuestion, handleSubmitAttempt, test]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);

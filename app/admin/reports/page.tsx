@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Flag, Filter, Search, Eye, CheckCircle, XCircle, Clock, AlertTriangle, MessageSquare, Trash2 } from 'lucide-react';
 import { QuestionReport, IssueType, ReportStatus } from '@/types';
@@ -41,11 +41,7 @@ export default function AdminReportsPage() {
     dismissed: 'bg-gray-100 text-gray-800'
   };
 
-  useEffect(() => {
-    loadReports();
-  }, [filters]);
-
-  const loadReports = async () => {
+  const loadReports = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -68,7 +64,11 @@ export default function AdminReportsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  useEffect(() => {
+    loadReports();
+  }, [loadReports]);
 
   const updateReportStatus = async (reportId: string, status: ReportStatus, adminNotes?: string) => {
     try {
