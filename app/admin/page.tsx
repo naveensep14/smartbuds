@@ -288,7 +288,7 @@ function AdminPageContent() {
                 className="btn-secondary flex items-center space-x-2"
               >
                 <Flag className="w-5 h-5" />
-                <span>Question Reports</span>
+                <span>Issue Reports</span>
               </Link>
               <Link
                 href="/admin/pdf-upload"
@@ -356,7 +356,7 @@ function AdminPageContent() {
                     <Flag className="w-6 h-6 text-red-600" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm text-gray-600">Question Reports</p>
+                    <p className="text-sm text-gray-600">Issue Reports</p>
                     <p className="text-2xl font-bold text-gray-800">{reportCount}</p>
                   </div>
                 </div>

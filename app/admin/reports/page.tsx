@@ -171,7 +171,7 @@ export default function AdminReportsPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">View Issues</h1>
-                <p className="text-gray-600">Review and manage student-reported question issues</p>
+                <p className="text-gray-600">Review and manage student-reported issues</p>
               </div>
             </div>
             <div className="text-right">
@@ -255,7 +255,7 @@ export default function AdminReportsPage() {
               <p className="text-gray-600">
                 {filters.status || filters.issueType || filters.search 
                   ? 'No reports match your current filters.'
-                  : 'No question reports have been submitted yet.'
+                  : 'No issue reports have been submitted yet.'
                 }
               </p>
             </div>

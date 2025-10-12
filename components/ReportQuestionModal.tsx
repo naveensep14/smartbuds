@@ -149,7 +149,7 @@ export default function ReportQuestionModal({
                 <div className="bg-red-100 p-2 rounded-lg">
                   <Flag className="w-5 h-5 text-red-600" />
                 </div>
-                <h2 className="text-xl font-semibold text-gray-900">Report Question Issue</h2>
+                <h2 className="text-xl font-semibold text-gray-900">Report Issue</h2>
               </div>
               <button
                 onClick={handleClose}
