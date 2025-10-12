@@ -21,7 +21,7 @@ export default function TestsPage() {
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedBoard, setSelectedBoard] = useState('');
   const [selectedChapter, setSelectedChapter] = useState('');
-  const [selectedType, setSelectedType] = useState('');
+  const [activeTab, setActiveTab] = useState<'coursework' | 'weekly'>('coursework');
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [selectedTestForPrint, setSelectedTestForPrint] = useState<Test | null>(null);
   const [printMode, setPrintMode] = useState<'test' | 'answer-key'>('test');
@@ -121,7 +121,7 @@ export default function TestsPage() {
     const matchesGrade = !selectedGrade || test.grade === selectedGrade;
     const matchesBoard = !selectedBoard || test.board === selectedBoard;
     const matchesChapter = !selectedChapter || extractChapter(test.title) === selectedChapter;
-    const matchesType = !selectedType || test.type === selectedType;
+    const matchesType = test.type === activeTab;
     
     // For non-admin users, only show tests matching their grade and board
     if (!isAdmin && userProfile) {
@@ -133,24 +133,24 @@ export default function TestsPage() {
     return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter && matchesType;
   });
 
-  // Filter options based on user role
-  const subjects = Array.from(new Set(tests.map(test => test.subject)));
+  // Filter options based on user role and active tab
+  const currentTabTests = tests.filter(test => test.type === activeTab);
+  const subjects = Array.from(new Set(currentTabTests.map(test => test.subject)));
   const grades = isAdmin 
-    ? Array.from(new Set(tests.map(test => test.grade)))
+    ? Array.from(new Set(currentTabTests.map(test => test.grade)))
     : userProfile 
       ? [userProfile.grade]
       : [];
   const boards = isAdmin 
-    ? Array.from(new Set(tests.map(test => test.board)))
+    ? Array.from(new Set(currentTabTests.map(test => test.board)))
     : userProfile 
       ? [userProfile.board]
       : [];
-  const chapters = Array.from(new Set(tests.map(test => extractChapter(test.title)).filter(Boolean))).sort((a, b) => {
+  const chapters = Array.from(new Set(currentTabTests.map(test => extractChapter(test.title)).filter(Boolean))).sort((a, b) => {
     const aNum = parseInt(a?.match(/\d+/)?.[0] || '0');
     const bNum = parseInt(b?.match(/\d+/)?.[0] || '0');
     return aNum - bNum;
   });
-  const types = Array.from(new Set(tests.map(test => test.type)));
 
   const handlePrintTest = (test: Test) => {
     setSelectedTestForPrint(test);
@@ -258,19 +258,39 @@ export default function TestsPage() {
               ))}
             </select>
 
-            <select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            >
-              <option value="">All Types</option>
-              {types.map(type => (
-                <option key={type} value={type}>
-                  {type === 'coursework' ? 'Coursework' : 'Weekly Test'}
-                </option>
-              ))}
-            </select>
             </div>
+          </div>
+        </div>
+
+        {/* Test Type Tabs */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+            <button
+              onClick={() => setActiveTab('coursework')}
+              className={`flex-1 py-3 px-4 text-sm font-medium rounded-md transition-colors ${
+                activeTab === 'coursework'
+                  ? 'bg-white text-orange-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <div className="flex items-center justify-center space-x-2">
+                <BookOpen className="w-4 h-4" />
+                <span>Coursework Tests</span>
+              </div>
+            </button>
+            <button
+              onClick={() => setActiveTab('weekly')}
+              className={`flex-1 py-3 px-4 text-sm font-medium rounded-md transition-colors ${
+                activeTab === 'weekly'
+                  ? 'bg-white text-orange-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <div className="flex items-center justify-center space-x-2">
+                <Clock className="w-4 h-4" />
+                <span>Weekly Tests</span>
+              </div>
+            </button>
           </div>
         </div>
 
@@ -278,8 +298,51 @@ export default function TestsPage() {
         {user && <InProgressTests />}
 
         {/* Tests Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          {filteredTests.map((test) => {
+        <div className="mb-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-gray-900">
+              {activeTab === 'coursework' ? 'Coursework Tests' : 'Weekly Tests'}
+            </h2>
+            <span className="text-sm text-gray-500">
+              {filteredTests.length} test{filteredTests.length !== 1 ? 's' : ''} available
+            </span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredTests.length === 0 ? (
+            <div className="col-span-full text-center py-12">
+              <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                {activeTab === 'coursework' ? (
+                  <BookOpen className="w-12 h-12 text-gray-400" />
+                ) : (
+                  <Clock className="w-12 h-12 text-gray-400" />
+                )}
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No {activeTab === 'coursework' ? 'Coursework' : 'Weekly'} Tests Available
+              </h3>
+              <p className="text-gray-500 mb-4">
+                {activeTab === 'coursework' 
+                  ? 'No coursework tests match your current filters. Try adjusting your search criteria.'
+                  : 'No weekly tests match your current filters. Try adjusting your search criteria.'
+                }
+              </p>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedSubject('');
+                  setSelectedGrade('');
+                  setSelectedBoard('');
+                  setSelectedChapter('');
+                }}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-orange-600 bg-orange-100 hover:bg-orange-200 transition-colors"
+              >
+                Clear Filters
+              </button>
+            </div>
+          ) : (
+            filteredTests.map((test) => {
             const testStatus = getTestStatus(test.id);
             const StatusIcon = testStatus.icon;
             
@@ -320,15 +383,6 @@ export default function TestsPage() {
                     </div>
                   </div>
 
-                  <div className="mb-4">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      test.type === 'coursework' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-purple-100 text-purple-800'
-                    }`}>
-                      {test.type === 'coursework' ? 'Coursework' : 'Weekly Test'}
-                    </span>
-                  </div>
                   
                   {extractChapter(test.title) && (
                     <div className="mb-4">
@@ -362,17 +416,10 @@ export default function TestsPage() {
                 </div>
               </motion.div>
             );
-          })}
+            })
+          )}
         </div>
 
-        {/* No Tests Found */}
-        {filteredTests.length === 0 && (
-          <div className="text-center py-12">
-            <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">No tests found</h3>
-            <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
-          </div>
-        )}
       </main>
 
       {/* Print Modal */}
