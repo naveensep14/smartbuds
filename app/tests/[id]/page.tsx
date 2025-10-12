@@ -527,19 +527,19 @@ export default function TestPage() {
           {/* Left Sidebar - Keyboard Shortcuts */}
           <div className="lg:col-span-2 hidden lg:block">
             <div className="sticky top-4">
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                <h4 className="font-semibold text-blue-800 mb-3">Shortcuts</h4>
-                <div className="space-y-2 text-sm text-blue-700">
+              <div className="bg-gradient-to-br from-yellow to-secondary-500 border border-yellow rounded-xl p-4 shadow-lg">
+                <h4 className="font-semibold text-white mb-3">Shortcuts</h4>
+                <div className="space-y-2 text-sm text-white">
                   <div className="flex flex-col">
-                    <kbd className="px-2 py-1 bg-blue-100 rounded text-xs text-center mb-1">1-4</kbd>
+                    <kbd className="px-2 py-1 bg-white text-navy rounded text-xs text-center mb-1 font-bold">1-4</kbd>
                     <span className="text-xs">Select</span>
                   </div>
                   <div className="flex flex-col">
-                    <kbd className="px-2 py-1 bg-blue-100 rounded text-xs text-center mb-1">←→</kbd>
+                    <kbd className="px-2 py-1 bg-white text-navy rounded text-xs text-center mb-1 font-bold">←→</kbd>
                     <span className="text-xs">Navigate</span>
                   </div>
                   <div className="flex flex-col">
-                    <kbd className="px-2 py-1 bg-blue-100 rounded text-xs text-center mb-1">Enter</kbd>
+                    <kbd className="px-2 py-1 bg-white text-navy rounded text-xs text-center mb-1 font-bold">Enter</kbd>
                     <span className="text-xs">Next</span>
                   </div>
                 </div>

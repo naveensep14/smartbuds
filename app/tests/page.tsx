@@ -166,9 +166,9 @@ export default function TestsPage() {
 
   const getTestStatus = (testId: string) => {
     if (completedTestIds.has(testId)) {
-      return { status: 'completed', color: 'text-green-600', icon: CheckCircle };
+      return { status: 'completed', color: 'text-green', icon: CheckCircle };
     } else if (incompleteTestIds.has(testId)) {
-      return { status: 'incomplete', color: 'text-yellow-600', icon: Clock };
+      return { status: 'incomplete', color: 'text-yellow', icon: Clock };
     }
     return { status: 'not-started', color: 'text-gray-600', icon: Play };
   };

@@ -118,9 +118,9 @@ export default function InProgressTests() {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
       <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
-        <Clock className="w-6 h-6 text-orange-600" />
+        <Clock className="w-6 h-6 text-yellow" />
         <span>Continue Learning</span>
       </h2>
       <div className="space-y-3">
@@ -136,7 +136,7 @@ export default function InProgressTests() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="border border-gray-200 rounded-lg p-4 hover:border-orange-300 hover:shadow-md transition-all"
+              className="border border-gray-200 rounded-lg p-4 hover:border-yellow hover:shadow-md transition-all"
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
@@ -146,10 +146,10 @@ export default function InProgressTests() {
                   <div className="flex items-center space-x-4 text-sm text-gray-600 mb-2">
                     {test && (
                       <>
-                        <span className="px-2 py-0.5 bg-orange-100 text-orange-700 rounded text-xs font-medium">
+                        <span className="px-2 py-0.5 bg-yellow text-white rounded text-xs font-medium">
                           {test.subject}
                         </span>
-                        <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">
+                        <span className="px-2 py-0.5 bg-blue text-white rounded text-xs font-medium">
                           {test.grade}
                         </span>
                       </>
@@ -164,11 +164,11 @@ export default function InProgressTests() {
                   <div className="space-y-1">
                     <div className="flex items-center justify-between text-xs text-gray-600">
                       <span>Progress: {Object.keys(progress.selectedAnswers).length}/{test?.questions.length || 0} questions</span>
-                      <span className="font-medium text-orange-600">{percentComplete}%</span>
+                      <span className="font-medium text-yellow">{percentComplete}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
-                        className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                        className="bg-yellow h-2 rounded-full transition-all duration-300"
                         style={{ width: `${percentComplete}%` }}
                       />
                     </div>
@@ -179,7 +179,7 @@ export default function InProgressTests() {
                 <div className="flex items-center space-x-2 ml-4">
                   <Link
                     href={`/tests/${progress.testId}`}
-                    className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors flex items-center space-x-2 text-sm font-medium"
+                    className="px-4 py-2 bg-navy text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center space-x-2 text-sm font-medium"
                   >
                     <PlayCircle className="w-4 h-4" />
                     <span>Resume</span>
