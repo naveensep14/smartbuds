@@ -13,6 +13,7 @@ import { TestProgressService } from '@/lib/test-progress';
 import NavigationHeader from '@/components/NavigationHeader';
 import { normalizeGrade } from '@/lib/grade-utils';
 import InProgressTests from '@/components/InProgressTests';
+import { getTimeUntilExpiry, getTimeRemainingString, getUrgencyLevel, getUrgencyColorClass, isWeeklyTestAvailable } from '@/lib/weekly-test-utils';
 
 export default function TestsPage() {
   const [tests, setTests] = useState<Test[]>([]);
@@ -21,6 +22,7 @@ export default function TestsPage() {
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedBoard, setSelectedBoard] = useState('');
   const [selectedChapter, setSelectedChapter] = useState('');
+  const [activeTab, setActiveTab] = useState<'coursework' | 'weekly'>('coursework');
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [selectedTestForPrint, setSelectedTestForPrint] = useState<Test | null>(null);
   const [printMode, setPrintMode] = useState<'test' | 'answer-key'>('test');
@@ -120,29 +122,37 @@ export default function TestsPage() {
     const matchesGrade = !selectedGrade || test.grade === selectedGrade;
     const matchesBoard = !selectedBoard || test.board === selectedBoard;
     const matchesChapter = !selectedChapter || extractChapter(test.title) === selectedChapter;
+    const matchesType = test.type === activeTab;
+    
+    // For weekly tests, check if they're still available (not expired)
+    const isAvailable = test.type === 'weekly' 
+      ? (test.expiryDate ? isWeeklyTestAvailable(test.expiryDate) : true)
+      : true;
+    
     // For non-admin users, only show tests matching their grade and board
     if (!isAdmin && userProfile) {
       const matchesUserGrade = test.grade === userProfile.grade;
       const matchesUserBoard = test.board === userProfile.board;
-      return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter && matchesUserGrade && matchesUserBoard;
+      return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter && matchesType && matchesUserGrade && matchesUserBoard && isAvailable;
     }
     
-    return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter;
+    return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter && matchesType && isAvailable;
   });
 
-  // Filter options based on user role
-  const subjects = Array.from(new Set(tests.map(test => test.subject)));
+  // Filter options based on user role and active tab
+  const currentTabTests = tests.filter(test => test.type === activeTab);
+  const subjects = Array.from(new Set(currentTabTests.map(test => test.subject)));
   const grades = isAdmin 
-    ? Array.from(new Set(tests.map(test => test.grade)))
+    ? Array.from(new Set(currentTabTests.map(test => test.grade)))
     : userProfile 
       ? [userProfile.grade]
       : [];
   const boards = isAdmin 
-    ? Array.from(new Set(tests.map(test => test.board)))
+    ? Array.from(new Set(currentTabTests.map(test => test.board)))
     : userProfile 
       ? [userProfile.board]
       : [];
-  const chapters = Array.from(new Set(tests.map(test => extractChapter(test.title)).filter(Boolean))).sort((a, b) => {
+  const chapters = Array.from(new Set(currentTabTests.map(test => extractChapter(test.title)).filter(Boolean))).sort((a, b) => {
     const aNum = parseInt(a?.match(/\d+/)?.[0] || '0');
     const bNum = parseInt(b?.match(/\d+/)?.[0] || '0');
     return aNum - bNum;
@@ -258,6 +268,79 @@ export default function TestsPage() {
           </div>
         </div>
 
+        {/* Weekly Tests Summary */}
+        {(() => {
+          const weeklyTests = tests.filter(test => test.type === 'weekly' && test.expiryDate && isWeeklyTestAvailable(test.expiryDate));
+          const urgentTests = weeklyTests.filter(test => getUrgencyLevel(test.expiryDate!) === 'critical');
+          const expiringSoonTests = weeklyTests.filter(test => getUrgencyLevel(test.expiryDate!) === 'high');
+          
+          if (weeklyTests.length === 0) return null;
+          
+          return (
+            <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl shadow-sm border border-orange-200 p-6 mb-8">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-orange-100 rounded-lg">
+                    <Clock className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Weekly Tests Available</h3>
+                    <p className="text-sm text-gray-600">
+                      {weeklyTests.length} test{weeklyTests.length !== 1 ? 's' : ''} expiring this week
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  {urgentTests.length > 0 && (
+                    <div className="text-red-600 font-semibold text-sm">
+                      {urgentTests.length} urgent!
+                    </div>
+                  )}
+                  {expiringSoonTests.length > 0 && (
+                    <div className="text-orange-600 text-sm">
+                      {expiringSoonTests.length} expiring soon
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="mt-4 text-sm text-gray-700">
+                <p>Weekly tests are available for exactly 7 days and expire automatically. Complete them before they disappear!</p>
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Test Type Tabs */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+            <button
+              onClick={() => setActiveTab('coursework')}
+              className={`flex-1 py-3 px-4 text-sm font-medium rounded-md transition-colors ${
+                activeTab === 'coursework'
+                  ? 'bg-white text-orange-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <div className="flex items-center justify-center space-x-2">
+                <BookOpen className="w-4 h-4" />
+                <span>Coursework Tests</span>
+              </div>
+            </button>
+            <button
+              onClick={() => setActiveTab('weekly')}
+              className={`flex-1 py-3 px-4 text-sm font-medium rounded-md transition-colors ${
+                activeTab === 'weekly'
+                  ? 'bg-white text-orange-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <div className="flex items-center justify-center space-x-2">
+                <Clock className="w-4 h-4" />
+                <span>Weekly Tests</span>
+              </div>
+            </button>
+          </div>
+        </div>
 
         {/* In-Progress Tests */}
         {user && <InProgressTests />}
@@ -266,7 +349,7 @@ export default function TestsPage() {
         <div className="mb-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-900">
-              Available Tests
+              {activeTab === 'coursework' ? 'Coursework Tests' : 'Weekly Tests'}
             </h2>
             <span className="text-sm text-gray-500">
               {filteredTests.length} test{filteredTests.length !== 1 ? 's' : ''} available
@@ -278,13 +361,20 @@ export default function TestsPage() {
           {filteredTests.length === 0 ? (
             <div className="col-span-full text-center py-12">
               <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <BookOpen className="w-12 h-12 text-gray-400" />
+                {activeTab === 'coursework' ? (
+                  <BookOpen className="w-12 h-12 text-gray-400" />
+                ) : (
+                  <Clock className="w-12 h-12 text-gray-400" />
+                )}
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No Tests Available
+                No {activeTab === 'coursework' ? 'Coursework' : 'Weekly'} Tests Available
               </h3>
               <p className="text-gray-500 mb-4">
-                No tests match your current filters. Try adjusting your search criteria.
+                {activeTab === 'coursework' 
+                  ? 'No coursework tests match your current filters. Try adjusting your search criteria.'
+                  : 'No weekly tests match your current filters. Try adjusting your search criteria.'
+                }
               </p>
               <button
                 onClick={() => {
@@ -348,6 +438,26 @@ export default function TestsPage() {
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                         {extractChapter(test.title)}
                       </span>
+                    </div>
+                  )}
+
+                  {/* Weekly Test Expiry Warning */}
+                  {test.type === 'weekly' && test.expiryDate && (
+                    <div className={`mb-4 p-3 rounded-lg border ${getUrgencyColorClass(getUrgencyLevel(test.expiryDate))}`}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Clock className="w-4 h-4" />
+                          <span className="text-sm font-medium">
+                            {getTimeRemainingString(test.expiryDate)}
+                          </span>
+                        </div>
+                        {getUrgencyLevel(test.expiryDate) === 'critical' && (
+                          <span className="text-xs font-bold animate-pulse">URGENT!</span>
+                        )}
+                      </div>
+                      <p className="text-xs mt-1 opacity-80">
+                        Complete this test before it expires
+                      </p>
                     </div>
                   )}
                 
