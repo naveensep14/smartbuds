@@ -9,6 +9,7 @@ interface PDFUploadFormData {
   subject: string;
   grade: string;
   board: string;
+  type: string;
   duration: number;
   file: File | null;
   customPrompt: string;
@@ -25,6 +26,7 @@ export default function PDFUploadPage() {
     subject: '',
     grade: '',
     board: 'CBSE',
+    type: 'coursework',
     duration: 30,
     file: null,
     customPrompt: '',
@@ -193,6 +195,7 @@ export default function PDFUploadPage() {
       uploadData.append('subject', formData.subject);
       uploadData.append('grade', formData.grade);
       uploadData.append('board', formData.board);
+      uploadData.append('type', formData.type);
       uploadData.append('duration', formData.duration.toString());
       uploadData.append('customPrompt', formData.customPrompt);
       uploadData.append('chapter', formData.chapter.toString());
@@ -623,6 +626,20 @@ export default function PDFUploadPage() {
                   <option value="US">US</option>
                   <option value="IB">IB</option>
                   <option value="IGCSE">IGCSE</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Test Type
+                </label>
+                <select
+                  value={formData.type}
+                  onChange={(e) => handleInputChange('type', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                >
+                  <option value="coursework">Coursework</option>
+                  <option value="weekly">Weekly Test</option>
                 </select>
               </div>
 

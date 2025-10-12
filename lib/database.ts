@@ -25,6 +25,7 @@ export const testService = {
         subject: test.subject,
         grade: test.grade,
         board: test.board || 'ICSE', // Default to ICSE if not set
+        type: test.type || 'coursework', // Default to coursework if not set
         duration: test.timelimit,
         questions: test.questions?.map((q: any) => ({
           id: q.id || Date.now().toString(),
@@ -63,6 +64,7 @@ export const testService = {
         subject: data.subject,
         grade: data.grade,
         board: data.board || 'ICSE', // Default to ICSE if not set
+        type: data.type || 'coursework', // Default to coursework if not set
         duration: data.timelimit,
         questions: data.questions?.map((q: any) => ({
           id: q.id || Date.now().toString(),
@@ -92,6 +94,7 @@ export const testService = {
           subject: test.subject,
           grade: test.grade,
           board: test.board,
+          type: test.type,
           timelimit: test.duration,
           questions: test.questions?.map(q => ({
             id: q.id,
@@ -114,6 +117,7 @@ export const testService = {
         subject: data.subject,
         grade: data.grade,
         board: data.board || 'ICSE', // Default to ICSE if not set
+        type: data.type || 'coursework', // Default to coursework if not set
         duration: data.timelimit,
         questions: data.questions?.map((q: any) => ({
           id: q.id || Date.now().toString(),
@@ -143,6 +147,7 @@ export const testService = {
           subject: updates.subject,
           grade: updates.grade,
           board: updates.board,
+          type: updates.type,
           timelimit: updates.duration,
           questions: updates.questions?.map(q => ({
             id: q.id,
@@ -167,6 +172,7 @@ export const testService = {
         subject: data.subject,
         grade: data.grade,
         board: data.board || 'ICSE', // Default to ICSE if not set
+        type: data.type || 'coursework', // Default to coursework if not set
         duration: data.timelimit,
         questions: data.questions?.map((q: any) => ({
           id: q.id || Date.now().toString(),

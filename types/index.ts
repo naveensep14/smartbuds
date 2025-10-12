@@ -8,6 +8,7 @@ export interface Question {
 }
 
 export type Board = 'US' | 'IB' | 'ICSE' | 'IGCSE' | 'CBSE';
+export type TestType = 'coursework' | 'weekly';
 
 export interface Test {
   id: string;
@@ -16,6 +17,7 @@ export interface Test {
   subject: string;
   grade: string;
   board: Board;
+  type: TestType;
   duration: number; // in minutes
   questions: Question[];
   createdAt: Date;

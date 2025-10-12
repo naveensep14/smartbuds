@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
     const subject = formData.get('subject') as string;
     const grade = formData.get('grade') as string;
     const board = formData.get('board') as string;
+    const type = formData.get('type') as string;
     const duration = parseInt(formData.get('duration') as string);
     const customPrompt = formData.get('customPrompt') as string;
     const chapter = parseInt(formData.get('chapter') as string);
@@ -24,6 +25,7 @@ export async function POST(request: NextRequest) {
     console.log('📋 [VERCEL LOG] Subject:', subject);
     console.log('📋 [VERCEL LOG] Grade:', grade);
     console.log('📋 [VERCEL LOG] Board:', board);
+    console.log('📋 [VERCEL LOG] Type:', type);
     console.log('📋 [VERCEL LOG] Chapter:', chapter);
     console.log('📋 [VERCEL LOG] Number of Tests:', numTests);
     console.log('📋 [VERCEL LOG] Questions per Test:', questionsPerTest);
@@ -64,7 +66,7 @@ export async function POST(request: NextRequest) {
     const processor = new PDFProcessor();
     console.log('🔧 [VERCEL LOG] PDF processor initialized, calling processPDF...');
     
-    const result = await processor.processPDF(pdfBuffer, subject, grade, board, customPrompt, chapter, numTests, questionsPerTest);
+    const result = await processor.processPDF(pdfBuffer, subject, grade, board, type, customPrompt, chapter, numTests, questionsPerTest);
     console.log('🔧 [VERCEL LOG] processPDF completed, result.success:', result.success);
 
     if (!result.success) {

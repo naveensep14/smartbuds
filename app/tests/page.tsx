@@ -21,6 +21,7 @@ export default function TestsPage() {
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedBoard, setSelectedBoard] = useState('');
   const [selectedChapter, setSelectedChapter] = useState('');
+  const [selectedType, setSelectedType] = useState('');
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [selectedTestForPrint, setSelectedTestForPrint] = useState<Test | null>(null);
   const [printMode, setPrintMode] = useState<'test' | 'answer-key'>('test');
@@ -120,15 +121,16 @@ export default function TestsPage() {
     const matchesGrade = !selectedGrade || test.grade === selectedGrade;
     const matchesBoard = !selectedBoard || test.board === selectedBoard;
     const matchesChapter = !selectedChapter || extractChapter(test.title) === selectedChapter;
+    const matchesType = !selectedType || test.type === selectedType;
     
     // For non-admin users, only show tests matching their grade and board
     if (!isAdmin && userProfile) {
       const matchesUserGrade = test.grade === userProfile.grade;
       const matchesUserBoard = test.board === userProfile.board;
-      return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter && matchesUserGrade && matchesUserBoard;
+      return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter && matchesType && matchesUserGrade && matchesUserBoard;
     }
     
-    return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter;
+    return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter && matchesType;
   });
 
   // Filter options based on user role
@@ -148,6 +150,7 @@ export default function TestsPage() {
     const bNum = parseInt(b?.match(/\d+/)?.[0] || '0');
     return aNum - bNum;
   });
+  const types = Array.from(new Set(tests.map(test => test.type)));
 
   const handlePrintTest = (test: Test) => {
     setSelectedTestForPrint(test);
@@ -254,6 +257,19 @@ export default function TestsPage() {
                 <option key={chapter} value={chapter!}>{chapter}</option>
               ))}
             </select>
+
+            <select
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+              className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            >
+              <option value="">All Types</option>
+              {types.map(type => (
+                <option key={type} value={type}>
+                  {type === 'coursework' ? 'Coursework' : 'Weekly Test'}
+                </option>
+              ))}
+            </select>
             </div>
           </div>
         </div>
@@ -302,6 +318,16 @@ export default function TestsPage() {
                       <Users className="w-4 h-4" />
                       <span>{test.grade}</span>
                     </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      test.type === 'coursework' 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-purple-100 text-purple-800'
+                    }`}>
+                      {test.type === 'coursework' ? 'Coursework' : 'Weekly Test'}
+                    </span>
                   </div>
                   
                   {extractChapter(test.title) && (
