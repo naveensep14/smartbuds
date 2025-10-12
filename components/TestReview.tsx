@@ -31,6 +31,16 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
   const isCorrect = userAnswer?.isCorrect || false;
   const selectedAnswerIndex = userAnswer?.selectedAnswer;
 
+  // Debug: Log current question data
+  console.log('🔍 [TEST REVIEW] Current question:', {
+    id: currentQuestion?.id,
+    text: currentQuestion?.text,
+    question: (currentQuestion as any)?.question,
+    options: currentQuestion?.options,
+    hasText: !!currentQuestion?.text,
+    textLength: currentQuestion?.text?.length || 0
+  });
+
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-green-600';
     if (score >= 60) return 'text-yellow-600';
@@ -391,7 +401,7 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
         }}
         onSubmit={handleSubmitReport}
         questionId={currentQuestion.id}
-        questionText={currentQuestion.text || 'No question text available'}
+        questionText={currentQuestion.text || (currentQuestion as any).question || 'No question text available'}
         questionOptions={currentQuestion.options}
         correctAnswer={currentQuestion.correctAnswer}
         userAnswer={selectedAnswerIndex}

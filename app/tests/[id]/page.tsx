@@ -45,6 +45,16 @@ export default function TestPage() {
   const answeredQuestions = Object.keys(selectedAnswers).length;
   const flaggedCount = flaggedQuestions.size;
 
+  // Debug: Log current question data
+  console.log('🔍 [TEST PAGE] Current question:', {
+    id: currentQuestion?.id,
+    text: currentQuestion?.text,
+    question: (currentQuestion as any)?.question,
+    options: currentQuestion?.options,
+    hasText: !!currentQuestion?.text,
+    textLength: currentQuestion?.text?.length || 0
+  });
+
   // Save progress when answers change (debounced to avoid excessive API calls)
   const saveProgressDebounced = useCallback((delay: number = 2000) => {
     // Clear any existing timeout
@@ -748,7 +758,7 @@ export default function TestPage() {
           }}
           onSubmit={handleSubmitReport}
           questionId={currentQuestion.id}
-          questionText={currentQuestion.text || 'No question text available'}
+          questionText={currentQuestion.text || (currentQuestion as any).question || 'No question text available'}
           questionOptions={currentQuestion.options}
           correctAnswer={currentQuestion.correctAnswer}
           userAnswer={selectedAnswers[currentQuestion.id]}
