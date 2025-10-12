@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Flag, Filter, Search, Eye, CheckCircle, XCircle, Clock, AlertTriangle, MessageSquare, Trash2 } from 'lucide-react';
+import { Flag, Filter, Search, Eye, CheckCircle, XCircle, Clock, AlertTriangle, MessageSquare, Trash2, ArrowLeft, Home, Settings } from 'lucide-react';
 import { QuestionReport, IssueType, ReportStatus } from '@/types';
+import Link from 'next/link';
 
 export default function AdminReportsPage() {
   const [reports, setReports] = useState<QuestionReport[]>([]);
@@ -162,8 +163,73 @@ export default function AdminReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+      {/* Navigation Header */}
+      <header className="bg-white shadow-sm border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/admin" 
+                className="inline-flex items-center space-x-2 text-gray-600 hover:text-orange-600 transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                <span>Back to Admin</span>
+              </Link>
+              <div className="h-6 w-px bg-gray-300"></div>
+              <Link 
+                href="/" 
+                className="inline-flex items-center space-x-2 text-gray-600 hover:text-orange-600 transition-colors"
+              >
+                <Home className="w-5 h-5" />
+                <span>Home</span>
+              </Link>
+            </div>
+            
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link 
+                href="/admin" 
+                className="text-gray-600 hover:text-orange-600 transition-colors"
+              >
+                Admin Dashboard
+              </Link>
+              <Link 
+                href="/admin/reports" 
+                className="text-orange-600 font-medium"
+              >
+                View Issues
+              </Link>
+              <Link 
+                href="/admin/pdf-upload" 
+                className="text-gray-600 hover:text-orange-600 transition-colors"
+              >
+                Upload PDFs
+              </Link>
+            </nav>
+
+            {/* Mobile Navigation */}
+            <div className="md:hidden">
+              <select 
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                onChange={(e) => {
+                  if (e.target.value) {
+                    window.location.href = e.target.value;
+                  }
+                }}
+                value=""
+              >
+                <option value="">Navigate...</option>
+                <option value="/admin">Admin Dashboard</option>
+                <option value="/admin/reports">View Issues</option>
+                <option value="/admin/pdf-upload">Upload PDFs</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
