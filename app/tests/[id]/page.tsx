@@ -352,12 +352,21 @@ export default function TestPage() {
 
   const handleSubmitReport = async (data: CreateQuestionReportData) => {
     try {
+      console.log('📤 [TEST PAGE] Getting session...');
       // Get the current session token
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('❌ [TEST PAGE] Session error:', sessionError);
+        throw new Error('Failed to get session: ' + sessionError.message);
+      }
+      
       if (!session) {
-        throw new Error('No active session');
+        console.error('❌ [TEST PAGE] No active session');
+        throw new Error('No active session. Please log in again.');
       }
 
+      console.log('📤 [TEST PAGE] Submitting report...');
       const response = await fetch('/api/reports/submit', {
         method: 'POST',
         headers: {
@@ -367,15 +376,26 @@ export default function TestPage() {
         body: JSON.stringify(data),
       });
 
+      console.log('📤 [TEST PAGE] Response status:', response.status);
+      
+      const result = await response.json();
+      console.log('📤 [TEST PAGE] Response data:', result);
+
       if (!response.ok) {
-        throw new Error('Failed to submit report');
+        throw new Error(result.details || result.error || 'Failed to submit report');
       }
 
-      const result = await response.json();
+      console.log('✅ [TEST PAGE] Report submitted successfully');
       setReportSubmitted(true);
+      
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        setReportSubmitted(false);
+      }, 5000);
+      
       return result;
-    } catch (error) {
-      console.error('Error submitting report:', error);
+    } catch (error: any) {
+      console.error('❌ [TEST PAGE] Error submitting report:', error);
       throw error;
     }
   };

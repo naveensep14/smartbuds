@@ -105,9 +105,10 @@ export default function ReportQuestionModal({
       setSelectedIssueType('');
       setDescription('');
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error('❌ [MODAL] Error in handleSubmit:', err);
-      setError('Failed to submit report. Please try again.');
+      const errorMessage = err?.message || 'Failed to submit report. Please try again.';
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

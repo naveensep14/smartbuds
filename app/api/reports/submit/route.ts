@@ -4,11 +4,14 @@ import { CreateQuestionReportData } from '@/types';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 export async function POST(request: NextRequest) {
   try {
     console.log('🔍 [REPORT API] Starting report submission...');
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    
+    // First, verify the user with the anon client
+    const anonClient = createClient(supabaseUrl, supabaseAnonKey);
     
     // Get the current user from the Authorization header
     const authHeader = request.headers.get('authorization');
@@ -22,13 +25,16 @@ export async function POST(request: NextRequest) {
     const token = authHeader.replace('Bearer ', '');
     console.log('🔍 [REPORT API] Token length:', token.length);
     
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    const { data: { user }, error: authError } = await anonClient.auth.getUser(token);
     if (authError || !user) {
       console.log('❌ [REPORT API] Auth error:', authError?.message);
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
     console.log('✅ [REPORT API] User authenticated:', user.id);
+    
+    // Now use service role key to insert data (bypasses RLS)
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     const reportData: CreateQuestionReportData = await request.json();
     console.log('🔍 [REPORT API] Report data received:', {
@@ -87,7 +93,22 @@ export async function POST(request: NextRequest) {
       console.error('❌ [REPORT API] Error creating question report:', reportError);
       console.error('❌ [REPORT API] Error details:', reportError.details);
       console.error('❌ [REPORT API] Error code:', reportError.code);
-      return NextResponse.json({ error: 'Failed to submit report' }, { status: 500 });
+      console.error('❌ [REPORT API] Error hint:', reportError.hint);
+      console.error('❌ [REPORT API] Error message:', reportError.message);
+      
+      return NextResponse.json({ 
+        error: 'Failed to submit report',
+        details: reportError.message,
+        code: reportError.code
+      }, { status: 500 });
+    }
+    
+    if (!report) {
+      console.error('❌ [REPORT API] Report created but no data returned');
+      return NextResponse.json({ 
+        error: 'Failed to create report',
+        details: 'No data returned after insert'
+      }, { status: 500 });
     }
     
     console.log('✅ [REPORT API] Report created successfully:', report.id);
@@ -98,8 +119,12 @@ export async function POST(request: NextRequest) {
       message: 'Report submitted successfully' 
     });
 
-  } catch (error) {
-    console.error('Error in submit report API:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  } catch (error: any) {
+    console.error('❌ [REPORT API] Unexpected error in submit report API:', error);
+    console.error('❌ [REPORT API] Error stack:', error?.stack);
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error?.message || 'Unknown error'
+    }, { status: 500 });
   }
 }
