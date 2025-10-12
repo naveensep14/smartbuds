@@ -70,6 +70,12 @@ export default function AdminReportsPage() {
     loadReports();
   }, [loadReports]);
 
+  useEffect(() => {
+    if (showReportModal && selectedReport) {
+      console.log('Modal opened with report:', selectedReport);
+    }
+  }, [showReportModal, selectedReport]);
+
   const updateReportStatus = async (reportId: string, status: ReportStatus, adminNotes?: string) => {
     try {
       const response = await fetch('/api/admin/reports', {
@@ -269,18 +275,23 @@ export default function AdminReportsPage() {
                   transition={{ delay: index * 0.05 }}
                   className="p-6 hover:bg-gray-50 transition-colors cursor-pointer"
                   onClick={() => {
-                    setSelectedReport(report);
-                    setShowReportModal(true);
+                    console.log('Report clicked:', report);
+                    try {
+                      setSelectedReport(report);
+                      setShowReportModal(true);
+                    } catch (error) {
+                      console.error('Error opening modal:', error);
+                    }
                   }}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-3 mb-2">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[report.status]}`}>
-                          {STATUS_LABELS[report.status]}
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[report.status] || 'bg-gray-100 text-gray-800'}`}>
+                          {STATUS_LABELS[report.status] || 'Unknown'}
                         </span>
                         <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                          {ISSUE_TYPE_LABELS[report.issue_type]}
+                          {ISSUE_TYPE_LABELS[report.issue_type] || 'Unknown Issue'}
                         </span>
                         <span className="text-xs text-gray-500">
                           {new Date(report.reported_at).toLocaleDateString()}
@@ -346,14 +357,14 @@ export default function AdminReportsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium text-gray-700">Status</label>
-                    <div className={`mt-1 px-3 py-1 rounded-full text-sm font-medium inline-block ${STATUS_COLORS[selectedReport.status]}`}>
-                      {STATUS_LABELS[selectedReport.status]}
+                    <div className={`mt-1 px-3 py-1 rounded-full text-sm font-medium inline-block ${STATUS_COLORS[selectedReport.status] || 'bg-gray-100 text-gray-800'}`}>
+                      {STATUS_LABELS[selectedReport.status] || 'Unknown'}
                     </div>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-700">Issue Type</label>
                     <div className="mt-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium inline-block">
-                      {ISSUE_TYPE_LABELS[selectedReport.issue_type]}
+                      {ISSUE_TYPE_LABELS[selectedReport.issue_type] || 'Unknown Issue'}
                     </div>
                   </div>
                   <div>
@@ -376,7 +387,7 @@ export default function AdminReportsPage() {
                   <p className="text-gray-800 mb-4">{selectedReport.question_text}</p>
                   
                   <div className="space-y-2">
-                    {selectedReport.question_options.map((option, index) => (
+                    {(selectedReport.question_options || []).map((option, index) => (
                       <div key={index} className="flex items-center space-x-2 text-sm">
                         <span className="font-medium text-gray-600">
                           {String.fromCharCode(65 + index)}.
