@@ -6,17 +6,13 @@ import { BookOpen, Clock, CheckCircle, XCircle, ArrowLeft, ArrowRight, Flag, Men
 import Link from 'next/link';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
 import { Test, Question, TestResult, CreateQuestionReportData } from '@/types';
 import { testService, resultService } from '@/lib/database';
 import { useAuth } from '@/lib/auth';
 import TestReview from '@/components/TestReview';
 import ReportQuestionModal from '@/components/ReportQuestionModal';
 import { TestProgressService, TestProgress } from '@/lib/test-progress';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function TestPage() {
   const params = useParams();
