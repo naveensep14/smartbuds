@@ -97,10 +97,13 @@ export default function SignupPage() {
         >
           {/* Logo */}
           <div className="text-center mb-8">
-            <img
+            <Image
               src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
               alt="SuccessBuds Logo"
-              className="mx-auto w-20 h-20 rounded-xl object-cover shadow-lg"
+              width={80}
+              height={80}
+              className="mx-auto rounded-xl object-cover shadow-lg"
+              unoptimized
             />
             <h1 className="text-2xl font-bold text-gray-900 mt-4">Create Account</h1>
             <p className="text-gray-600">Join SuccessBuds with your Google account</p>

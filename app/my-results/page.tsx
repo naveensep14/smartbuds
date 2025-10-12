@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, BarChart3, TrendingUp, Calendar, Filter, Eye, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import { TestResult, Test } from '@/types';
@@ -207,10 +208,13 @@ export default function MyResultsPage() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-3">
-                <img
+                <Image
                   src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
                   alt="SuccessBuds Logo"
-                  className="w-12 h-12 rounded-lg object-cover"
+                  width={48}
+                  height={48}
+                  className="rounded-lg object-cover"
+                  unoptimized
                 />
                 <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
               </Link>

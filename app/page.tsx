@@ -105,9 +105,9 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="mb-8"
             >
-              <p className="text-2xl md:text-3xl font-semibold text-gradient mb-4">
-                "Budding Minds, Blooming Success"
-              </p>
+                  <p className="text-2xl md:text-3xl font-semibold text-gradient mb-4">
+                    &ldquo;Budding Minds, Blooming Success&rdquo;
+                  </p>
             </motion.div>
             
             <motion.p
@@ -245,9 +245,9 @@ export default function HomePage() {
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Ready to Start Learning?
             </h2>
-            <p className="text-xl md:text-2xl font-semibold text-yellow mb-6">
-              "Budding Minds, Blooming Success"
-            </p>
+                <p className="text-xl md:text-2xl font-semibold text-yellow mb-6">
+                  &ldquo;Budding Minds, Blooming Success&rdquo;
+                </p>
             <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
               Join thousands of students who are already improving their academic performance with SuccessBuds
             </p>
