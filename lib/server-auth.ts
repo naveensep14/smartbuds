@@ -5,8 +5,11 @@ import { ADMIN_EMAILS } from './admin-config';
 export async function createClient() {
   const cookieStore = cookies();
 
+  // Use proxy URL for authentication, fallback to direct Supabase URL
+  const proxyUrl = process.env.NEXT_PUBLIC_SUPABASE_PROXY_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    proxyUrl,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
