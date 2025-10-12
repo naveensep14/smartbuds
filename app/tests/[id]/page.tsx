@@ -24,7 +24,6 @@ export default function TestPage() {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [isTestCompleted, setIsTestCompleted] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [testResult, setTestResult] = useState<TestResult | null>(null);
   const [startTime, setStartTime] = useState<Date>(new Date());
@@ -329,17 +328,6 @@ export default function TestPage() {
     }
   };
 
-  const toggleFlagQuestion = () => {
-    setFlaggedQuestions(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(currentQuestion.id)) {
-        newSet.delete(currentQuestion.id);
-      } else {
-        newSet.add(currentQuestion.id);
-      }
-      return newSet;
-    });
-  };
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -620,25 +608,13 @@ export default function TestPage() {
         >
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-800">Question {currentQuestionIndex + 1}</h2>
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setShowReportModal(true)}
-                className="flex items-center space-x-2 px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors"
-              >
-                <Flag className="w-4 h-4" />
-                <span className="text-sm font-medium">Report Issue</span>
-              </button>
-              <button
-                onClick={toggleFlagQuestion}
-                className={`p-2 rounded-lg transition-colors ${
-                  flaggedQuestions.has(currentQuestion.id)
-                    ? 'bg-yellow-100 text-yellow-600'
-                    : 'bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-yellow-600'
-                }`}
-              >
-                <Flag className="w-5 h-5" />
-              </button>
-            </div>
+            <button
+              onClick={() => setShowReportModal(true)}
+              className="flex items-center space-x-2 px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors"
+            >
+              <Flag className="w-4 h-4" />
+              <span className="text-sm font-medium">Report Issue</span>
+            </button>
           </div>
           
           <p className="text-lg text-gray-700 mb-8">{currentQuestion.text}</p>
