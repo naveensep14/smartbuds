@@ -356,9 +356,8 @@ export default function PDFUploadPage() {
       setUploadProgress(35);
       addLog('🔍 AI is analyzing PDF content...');
 
-      // Clone the response to avoid "body stream already read" error
-      const responseClone = response.clone();
-      const result = await responseClone.json();
+      // Get the result from the last processed file
+      const result = allResults[allResults.length - 1];
       
       setUploadProgress(50);
 
