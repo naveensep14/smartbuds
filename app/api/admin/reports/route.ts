@@ -1,27 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { cookies } from 'next/headers';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 const ADMIN_EMAILS = ['naveensep14@gmail.com', 'admin@successbuds.com'];
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    // Get cookies for authentication
+    const cookieStore = cookies();
+    const allCookies = cookieStore.getAll();
     
-    // Get the current user
+    // Create supabase client with cookies
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: {
+          cookie: allCookies.map(c => `${c.name}=${c.value}`).join('; ')
+        }
+      }
+    });
+    
+    // Get the current user from session
     const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    console.log('🔍 [ADMIN REPORTS] Auth check:', { 
+      hasUser: !!user, 
+      userId: user?.id,
+      email: user?.email,
+      authError: authError?.message 
+    });
+    
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized', details: authError?.message }, { status: 401 });
     }
 
-    // Check if user is admin
-    const { data: profile } = await supabase
+    // Check if user is admin using service role to bypass RLS
+    const adminClient = createClient(supabaseUrl, supabaseServiceKey);
+    const { data: profile, error: profileError } = await adminClient
       .from('profiles')
       .select('email')
       .eq('id', user.id)
       .single();
+
+    console.log('🔍 [ADMIN REPORTS] Profile check:', { 
+      email: profile?.email,
+      isAdmin: profile ? ADMIN_EMAILS.includes(profile.email.toLowerCase()) : false,
+      profileError: profileError?.message
+    });
 
     if (!profile || !ADMIN_EMAILS.includes(profile.email.toLowerCase())) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
@@ -33,8 +61,10 @@ export async function GET(request: NextRequest) {
     const issueType = searchParams.get('issueType');
     const limit = parseInt(searchParams.get('limit') || '50');
 
-    // Build query
-    let query = supabase
+    console.log('🔍 [ADMIN REPORTS] Fetching reports with filters:', { status, issueType, limit });
+
+    // Build query using service role client to bypass RLS
+    let query = adminClient
       .from('question_reports')
       .select(`
         *,
@@ -59,11 +89,17 @@ export async function GET(request: NextRequest) {
     const { data: reports, error } = await query;
 
     if (error) {
-      console.error('Error fetching reports:', error);
-      return NextResponse.json({ error: 'Failed to fetch reports' }, { status: 500 });
+      console.error('❌ [ADMIN REPORTS] Error fetching reports:', error);
+      return NextResponse.json({ 
+        error: 'Failed to fetch reports',
+        details: error.message,
+        code: error.code
+      }, { status: 500 });
     }
 
-    return NextResponse.json({ reports });
+    console.log('✅ [ADMIN REPORTS] Fetched reports:', reports?.length || 0);
+
+    return NextResponse.json({ reports: reports || [] });
 
   } catch (error) {
     console.error('Error in admin reports API:', error);
@@ -73,7 +109,18 @@ export async function GET(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    // Get cookies for authentication
+    const cookieStore = cookies();
+    const allCookies = cookieStore.getAll();
+    
+    // Create supabase client with cookies
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: {
+          cookie: allCookies.map(c => `${c.name}=${c.value}`).join('; ')
+        }
+      }
+    });
     
     // Get the current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -81,8 +128,9 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check if user is admin
-    const { data: profile } = await supabase
+    // Check if user is admin using service role
+    const adminClient = createClient(supabaseUrl, supabaseServiceKey);
+    const { data: profile } = await adminClient
       .from('profiles')
       .select('email')
       .eq('id', user.id)
@@ -109,7 +157,7 @@ export async function PATCH(request: NextRequest) {
       updateData.resolved_by = user.id;
     }
 
-    const { data: report, error: updateError } = await supabase
+    const { data: report, error: updateError } = await adminClient
       .from('question_reports')
       .update(updateData)
       .eq('id', reportId)
@@ -135,7 +183,18 @@ export async function PATCH(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    // Get cookies for authentication
+    const cookieStore = cookies();
+    const allCookies = cookieStore.getAll();
+    
+    // Create supabase client with cookies
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: {
+          cookie: allCookies.map(c => `${c.name}=${c.value}`).join('; ')
+        }
+      }
+    });
     
     // Get the current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -143,8 +202,9 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check if user is admin
-    const { data: profile } = await supabase
+    // Check if user is admin using service role
+    const adminClient = createClient(supabaseUrl, supabaseServiceKey);
+    const { data: profile } = await adminClient
       .from('profiles')
       .select('email')
       .eq('id', user.id)
@@ -160,8 +220,8 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Report ID is required' }, { status: 400 });
     }
 
-    // Delete the report
-    const { error: deleteError } = await supabase
+    // Delete the report using service role client
+    const { error: deleteError } = await adminClient
       .from('question_reports')
       .delete()
       .eq('id', reportId);
