@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, X, CheckCircle, XCircle, Clock, BarChart3, Eye, ArrowLeft, ArrowRight } from 'lucide-react';
+import { BookOpen, X, CheckCircle, XCircle, Clock, BarChart3, Eye, ArrowLeft, ArrowRight, Flag } from 'lucide-react';
 import Link from 'next/link';
-import { Test, Question, TestResult } from '@/types';
+import { Test, Question, TestResult, CreateQuestionReportData } from '@/types';
+import ReportQuestionModal from './ReportQuestionModal';
 
 interface TestReviewProps {
   test: Test;
@@ -15,6 +16,8 @@ interface TestReviewProps {
 export default function TestReview({ test, testResult, onClose }: TestReviewProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showAnswerKey, setShowAnswerKey] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportSubmitted, setReportSubmitted] = useState(false);
 
   const currentQuestion = test.questions[currentQuestionIndex];
   const userAnswer = testResult.answers.find(a => a.questionId === currentQuestion.id);
@@ -31,6 +34,29 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
     if (score >= 80) return 'bg-green-50 border-green-200';
     if (score >= 60) return 'bg-yellow-50 border-yellow-200';
     return 'bg-red-50 border-red-200';
+  };
+
+  const handleSubmitReport = async (data: CreateQuestionReportData) => {
+    try {
+      const response = await fetch('/api/reports/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit report');
+      }
+
+      const result = await response.json();
+      setReportSubmitted(true);
+      return result;
+    } catch (error) {
+      console.error('Error submitting report:', error);
+      throw error;
+    }
   };
 
   return (
@@ -160,6 +186,13 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
                 </div>
                 
                 <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setShowReportModal(true)}
+                    className="flex items-center space-x-2 px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors"
+                  >
+                    <Flag className="w-4 h-4" />
+                    <span className="text-sm font-medium">Report Issue</span>
+                  </button>
                   <button
                     onClick={() => setCurrentQuestionIndex(Math.max(0, currentQuestionIndex - 1))}
                     disabled={currentQuestionIndex === 0}
@@ -298,6 +331,32 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
           </div>
         </div>
       </motion.div>
+
+      {/* Report Question Modal */}
+      <ReportQuestionModal
+        isOpen={showReportModal}
+        onClose={() => {
+          setShowReportModal(false);
+          setReportSubmitted(false);
+        }}
+        onSubmit={handleSubmitReport}
+        questionId={currentQuestion.id}
+        questionText={currentQuestion.text}
+        questionOptions={currentQuestion.options}
+        correctAnswer={currentQuestion.correctAnswer}
+        userAnswer={selectedAnswerIndex}
+        testId={test.id}
+      />
+
+      {/* Success Message */}
+      {reportSubmitted && (
+        <div className="fixed top-4 right-4 z-60 bg-green-50 border border-green-200 rounded-lg p-4 shadow-lg">
+          <div className="flex items-center space-x-2">
+            <CheckCircle className="w-5 h-5 text-green-600" />
+            <p className="text-green-800 font-medium">Report submitted successfully!</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

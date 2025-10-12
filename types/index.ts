@@ -49,4 +49,50 @@ export interface TestSession {
   answers: { questionId: string; selectedAnswer: number }[];
   startTime: Date;
   timeRemaining: number; // in seconds
+}
+
+export type IssueType = 
+  | 'incorrect_answer'
+  | 'unclear_question'
+  | 'typo_error'
+  | 'wrong_explanation'
+  | 'inappropriate_content'
+  | 'technical_error'
+  | 'other';
+
+export type ReportStatus = 'pending' | 'reviewed' | 'resolved' | 'dismissed';
+
+export interface QuestionReport {
+  id: string;
+  userId: string;
+  testId: string;
+  questionId: string;
+  questionText: string;
+  questionOptions: string[];
+  correctAnswer: number;
+  userAnswer?: number;
+  issueType: IssueType;
+  description?: string;
+  testTitle: string;
+  testSubject: string;
+  testGrade: string;
+  testBoard: string;
+  testChapter?: number;
+  testDuration: number;
+  reportedAt: Date;
+  status: ReportStatus;
+  adminNotes?: string;
+  resolvedAt?: Date;
+  resolvedBy?: string;
+}
+
+export interface CreateQuestionReportData {
+  testId: string;
+  questionId: string;
+  questionText: string;
+  questionOptions: string[];
+  correctAnswer: number;
+  userAnswer?: number;
+  issueType: IssueType;
+  description?: string;
 } 

@@ -5,11 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Clock, CheckCircle, XCircle, ArrowLeft, ArrowRight, Flag, Menu, X, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { Test, Question, TestResult } from '@/types';
+import { Test, Question, TestResult, CreateQuestionReportData } from '@/types';
 import { testService, resultService } from '@/lib/database';
 import { useAuth } from '@/lib/auth';
 import PrintableTest from '@/components/PrintableTest';
 import TestReview from '@/components/TestReview';
+import ReportQuestionModal from '@/components/ReportQuestionModal';
 import { TestProgressService, TestProgress } from '@/lib/test-progress';
 
 export default function TestPage() {
@@ -32,6 +33,8 @@ export default function TestPage() {
   const [testProgress, setTestProgress] = useState<TestProgress | null>(null);
   const [isResuming, setIsResuming] = useState(false);
   const [showReview, setShowReview] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportSubmitted, setReportSubmitted] = useState(false);
 
   // Load test from database
   useEffect(() => {
@@ -358,6 +361,29 @@ export default function TestPage() {
     };
   };
 
+  const handleSubmitReport = async (data: CreateQuestionReportData) => {
+    try {
+      const response = await fetch('/api/reports/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit report');
+      }
+
+      const result = await response.json();
+      setReportSubmitted(true);
+      return result;
+    } catch (error) {
+      console.error('Error submitting report:', error);
+      throw error;
+    }
+  };
+
   if (showResults && testResult) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
@@ -594,16 +620,25 @@ export default function TestPage() {
         >
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-800">Question {currentQuestionIndex + 1}</h2>
-            <button
-              onClick={toggleFlagQuestion}
-              className={`p-2 rounded-lg transition-colors ${
-                flaggedQuestions.has(currentQuestion.id)
-                  ? 'bg-yellow-100 text-yellow-600'
-                  : 'bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-yellow-600'
-              }`}
-            >
-              <Flag className="w-5 h-5" />
-            </button>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setShowReportModal(true)}
+                className="flex items-center space-x-2 px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors"
+              >
+                <Flag className="w-4 h-4" />
+                <span className="text-sm font-medium">Report Issue</span>
+              </button>
+              <button
+                onClick={toggleFlagQuestion}
+                className={`p-2 rounded-lg transition-colors ${
+                  flaggedQuestions.has(currentQuestion.id)
+                    ? 'bg-yellow-100 text-yellow-600'
+                    : 'bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-yellow-600'
+                }`}
+              >
+                <Flag className="w-5 h-5" />
+              </button>
+            </div>
           </div>
           
           <p className="text-lg text-gray-700 mb-8">{currentQuestion.text}</p>
@@ -747,6 +782,32 @@ export default function TestPage() {
           testResult={testResult}
           onClose={() => setShowReview(false)}
         />
+      )}
+
+      {/* Report Question Modal */}
+      <ReportQuestionModal
+        isOpen={showReportModal}
+        onClose={() => {
+          setShowReportModal(false);
+          setReportSubmitted(false);
+        }}
+        onSubmit={handleSubmitReport}
+        questionId={currentQuestion.id}
+        questionText={currentQuestion.text}
+        questionOptions={currentQuestion.options}
+        correctAnswer={currentQuestion.correctAnswer}
+        userAnswer={selectedAnswers[currentQuestion.id]}
+        testId={test.id}
+      />
+
+      {/* Success Message */}
+      {reportSubmitted && (
+        <div className="fixed top-4 right-4 z-60 bg-green-50 border border-green-200 rounded-lg p-4 shadow-lg">
+          <div className="flex items-center space-x-2">
+            <CheckCircle className="w-5 h-5 text-green-600" />
+            <p className="text-green-800 font-medium">Report submitted successfully!</p>
+          </div>
+        </div>
       )}
     </div>
   );

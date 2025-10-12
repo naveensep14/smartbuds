@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Plus, Edit, Trash2, Eye, BarChart3, Users, Settings, Menu, X, LogOut, Upload, Filter, Search } from 'lucide-react';
+import { BookOpen, Plus, Edit, Trash2, Eye, BarChart3, Users, Settings, Menu, X, LogOut, Upload, Filter, Search, Flag } from 'lucide-react';
 import Link from 'next/link';
 import AdminRoute from '@/components/AdminRoute';
 import CreateTestForm from '@/components/CreateTestForm';
@@ -269,6 +269,13 @@ function AdminPageContent() {
               <p className="text-xl text-gray-600">Manage tests and monitor student progress</p>
             </div>
             <div className="flex gap-3">
+              <Link
+                href="/admin/reports"
+                className="btn-secondary flex items-center space-x-2"
+              >
+                <Flag className="w-5 h-5" />
+                <span>Question Reports</span>
+              </Link>
               <Link
                 href="/admin/pdf-upload"
                 className="btn-secondary flex items-center space-x-2"
