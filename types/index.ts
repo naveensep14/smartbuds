@@ -22,6 +22,7 @@ export interface Test {
   questions: Question[];
   createdAt: Date;
   updatedAt: Date;
+  expiryDate?: Date; // For weekly tests - when they expire
 }
 
 export interface TestResult {

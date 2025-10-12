@@ -29,6 +29,7 @@ export interface Database {
           questions: any;
           created_at: string;
           updated_at: string;
+          expiry_date?: string;
         };
         Insert: {
           id?: string;
@@ -42,6 +43,7 @@ export interface Database {
           questions: any;
           created_at?: string;
           updated_at?: string;
+          expiry_date?: string;
         };
         Update: {
           id?: string;
@@ -55,6 +57,7 @@ export interface Database {
           questions?: any;
           created_at?: string;
           updated_at?: string;
+          expiry_date?: string;
         };
       };
       results: {

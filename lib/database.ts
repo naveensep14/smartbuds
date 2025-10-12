@@ -37,6 +37,7 @@ export const testService = {
         })) || [],
         createdAt: new Date(test.createdat),
         updatedAt: new Date(test.updatedat),
+        expiryDate: test.expiry_date ? new Date(test.expiry_date) : undefined,
       })) || [];
     } catch (error) {
       console.error('Error fetching tests:', error);
@@ -76,6 +77,7 @@ export const testService = {
         })) || [],
         createdAt: new Date(data.createdat),
         updatedAt: new Date(data.updatedat),
+        expiryDate: data.expiry_date ? new Date(data.expiry_date) : undefined,
       };
     } catch (error) {
       console.error('Error fetching test:', error);
@@ -129,6 +131,7 @@ export const testService = {
         })) || [],
         createdAt: new Date(data.createdat),
         updatedAt: new Date(data.updatedat),
+        expiryDate: data.expiry_date ? new Date(data.expiry_date) : undefined,
       };
     } catch (error) {
       console.error('Error creating test:', error);
@@ -184,6 +187,7 @@ export const testService = {
         })) || [],
         createdAt: new Date(data.createdat),
         updatedAt: new Date(data.updatedat),
+        expiryDate: data.expiry_date ? new Date(data.expiry_date) : undefined,
       };
     } catch (error) {
       console.error('Error updating test:', error);
