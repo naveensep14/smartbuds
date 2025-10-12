@@ -128,8 +128,8 @@ export default function AdminReportsPage() {
 
   const filteredReports = reports.filter(report => {
     const matchesSearch = !filters.search || 
-      report.questionText.toLowerCase().includes(filters.search.toLowerCase()) ||
-      report.testTitle.toLowerCase().includes(filters.search.toLowerCase()) ||
+      report.question_text.toLowerCase().includes(filters.search.toLowerCase()) ||
+      report.test_title.toLowerCase().includes(filters.search.toLowerCase()) ||
       report.description?.toLowerCase().includes(filters.search.toLowerCase());
     
     return matchesSearch;
@@ -280,25 +280,25 @@ export default function AdminReportsPage() {
                           {STATUS_LABELS[report.status]}
                         </span>
                         <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                          {ISSUE_TYPE_LABELS[report.issueType]}
+                          {ISSUE_TYPE_LABELS[report.issue_type]}
                         </span>
                         <span className="text-xs text-gray-500">
-                          {new Date(report.reportedAt).toLocaleDateString()}
+                          {new Date(report.reported_at).toLocaleDateString()}
                         </span>
                       </div>
                       
                       <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                        {report.questionText}
+                        {report.question_text}
                       </h3>
                       
                       <div className="flex items-center space-x-4 text-sm text-gray-600">
-                        <span className="font-medium">{report.testTitle}</span>
+                        <span className="font-medium">{report.test_title}</span>
                         <span>•</span>
-                        <span>{report.testSubject} • {report.testGrade} • {report.testBoard}</span>
-                        {report.testChapter && (
+                        <span>{report.test_subject} • {report.test_grade} • {report.test_board}</span>
+                        {report.test_chapter && (
                           <>
                             <span>•</span>
-                            <span>Chapter {report.testChapter}</span>
+                            <span>Chapter {report.test_chapter}</span>
                           </>
                         )}
                       </div>
@@ -353,19 +353,19 @@ export default function AdminReportsPage() {
                   <div>
                     <label className="text-sm font-medium text-gray-700">Issue Type</label>
                     <div className="mt-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium inline-block">
-                      {ISSUE_TYPE_LABELS[selectedReport.issueType]}
+                      {ISSUE_TYPE_LABELS[selectedReport.issue_type]}
                     </div>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-700">Reported At</label>
                     <div className="mt-1 text-sm text-gray-900">
-                      {new Date(selectedReport.reportedAt).toLocaleString()}
+                      {new Date(selectedReport.reported_at).toLocaleString()}
                     </div>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-700">Test Details</label>
                     <div className="mt-1 text-sm text-gray-900">
-                      {selectedReport.testTitle} • {selectedReport.testSubject} • {selectedReport.testGrade} • {selectedReport.testBoard}
+                      {selectedReport.test_title} • {selectedReport.test_subject} • {selectedReport.test_grade} • {selectedReport.test_board}
                     </div>
                   </div>
                 </div>
@@ -373,27 +373,27 @@ export default function AdminReportsPage() {
                 {/* Question Details */}
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h3 className="font-semibold text-gray-900 mb-3">Question Details</h3>
-                  <p className="text-gray-800 mb-4">{selectedReport.questionText}</p>
+                  <p className="text-gray-800 mb-4">{selectedReport.question_text}</p>
                   
                   <div className="space-y-2">
-                    {selectedReport.questionOptions.map((option, index) => (
+                    {selectedReport.question_options.map((option, index) => (
                       <div key={index} className="flex items-center space-x-2 text-sm">
                         <span className="font-medium text-gray-600">
                           {String.fromCharCode(65 + index)}.
                         </span>
                         <span className={`${
-                          index === selectedReport.correctAnswer ? 'text-green-600 font-medium' : 
-                          index === selectedReport.userAnswer ? 'text-blue-600 font-medium' : 
+                          index === selectedReport.correct_answer ? 'text-green-600 font-medium' : 
+                          index === selectedReport.user_answer ? 'text-blue-600 font-medium' : 
                           'text-gray-700'
                         }`}>
                           {option}
                         </span>
-                        {index === selectedReport.correctAnswer && (
+                        {index === selectedReport.correct_answer && (
                           <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
                             Correct
                           </span>
                         )}
-                        {index === selectedReport.userAnswer && index !== selectedReport.correctAnswer && (
+                        {index === selectedReport.user_answer && index !== selectedReport.correct_answer && (
                           <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                             User Answer
                           </span>
@@ -414,11 +414,11 @@ export default function AdminReportsPage() {
                 )}
 
                 {/* Admin Notes */}
-                {selectedReport.adminNotes && (
+                {selectedReport.admin_notes && (
                   <div>
                     <label className="text-sm font-medium text-gray-700">Admin Notes</label>
                     <div className="mt-1 p-3 bg-gray-50 border border-gray-200 rounded-lg">
-                      <p className="text-gray-900">{selectedReport.adminNotes}</p>
+                      <p className="text-gray-900">{selectedReport.admin_notes}</p>
                     </div>
                   </div>
                 )}

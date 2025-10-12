@@ -64,26 +64,32 @@ export type ReportStatus = 'pending' | 'reviewed' | 'resolved' | 'dismissed';
 
 export interface QuestionReport {
   id: string;
-  userId: string;
-  testId: string;
-  questionId: string;
-  questionText: string;
-  questionOptions: string[];
-  correctAnswer: number;
-  userAnswer?: number;
-  issueType: IssueType;
+  user_id: string;
+  test_id: string;
+  question_id: string;
+  question_text: string;
+  question_options: string[];
+  correct_answer: number;
+  user_answer?: number;
+  issue_type: IssueType;
   description?: string;
-  testTitle: string;
-  testSubject: string;
-  testGrade: string;
-  testBoard: string;
-  testChapter?: number;
-  testDuration: number;
-  reportedAt: Date;
+  test_title: string;
+  test_subject: string;
+  test_grade: string;
+  test_board: string;
+  test_chapter?: number;
+  test_duration?: number;
+  reported_at: string;
   status: ReportStatus;
-  adminNotes?: string;
-  resolvedAt?: Date;
-  resolvedBy?: string;
+  admin_notes?: string;
+  resolved_at?: string;
+  resolved_by?: string;
+  profiles?: {
+    student_name: string;
+    email: string;
+    grade: string;
+    board: string;
+  };
 }
 
 export interface CreateQuestionReportData {
