@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     default: 'SuccessBuds - Online Educational Tests for Kids',
     template: '%s | SuccessBuds'
   },
-  description: 'SuccessBuds is the leading online educational platform for kids. Take interactive multiple choice tests, track progress, and improve learning outcomes. Perfect for parents, teachers, and students.',
+  description: 'SuccessBuds is the leading online educational platform for kids. Take interactive multiple choice tests for CBSE and ICSE curriculum, track progress, and improve learning outcomes. Perfect for parents, teachers, and students.',
   keywords: [
     'online education',
     'educational testing',
@@ -26,7 +26,21 @@ export const metadata: Metadata = {
     'test preparation',
     'educational technology',
     'e-learning',
-    'student performance'
+    'student performance',
+    'CBSE',
+    'ICSE',
+    'CBSE tests',
+    'ICSE tests',
+    'CBSE online tests',
+    'ICSE online tests',
+    'CBSE practice tests',
+    'ICSE practice tests',
+    'CBSE exam preparation',
+    'ICSE exam preparation',
+    'CBSE syllabus',
+    'ICSE syllabus',
+    'CBSE curriculum',
+    'ICSE curriculum'
   ],
   authors: [{ name: 'SuccessBuds Team' }],
   creator: 'SuccessBuds',
@@ -45,7 +59,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://successbuds.com',
     title: 'SuccessBuds - Online Educational Tests for Kids',
-    description: 'SuccessBuds is the leading online educational platform for kids. Take interactive multiple choice tests, track progress, and improve learning outcomes.',
+    description: 'SuccessBuds is the leading online educational platform for kids. Take interactive multiple choice tests for CBSE and ICSE curriculum, track progress, and improve learning outcomes.',
     siteName: 'SuccessBuds',
     images: [
       {
@@ -59,7 +73,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'SuccessBuds - Online Educational Tests for Kids',
-    description: 'SuccessBuds is the leading online educational platform for kids. Take interactive multiple choice tests, track progress, and improve learning outcomes.',
+    description: 'SuccessBuds is the leading online educational platform for kids. Take interactive multiple choice tests for CBSE and ICSE curriculum, track progress, and improve learning outcomes.',
     images: ['/images/logo-wide.jpg'],
     creator: '@successbuds',
   },
