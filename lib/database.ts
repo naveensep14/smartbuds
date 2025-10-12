@@ -38,6 +38,8 @@ export const testService = {
         createdAt: new Date(test.createdat),
         updatedAt: new Date(test.updatedat),
         expiryDate: test.expiry_date ? new Date(test.expiry_date) : undefined,
+        startDate: test.start_date || undefined,
+        endDate: test.end_date || undefined,
       })) || [];
     } catch (error) {
       console.error('Error fetching tests:', error);
@@ -78,6 +80,8 @@ export const testService = {
         createdAt: new Date(data.createdat),
         updatedAt: new Date(data.updatedat),
         expiryDate: data.expiry_date ? new Date(data.expiry_date) : undefined,
+        startDate: data.start_date || undefined,
+        endDate: data.end_date || undefined,
       };
     } catch (error) {
       console.error('Error fetching test:', error);
@@ -106,6 +110,8 @@ export const testService = {
             explanation: q.explanation,
             image: q.image,
           })),
+          start_date: test.startDate,
+          end_date: test.endDate,
         })
         .select()
         .single();
@@ -160,6 +166,8 @@ export const testService = {
             explanation: q.explanation,
             image: q.image,
           })),
+          start_date: updates.startDate,
+          end_date: updates.endDate,
           updatedat: new Date().toISOString(),
         })
         .eq('id', id)

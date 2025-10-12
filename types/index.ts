@@ -23,6 +23,8 @@ export interface Test {
   createdAt: Date;
   updatedAt: Date;
   expiryDate?: Date; // For weekly tests - when they expire
+  startDate?: string; // For weekly tests - start date in dd/mm format
+  endDate?: string; // For weekly tests - end date in dd/mm format
 }
 
 export interface TestResult {

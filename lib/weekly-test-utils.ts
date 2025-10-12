@@ -129,3 +129,33 @@ export function getUrgencyColorClass(urgencyLevel: 'low' | 'medium' | 'high' | '
       return 'text-red-600 bg-red-50 border-red-200';
   }
 }
+
+/**
+ * Check if a weekly test is currently within its date range
+ * @param startDate - Start date in dd/mm format (e.g., "15/03")
+ * @param endDate - End date in dd/mm format (e.g., "21/03")
+ * @returns true if the test is currently within its date range
+ */
+export function isWeeklyTestInDateRange(startDate: string, endDate: string): boolean {
+  const today = new Date();
+  const currentDay = today.getDate();
+  const currentMonth = today.getMonth() + 1; // getMonth() returns 0-11
+  
+  // Parse start and end dates
+  const [startDay, startMonth] = startDate.split('/').map(Number);
+  const [endDay, endMonth] = endDate.split('/').map(Number);
+  
+  // Convert to comparable format (month * 100 + day)
+  const currentDateValue = currentMonth * 100 + currentDay;
+  const startDateValue = startMonth * 100 + startDay;
+  const endDateValue = endMonth * 100 + endDay;
+  
+  // Handle year boundary (e.g., 29/12 to 04/01)
+  if (startDateValue > endDateValue) {
+    // Date range spans across year boundary
+    return currentDateValue >= startDateValue || currentDateValue <= endDateValue;
+  } else {
+    // Normal date range within same year
+    return currentDateValue >= startDateValue && currentDateValue <= endDateValue;
+  }
+}

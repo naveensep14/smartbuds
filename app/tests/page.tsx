@@ -13,7 +13,7 @@ import { TestProgressService } from '@/lib/test-progress';
 import NavigationHeader from '@/components/NavigationHeader';
 import { normalizeGrade } from '@/lib/grade-utils';
 import InProgressTests from '@/components/InProgressTests';
-import { getTimeUntilExpiry, getTimeRemainingString, getUrgencyLevel, getUrgencyColorClass, isWeeklyTestAvailable } from '@/lib/weekly-test-utils';
+import { getTimeUntilExpiry, getTimeRemainingString, getUrgencyLevel, getUrgencyColorClass, isWeeklyTestAvailable, isWeeklyTestInDateRange } from '@/lib/weekly-test-utils';
 
 export default function TestsPage() {
   const [tests, setTests] = useState<Test[]>([]);
@@ -124,9 +124,10 @@ export default function TestsPage() {
     const matchesChapter = !selectedChapter || extractChapter(test.title) === selectedChapter;
     const matchesType = test.type === activeTab;
     
-    // For weekly tests, check if they're still available (not expired)
+    // For weekly tests, check if they're still available (not expired) and within date range
     const isAvailable = test.type === 'weekly' 
-      ? (test.expiryDate ? isWeeklyTestAvailable(test.expiryDate) : true)
+      ? (test.expiryDate ? isWeeklyTestAvailable(test.expiryDate) : true) &&
+        (test.startDate && test.endDate ? isWeeklyTestInDateRange(test.startDate, test.endDate) : true)
       : true;
     
     // For non-admin users, only show tests matching their grade and board

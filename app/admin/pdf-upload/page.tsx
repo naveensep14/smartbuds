@@ -34,9 +34,16 @@ const getNextWeekDates = () => {
   const nextSaturday = new Date(nextSunday);
   nextSaturday.setDate(nextSunday.getDate() + 6);
   
+  // Format as dd/mm (day/month without year for reusability)
+  const formatDate = (date: Date) => {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    return `${day}/${month}`;
+  };
+  
   return {
-    startDate: nextSunday.toISOString().split('T')[0],
-    endDate: nextSaturday.toISOString().split('T')[0]
+    startDate: formatDate(nextSunday),
+    endDate: formatDate(nextSaturday)
   };
 };
 
@@ -86,6 +93,15 @@ export default function PDFUploadPage() {
         const nextWeekDates = getNextWeekDates();
         newData.startDate = nextWeekDates.startDate;
         newData.endDate = nextWeekDates.endDate;
+      }
+      
+      // Auto-generate title for weekly tests
+      if (field === 'type' && value === 'weekly' && newData.grade && newData.subject) {
+        newData.title = `${newData.grade} ${newData.subject} Weekly Test`;
+      } else if (field === 'grade' && newData.type === 'weekly' && newData.subject) {
+        newData.title = `${value} ${newData.subject} Weekly Test`;
+      } else if (field === 'subject' && newData.type === 'weekly' && newData.grade) {
+        newData.title = `${newData.grade} ${value} Weekly Test`;
       }
       
       return newData;
@@ -847,6 +863,26 @@ export default function PDFUploadPage() {
             </div>
 
 
+            {/* Test Title */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Test Title *
+              </label>
+              <input
+                type="text"
+                value={formData.title}
+                onChange={(e) => handleInputChange('title', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                placeholder={formData.type === 'weekly' ? 'Auto-generated: Grade Subject Weekly Test' : 'Enter test title'}
+                required
+              />
+              {formData.type === 'weekly' && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Title will be auto-generated as: {formData.grade} {formData.subject} Weekly Test
+                </p>
+              )}
+            </div>
+
             {/* Subject and Grade */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -891,33 +927,35 @@ export default function PDFUploadPage() {
                 <>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Start Date *
+                      Start Date (dd/mm) *
                     </label>
                     <input
-                      type="date"
+                      type="text"
                       value={formData.startDate}
                       onChange={(e) => handleInputChange('startDate', e.target.value)}
+                      placeholder="dd/mm (e.g., 15/03)"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                       required
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Test will be available from this date
+                      Format: day/month (e.g., 15/03) - reusable across years
                     </p>
                   </div>
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      End Date *
+                      End Date (dd/mm) *
                     </label>
                     <input
-                      type="date"
+                      type="text"
                       value={formData.endDate}
                       onChange={(e) => handleInputChange('endDate', e.target.value)}
+                      placeholder="dd/mm (e.g., 21/03)"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                       required
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Test will expire after this date
+                      Format: day/month (e.g., 21/03) - reusable across years
                     </p>
                   </div>
                 </>

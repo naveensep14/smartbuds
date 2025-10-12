@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
           subject: test.subject,
           grade: test.grade,
           board: test.board,
+          type: test.type || 'coursework',
           timelimit: test.duration || test.timelimit,
           questions: test.questions.map((q: any) => ({
             id: q.id || Date.now().toString() + Math.random().toString(36).substr(2, 9),
@@ -38,7 +39,9 @@ export async function POST(request: NextRequest) {
             correctAnswer: q.correctAnswer,
             explanation: q.explanation,
             image: q.image || null
-          }))
+          })),
+          start_date: test.startDate,
+          end_date: test.endDate,
         };
 
         // Insert into database
