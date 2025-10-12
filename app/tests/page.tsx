@@ -349,7 +349,7 @@ export default function TestsPage() {
         <div className="mb-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-900">
-              {activeTab === 'coursework' ? 'Coursework Tests' : 'Weekly Tests'}
+              Available Tests
             </h2>
             <span className="text-sm text-gray-500">
               {filteredTests.length} test{filteredTests.length !== 1 ? 's' : ''} available
