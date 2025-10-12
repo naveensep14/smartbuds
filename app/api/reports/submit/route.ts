@@ -49,6 +49,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    // Ensure question_text is not null or empty
+    if (!reportData.questionText || reportData.questionText.trim() === '') {
+      console.log('❌ [REPORT API] Missing question text');
+      return NextResponse.json({ error: 'Question text is required' }, { status: 400 });
+    }
+
     // Get test details for context
     console.log('🔍 [REPORT API] Fetching test details...');
     const { data: test, error: testError } = await supabase

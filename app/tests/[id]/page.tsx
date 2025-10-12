@@ -748,7 +748,7 @@ export default function TestPage() {
           }}
           onSubmit={handleSubmitReport}
           questionId={currentQuestion.id}
-          questionText={currentQuestion.text}
+          questionText={currentQuestion.text || 'No question text available'}
           questionOptions={currentQuestion.options}
           correctAnswer={currentQuestion.correctAnswer}
           userAnswer={selectedAnswers[currentQuestion.id]}
