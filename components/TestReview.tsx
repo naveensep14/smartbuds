@@ -4,8 +4,13 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, X, CheckCircle, XCircle, Clock, BarChart3, Eye, ArrowLeft, ArrowRight, Flag } from 'lucide-react';
 import Link from 'next/link';
+import { createClient } from '@supabase/supabase-js';
 import { Test, Question, TestResult, CreateQuestionReportData } from '@/types';
 import ReportQuestionModal from './ReportQuestionModal';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface TestReviewProps {
   test: Test;
@@ -38,10 +43,17 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
 
   const handleSubmitReport = async (data: CreateQuestionReportData) => {
     try {
+      // Get the current session token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('No active session');
+      }
+
       const response = await fetch('/api/reports/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
         },
         body: JSON.stringify(data),
       });

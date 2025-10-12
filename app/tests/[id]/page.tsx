@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Clock, CheckCircle, XCircle, ArrowLeft, ArrowRight, Flag, Menu, X, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
+import { createClient } from '@supabase/supabase-js';
 import { Test, Question, TestResult, CreateQuestionReportData } from '@/types';
 import { testService, resultService } from '@/lib/database';
 import { useAuth } from '@/lib/auth';
@@ -12,6 +13,10 @@ import PrintableTest from '@/components/PrintableTest';
 import TestReview from '@/components/TestReview';
 import ReportQuestionModal from '@/components/ReportQuestionModal';
 import { TestProgressService, TestProgress } from '@/lib/test-progress';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function TestPage() {
   const params = useParams();
@@ -351,10 +356,17 @@ export default function TestPage() {
 
   const handleSubmitReport = async (data: CreateQuestionReportData) => {
     try {
+      // Get the current session token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('No active session');
+      }
+
       const response = await fetch('/api/reports/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
         },
         body: JSON.stringify(data),
       });
