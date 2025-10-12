@@ -25,6 +25,7 @@ function AdminPageContent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [isSupabaseConfigured, setIsSupabaseConfigured] = useState(false);
+  const [reportCount, setReportCount] = useState(0);
   
   // Filter states
   const [searchTerm, setSearchTerm] = useState('');
@@ -38,6 +39,7 @@ function AdminPageContent() {
   useEffect(() => {
     loadTests();
     checkSupabaseConfig();
+    loadReportCount();
   }, []);
 
   // Filter tests based on search and filter criteria
@@ -86,6 +88,18 @@ function AdminPageContent() {
       setToast({ type: 'error', message: 'Failed to load tests' });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadReportCount = async () => {
+    try {
+      const response = await fetch('/api/admin/reports?limit=1000');
+      if (response.ok) {
+        const data = await response.json();
+        setReportCount(data.reports?.length || 0);
+      }
+    } catch (error) {
+      console.error('Error loading report count:', error);
     }
   };
 
@@ -330,22 +344,24 @@ function AdminPageContent() {
               </div>
             </motion.div>
 
-            <motion.div
-              className="card"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Users className="w-6 h-6 text-green-600" />
+            <Link href="/admin/reports">
+              <motion.div
+                className="card hover:shadow-xl transition-shadow cursor-pointer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                    <Flag className="w-6 h-6 text-red-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm text-gray-600">Question Reports</p>
+                    <p className="text-2xl font-bold text-gray-800">{reportCount}</p>
+                  </div>
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm text-gray-600">Active Students</p>
-                  <p className="text-lg font-semibold text-gray-500">Coming Soon</p>
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </Link>
 
             <motion.div
               className="card"
