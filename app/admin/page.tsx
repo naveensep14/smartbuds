@@ -284,13 +284,6 @@ function AdminPageContent() {
             </div>
             <div className="flex gap-3">
               <Link
-                href="/admin/reports"
-                className="btn-secondary flex items-center space-x-2"
-              >
-                <Flag className="w-5 h-5" />
-                <span>Issue Reports</span>
-              </Link>
-              <Link
                 href="/admin/pdf-upload"
                 className="btn-secondary flex items-center space-x-2"
               >
