@@ -477,28 +477,28 @@ function AdminPageContent() {
               <h2 className="text-xl font-semibold text-gray-800">Manage Tests</h2>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full table-fixed">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="w-1/3 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Test Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="w-[12%] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Subject
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="w-[10%] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Grade
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="w-[12%] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Board
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Questions
+                    <th className="w-[8%] px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Q's
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="w-[10%] px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Duration
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="w-[15%] px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -538,48 +538,50 @@ function AdminPageContent() {
                         transition={{ duration: 0.6, delay: index * 0.1 }}
                         className="hover:bg-gray-50"
                       >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">{test.title}</div>
-                            <div className="text-sm text-gray-500">{test.description}</div>
+                        <td className="px-4 py-3">
+                          <div className="text-sm font-medium text-gray-900 line-clamp-2">
+                            {test.title}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 py-3">
                           <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
                             {test.subject}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-3 py-3 text-sm text-gray-900">
                           {test.grade}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 py-3">
                           <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                             {test.board}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-3 py-3 text-sm text-gray-900 text-center">
                           {test.questions.length}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-3 py-3 text-sm text-gray-900 text-center">
                           {test.duration} min
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-2">
+                        <td className="px-3 py-3">
+                          <div className="flex items-center justify-center space-x-3">
                             <button
                               onClick={() => setEditingTest(test)}
-                              className="text-primary-600 hover:text-primary-900"
+                              className="text-blue-600 hover:text-blue-900"
+                              title="Edit test"
                             >
                               <Edit className="w-4 h-4" />
                             </button>
                             <button 
                               onClick={() => setPreviewingTest(test)}
-                              className="text-primary-600 hover:text-primary-900"
+                              className="text-green-600 hover:text-green-900"
+                              title="Preview test"
                             >
                               <Eye className="w-4 h-4" />
                             </button>
                             <button 
                               onClick={() => setDeletingTest(test)}
                               className="text-red-600 hover:text-red-900"
+                              title="Delete test"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
