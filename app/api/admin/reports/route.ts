@@ -45,17 +45,10 @@ export async function GET(request: NextRequest) {
     console.log('🔍 [ADMIN REPORTS] Fetching reports with filters:', { status, issueType, limit });
 
     // Build query using service role client to bypass RLS
+    // First get the reports
     let query = adminClient
       .from('question_reports')
-      .select(`
-        *,
-        profiles:user_id (
-          student_name,
-          email,
-          grade,
-          board
-        )
-      `)
+      .select('*')
       .order('reported_at', { ascending: false })
       .limit(limit);
 
@@ -80,7 +73,49 @@ export async function GET(request: NextRequest) {
 
     console.log('✅ [ADMIN REPORTS] Fetched reports:', reports?.length || 0);
 
-    return NextResponse.json({ reports: reports || [] });
+    // Now fetch profile data for each report
+    const reportsWithProfiles = await Promise.all(
+      (reports || []).map(async (report) => {
+        try {
+          const { data: profile, error: profileError } = await adminClient
+            .from('profiles')
+            .select('student_name, email, grade, board')
+            .eq('id', report.user_id)
+            .single();
+
+          if (profileError) {
+            console.warn(`⚠️ [ADMIN REPORTS] Could not fetch profile for user ${report.user_id}:`, profileError.message);
+            return {
+              ...report,
+              profiles: {
+                student_name: 'Unknown',
+                email: 'unknown@example.com',
+                grade: 'Unknown',
+                board: 'Unknown'
+              }
+            };
+          }
+
+          return {
+            ...report,
+            profiles: profile
+          };
+        } catch (error) {
+          console.warn(`⚠️ [ADMIN REPORTS] Error fetching profile for user ${report.user_id}:`, error);
+          return {
+            ...report,
+            profiles: {
+              student_name: 'Unknown',
+              email: 'unknown@example.com',
+              grade: 'Unknown',
+              board: 'Unknown'
+            }
+          };
+        }
+      })
+    );
+
+    return NextResponse.json({ reports: reportsWithProfiles });
 
   } catch (error) {
     console.error('Error in admin reports API:', error);
