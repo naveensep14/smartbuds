@@ -874,24 +874,20 @@ export default function PDFUploadPage() {
             </div>
 
 
-            {/* Test Title */}
+            {/* Auto-generated Test Title Display */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Test Title *
+                Test Title (Auto-generated)
               </label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                placeholder={formData.type === 'weekly' ? 'Auto-generated: Grade Subject Weekly Test' : 'Enter test title'}
-                required
-              />
-              {formData.type === 'weekly' && (
-                <p className="text-xs text-gray-500 mt-1">
-                  Title will be auto-generated as: {formData.grade} {formData.subject} Weekly Test
-                </p>
-              )}
+              <div className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-700">
+                {formData.title || 'Title will be generated automatically'}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                {formData.type === 'weekly' 
+                  ? `Format: ${formData.grade || 'Grade'} ${formData.subject || 'Subject'} Weekly Test`
+                  : `Format: ${formData.grade || 'Grade'} ${formData.subject || 'Subject'} - Chapter ${formData.chapter || 'X'}`
+                }
+              </p>
             </div>
 
             {/* Subject and Grade */}
