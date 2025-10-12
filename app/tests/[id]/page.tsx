@@ -758,12 +758,18 @@ export default function TestPage() {
 
       {/* Success Message */}
       {reportSubmitted && (
-        <div className="fixed top-4 right-4 z-60 bg-green-50 border border-green-200 rounded-lg p-4 shadow-lg">
+        <motion.div 
+          initial={{ opacity: 0, y: -50, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -50, scale: 0.9 }}
+          transition={{ duration: 0.3 }}
+          className="fixed top-4 right-4 z-60 bg-green-50 border border-green-200 rounded-lg p-4 shadow-lg"
+        >
           <div className="flex items-center space-x-2">
             <CheckCircle className="w-5 h-5 text-green-600" />
             <p className="text-green-800 font-medium">Report submitted successfully!</p>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Submit Confirmation Modal */}

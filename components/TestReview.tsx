@@ -96,6 +96,12 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
       const result = await response.json();
       console.log('✅ [FRONTEND] Report submitted successfully:', result);
       setReportSubmitted(true);
+      
+      // Auto-hide confirmation message after 4 seconds
+      setTimeout(() => {
+        setReportSubmitted(false);
+      }, 4000);
+      
       return result;
     } catch (error) {
       console.error('❌ [FRONTEND] Error submitting report:', error);
@@ -394,12 +400,18 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
 
       {/* Success Message */}
       {reportSubmitted && (
-        <div className="fixed top-4 right-4 z-60 bg-green-50 border border-green-200 rounded-lg p-4 shadow-lg">
+        <motion.div 
+          initial={{ opacity: 0, y: -50, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -50, scale: 0.9 }}
+          transition={{ duration: 0.3 }}
+          className="fixed top-4 right-4 z-60 bg-green-50 border border-green-200 rounded-lg p-4 shadow-lg"
+        >
           <div className="flex items-center space-x-2">
             <CheckCircle className="w-5 h-5 text-green-600" />
             <p className="text-green-800 font-medium">Report submitted successfully!</p>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );
