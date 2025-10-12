@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Clock, CheckCircle, XCircle, ArrowLeft, ArrowRight, Flag, Menu, X, Printer } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 import { Test, Question, TestResult, CreateQuestionReportData } from '@/types';
@@ -41,6 +42,145 @@ export default function TestPage() {
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
   const [confidenceRatings, setConfidenceRatings] = useState<{ [key: string]: number }>({});
+
+  // Derived values
+  const currentQuestion = test?.questions[currentQuestionIndex];
+  const totalQuestions = test?.questions.length || 0;
+  const answeredQuestions = Object.keys(selectedAnswers).length;
+  const flaggedCount = flaggedQuestions.size;
+
+  // Save progress when answers change
+  const saveProgress = useCallback(async () => {
+    if (user?.email && test) {
+      const timeSpent = TestProgressService.calculateTimeSpent(startTime);
+      await TestProgressService.saveProgress({
+        userEmail: user.email,
+        testId: test.id,
+        currentQuestionIndex,
+        selectedAnswers,
+        startTime,
+        timeSpent,
+        isCompleted: false
+      });
+    }
+  }, [user?.email, test, startTime, currentQuestionIndex, selectedAnswers]);
+
+  const handleAnswerSelect = useCallback((answerIndex: number) => {
+    if (!currentQuestion) return;
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [currentQuestion.id]: answerIndex
+    }));
+    
+    // Save progress after a short delay to avoid too many saves
+    setTimeout(saveProgress, 500);
+  }, [currentQuestion, saveProgress]);
+
+  const handleConfidenceChange = (questionId: string, confidence: number) => {
+    setConfidenceRatings(prev => ({
+      ...prev,
+      [questionId]: confidence
+    }));
+  };
+
+  const handleFlagQuestion = useCallback((questionId: string) => {
+    setFlaggedQuestions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+      } else {
+        newSet.add(questionId);
+      }
+      return newSet;
+    });
+  }, []);
+
+  const handleNextQuestion = useCallback(() => {
+    if (currentQuestionIndex < totalQuestions - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+      // Save progress when navigating
+      setTimeout(saveProgress, 100);
+    }
+  }, [currentQuestionIndex, totalQuestions, saveProgress]);
+
+  const handlePreviousQuestion = useCallback(() => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(prev => prev - 1);
+      // Save progress when navigating
+      setTimeout(saveProgress, 100);
+    }
+  }, [currentQuestionIndex, saveProgress]);
+
+  const handleSubmitTest = useCallback(async () => {
+    if (!test || !user) return;
+
+    try {
+      // Calculate test results
+      const totalQuestions = test.questions.length;
+      let correctAnswers = 0;
+      const answers = test.questions.map(question => {
+        const selectedAnswer = selectedAnswers[question.id];
+        const isCorrect = selectedAnswer === question.correctAnswer;
+        if (isCorrect) correctAnswers++;
+        
+        return {
+          questionId: question.id,
+          selectedAnswer: selectedAnswer ?? -1,
+          isCorrect
+        };
+      });
+
+      const score = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+      const timeTaken = Math.floor((new Date().getTime() - startTime.getTime()) / 1000);
+
+      // Create test result
+      const resultData = {
+        testId: test.id,
+        studentName: user.email || 'Anonymous',
+        score,
+        totalQuestions,
+        correctAnswers,
+        timeTaken,
+        answers
+      };
+
+      // Save to database
+      console.log('Saving test result:', resultData);
+      const savedResult = await resultService.create(resultData);
+      console.log('Saved result:', savedResult);
+      
+      if (savedResult) {
+        setTestResult(savedResult);
+        
+        // Mark progress as completed
+        if (user.email) {
+          await TestProgressService.markCompleted(user.email, test.id);
+        }
+        
+        setIsTestCompleted(true);
+        setShowResults(true);
+      } else {
+        console.error('Failed to save test result');
+        // Still show results even if save failed
+        await TestProgressService.saveProgress({
+          userEmail: user.email,
+          testId: test.id,
+          currentQuestionIndex,
+          selectedAnswers,
+          startTime,
+          timeSpent: timeTaken,
+          isCompleted: true
+        });
+        setIsTestCompleted(true);
+        setShowResults(true);
+      }
+    } catch (error) {
+      console.error('Error submitting test:', error);
+      // Still show results even if save failed
+      setIsTestCompleted(true);
+      setShowResults(true);
+    }
+  }, [test, user, selectedAnswers, startTime, currentQuestionIndex]);
 
   // Load test from database
   useEffect(() => {
@@ -97,183 +237,10 @@ export default function TestPage() {
     }
   }, [timeRemaining, isTestCompleted, test]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
-        {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center space-x-3">
-                <Link href="/" className="flex items-center space-x-3">
-                  <img
-                    src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
-                    alt="SuccessBuds Logo"
-                    className="w-12 h-12 rounded-lg object-cover"
-                  />
-                  <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
-                </Link>
-              </div>
-              <nav className="hidden md:flex space-x-8">
-              </nav>
-              
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
-            
-            {/* Mobile menu */}
-            {mobileMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="md:hidden border-t border-gray-100 pt-4 pb-2"
-              >
-                <div className="flex flex-col space-y-3">
-                  <Link 
-                    href="/tests" 
-                    className="text-orange-600 font-semibold px-4 py-2 rounded-lg hover:bg-gray-50"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Take Tests
-                  </Link>
-                </div>
-              </motion.div>
-            )}
-          </div>
-        </header>
-
-        <div className="flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading test...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!test) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
-        {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center space-x-3">
-                <Link href="/" className="flex items-center space-x-3">
-                  <img
-                    src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
-                    alt="SuccessBuds Logo"
-                    className="w-12 h-12 rounded-lg object-cover"
-                  />
-                  <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
-                </Link>
-              </div>
-              <nav className="hidden md:flex space-x-8">
-              </nav>
-              
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
-            
-            {/* Mobile menu */}
-            {mobileMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="md:hidden border-t border-gray-100 pt-4 pb-2"
-              >
-                <div className="flex flex-col space-y-3">
-                  <Link 
-                    href="/tests" 
-                    className="text-orange-600 font-semibold px-4 py-2 rounded-lg hover:bg-gray-50"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Take Tests
-                  </Link>
-                </div>
-              </motion.div>
-            )}
-          </div>
-        </header>
-
-        <div className="flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">Test Not Found</h1>
-            <p className="text-gray-600 mb-4">The test you&apos;re looking for doesn&apos;t exist.</p>
-            <Link href="/tests" className="btn-primary">
-              Back to Tests
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const currentQuestion = test.questions[currentQuestionIndex];
-  const totalQuestions = test.questions.length;
-  const answeredQuestions = Object.keys(selectedAnswers).length;
-  const flaggedCount = flaggedQuestions.size;
-
-  // Save progress when answers change
-  const saveProgress = async () => {
-    if (user?.email && test) {
-      const timeSpent = TestProgressService.calculateTimeSpent(startTime);
-      await TestProgressService.saveProgress({
-        userEmail: user.email,
-        testId: test.id,
-        currentQuestionIndex,
-        selectedAnswers,
-        startTime,
-        timeSpent,
-        isCompleted: false
-      });
-    }
-  };
-
-  const handleAnswerSelect = (answerIndex: number) => {
-    setSelectedAnswers(prev => ({
-      ...prev,
-      [currentQuestion.id]: answerIndex
-    }));
-    
-    // Save progress after a short delay to avoid too many saves
-    setTimeout(saveProgress, 500);
-  };
-
-  const handleConfidenceChange = (questionId: string, confidence: number) => {
-    setConfidenceRatings(prev => ({
-      ...prev,
-      [questionId]: confidence
-    }));
-  };
-
-  const handleFlagQuestion = (questionId: string) => {
-    setFlaggedQuestions(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(questionId)) {
-        newSet.delete(questionId);
-      } else {
-        newSet.add(questionId);
-      }
-      return newSet;
-    });
-  };
-
   // Keyboard navigation
   useEffect(() => {
+    if (!test || !currentQuestion) return;
+    
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return; // Don't interfere with form inputs
@@ -322,91 +289,7 @@ export default function TestPage() {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentQuestionIndex, totalQuestions, currentQuestion.id, currentQuestion.options.length]);
-
-  const handleNextQuestion = () => {
-    if (currentQuestionIndex < totalQuestions - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
-      // Save progress when navigating
-      setTimeout(saveProgress, 100);
-    }
-  };
-
-  const handlePreviousQuestion = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(prev => prev - 1);
-      // Save progress when navigating
-      setTimeout(saveProgress, 100);
-    }
-  };
-
-  const handleSubmitTest = async () => {
-    if (!test || !user) return;
-
-    try {
-      // Calculate test results
-      const totalQuestions = test.questions.length;
-      let correctAnswers = 0;
-      const answers = test.questions.map(question => {
-        const selectedAnswer = selectedAnswers[question.id];
-        const isCorrect = selectedAnswer === question.correctAnswer;
-        if (isCorrect) correctAnswers++;
-        
-        return {
-          questionId: question.id,
-          selectedAnswer: selectedAnswer ?? -1,
-          isCorrect
-        };
-      });
-
-      const score = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
-      const timeTaken = Math.floor((new Date().getTime() - startTime.getTime()) / 1000);
-
-      // Create test result
-      const resultData = {
-        testId: test.id,
-        studentName: user.email || 'Anonymous',
-        score,
-        totalQuestions,
-        correctAnswers,
-        timeTaken,
-        answers
-      };
-
-      // Save to database
-      console.log('Saving test result:', resultData);
-      const savedResult = await resultService.create(resultData);
-      console.log('Saved result:', savedResult);
-      
-      if (savedResult) {
-        setTestResult(savedResult);
-        
-        // Mark progress as completed
-        if (user.email) {
-          await TestProgressService.markCompleted(user.email, test.id);
-        }
-        
-        setIsTestCompleted(true);
-        setShowResults(true);
-      } else {
-        console.error('Failed to save test result');
-        // Still show results even if save failed
-        setTestResult({
-          id: Date.now().toString(),
-          ...resultData,
-          completedAt: new Date()
-        });
-        setIsTestCompleted(true);
-        setShowResults(true);
-      }
-    } catch (error) {
-      console.error('Error submitting test:', error);
-      // Still show results even if save failed
-      setIsTestCompleted(true);
-      setShowResults(true);
-    }
-  };
-
+  }, [currentQuestionIndex, totalQuestions, currentQuestion, handleAnswerSelect, handleNextQuestion, handlePreviousQuestion, handleSubmitTest, handleFlagQuestion]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -415,12 +298,13 @@ export default function TestPage() {
   };
 
   const calculateScore = () => {
-    let correct = 0;
-    test.questions.forEach((question: Question) => {
-      if (selectedAnswers[question.id] === question.correctAnswer) {
-        correct++;
-      }
-    });
+    if (!test) return { correct: 0, total: 0, percentage: 0 };
+    
+    const correct = test.questions.reduce((acc, question) => {
+      const selectedAnswer = selectedAnswers[question.id];
+      return acc + (selectedAnswer === question.correctAnswer ? 1 : 0);
+    }, 0);
+    
     return {
       correct,
       total: totalQuestions,
@@ -458,6 +342,85 @@ export default function TestPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <div className="flex items-center space-x-3">
+                <Link href="/" className="flex items-center space-x-3">
+                  <Image
+                    src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
+                    alt="SuccessBuds Logo"
+                    width={48}
+                    height={48}
+                    className="rounded-lg object-cover"
+                  />
+                  <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
+                </Link>
+              </div>
+              <nav className="hidden md:flex space-x-8">
+              </nav>
+              
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+            
+            {/* Mobile menu */}
+            {mobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="md:hidden border-t border-gray-100 pt-4 pb-2"
+              >
+                <div className="flex flex-col space-y-3">
+                  <Link 
+                    href="/tests" 
+                    className="text-orange-600 font-semibold px-4 py-2 rounded-lg hover:bg-gray-50"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Take Tests
+                  </Link>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </header>
+
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading test...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!test) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">Test Not Found</h1>
+            <p className="text-gray-600 mb-8">The test you&apos;re looking for doesn&apos;t exist.</p>
+            <Link href="/tests" className="btn-primary">
+              Back to Tests
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (showResults && testResult) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
@@ -467,10 +430,12 @@ export default function TestPage() {
             <div className="flex justify-between items-center py-4">
               <div className="flex items-center space-x-3">
                 <Link href="/" className="flex items-center space-x-3">
-                  <img
+                  <Image
                     src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
                     alt="SuccessBuds Logo"
-                    className="w-12 h-12 rounded-lg object-cover"
+                    width={48}
+                    height={48}
+                    className="rounded-lg object-cover"
                   />
                   <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
                 </Link>
@@ -526,7 +491,7 @@ export default function TestPage() {
             <p className="text-gray-600 mb-8">
               {testResult.score >= 80 ? 'Excellent work!' : 
                testResult.score >= 60 ? 'Good job! Keep practicing!' : 
-               'Keep studying! You\'ll do better next time!'}
+               'Keep studying! You&apos;ll do better next time!'}
             </p>
             
             <div className="grid md:grid-cols-2 gap-6 mb-8">
@@ -569,10 +534,12 @@ export default function TestPage() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-3">
-                <img
+                <Image
                   src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
                   alt="SuccessBuds Logo"
-                  className="w-12 h-12 rounded-lg object-cover"
+                  width={48}
+                  height={48}
+                  className="rounded-lg object-cover"
                 />
                 <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
               </Link>
@@ -769,17 +736,17 @@ export default function TestPage() {
             <h2 className="text-2xl font-bold text-gray-800">Question {currentQuestionIndex + 1}</h2>
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => handleFlagQuestion(currentQuestion.id)}
+                onClick={() => currentQuestion && handleFlagQuestion(currentQuestion.id)}
                 className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
-                  flaggedQuestions.has(currentQuestion.id)
+                  currentQuestion && flaggedQuestions.has(currentQuestion.id)
                     ? 'bg-orange-100 text-orange-700 border-2 border-orange-300'
                     : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                 }`}
-                aria-label={flaggedQuestions.has(currentQuestion.id) ? 'Remove flag' : 'Flag question'}
+                aria-label={currentQuestion && flaggedQuestions.has(currentQuestion.id) ? 'Remove flag' : 'Flag question'}
               >
                 <Flag className="w-4 h-4" />
                 <span className="text-sm font-medium">
-                  {flaggedQuestions.has(currentQuestion.id) ? 'Flagged' : 'Flag'}
+                  {currentQuestion && flaggedQuestions.has(currentQuestion.id) ? 'Flagged' : 'Flag'}
                 </span>
               </button>
               <button
@@ -793,7 +760,7 @@ export default function TestPage() {
             </div>
           </div>
           
-          <p id="question-text" className="text-xl text-gray-800 mb-8 leading-relaxed">{currentQuestion.text}</p>
+          <p id="question-text" className="text-xl text-gray-800 mb-8 leading-relaxed">{currentQuestion?.text}</p>
           
           <div 
             className="space-y-4" 
@@ -804,24 +771,24 @@ export default function TestPage() {
             <div id="question-instructions" className="sr-only">
               Select one option using number keys 1-4, arrow keys to navigate, or click to select. Press F to flag this question.
             </div>
-            {currentQuestion.options.map((option, index) => (
+            {currentQuestion?.options.map((option, index) => (
               <motion.button
                 key={index}
                 onClick={() => handleAnswerSelect(index)}
                 className={`option-button ${
-                  selectedAnswers[currentQuestion.id] === index ? 'selected' : ''
+                  selectedAnswers[currentQuestion?.id] === index ? 'selected' : ''
                 }`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 role="radio"
-                aria-checked={selectedAnswers[currentQuestion.id] === index}
+                aria-checked={selectedAnswers[currentQuestion?.id] === index}
                 aria-describedby={`option-${index}-text`}
                 aria-label={`Option ${index + 1}: ${option}`}
               >
                 <div className="flex items-center">
                   <div className="w-8 h-8 rounded-full border-2 border-gray-300 mr-4 flex items-center justify-center">
                     <span className="text-sm font-bold text-gray-600">{String.fromCharCode(65 + index)}</span>
-                    {selectedAnswers[currentQuestion.id] === index && (
+                    {selectedAnswers[currentQuestion?.id] === index && (
                       <div className="absolute w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
                         <div className="w-2 h-2 bg-white rounded-full"></div>
                       </div>
@@ -963,20 +930,22 @@ export default function TestPage() {
       )}
 
       {/* Report Question Modal */}
-      <ReportQuestionModal
-        isOpen={showReportModal}
-        onClose={() => {
-          setShowReportModal(false);
-          setReportSubmitted(false);
-        }}
-        onSubmit={handleSubmitReport}
-        questionId={currentQuestion.id}
-        questionText={currentQuestion.text}
-        questionOptions={currentQuestion.options}
-        correctAnswer={currentQuestion.correctAnswer}
-        userAnswer={selectedAnswers[currentQuestion.id]}
-        testId={test.id}
-      />
+      {currentQuestion && (
+        <ReportQuestionModal
+          isOpen={showReportModal}
+          onClose={() => {
+            setShowReportModal(false);
+            setReportSubmitted(false);
+          }}
+          onSubmit={handleSubmitReport}
+          questionId={currentQuestion.id}
+          questionText={currentQuestion.text}
+          questionOptions={currentQuestion.options}
+          correctAnswer={currentQuestion.correctAnswer}
+          userAnswer={selectedAnswers[currentQuestion.id]}
+          testId={test.id}
+        />
+      )}
 
       {/* Success Message */}
       {reportSubmitted && (
@@ -989,4 +958,4 @@ export default function TestPage() {
       )}
     </div>
   );
-} 
+}

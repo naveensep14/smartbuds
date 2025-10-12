@@ -40,10 +40,12 @@ export default function SignupPage() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-3">
-                <img
+                <Image
                   src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
                   alt="SuccessBuds Logo"
-                  className="w-12 h-12 rounded-lg object-cover"
+                  width={48}
+                  height={48}
+                  className="rounded-lg object-cover"
                 />
                 <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
               </Link>
