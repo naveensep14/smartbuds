@@ -248,7 +248,7 @@ export default function HomePage() {
                 <p className="text-xl md:text-2xl font-semibold text-yellow mb-6">
                   &ldquo;Budding Minds, Blooming Success&rdquo;
                 </p>
-            <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-white mb-8 max-w-3xl mx-auto">
               Join thousands of students who are already improving their academic performance with SuccessBuds
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
