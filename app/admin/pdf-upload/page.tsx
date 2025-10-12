@@ -446,6 +446,8 @@ export default function PDFUploadPage() {
         chapter: 1,
         numTests: 5,
         questionsPerTest: 10,
+        startDate: '',
+        endDate: '',
       });
 
     } catch (err) {

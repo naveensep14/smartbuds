@@ -8,21 +8,21 @@
   }
   
   body {
-    @apply bg-gradient-to-br from-orange-50 to-red-50 min-h-screen;
+    @apply bg-gradient-to-br from-neutral-50 to-cream min-h-screen;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl;
+    @apply bg-navy hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl;
   }
   
   .btn-secondary {
-    @apply bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl;
+    @apply bg-yellow hover:bg-secondary-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl;
   }
   
   .btn-success {
-    @apply bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl;
+    @apply bg-green hover:bg-success-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl;
   }
   
   .card {
@@ -30,23 +30,23 @@
   }
   
   .question-card {
-    @apply bg-white rounded-xl shadow-lg p-8 border-2 border-orange-100 hover:border-orange-200 transition-all duration-300;
+    @apply bg-white rounded-xl shadow-lg p-8 border-2 border-yellow hover:border-secondary-500 transition-all duration-300;
   }
   
   .option-button {
-    @apply w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-200 cursor-pointer;
+    @apply w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-blue hover:bg-accent-50 transition-all duration-200 cursor-pointer;
   }
   
   .option-button.selected {
-    @apply border-orange-500 bg-orange-100 text-orange-700;
+    @apply border-navy bg-primary-100 text-primary-700;
   }
   
   .option-button.correct {
-    @apply border-green-500 bg-green-100 text-green-700;
+    @apply border-green bg-success-100 text-success-700;
   }
   
   .option-button.incorrect {
-    @apply border-red-500 bg-red-100 text-red-700;
+    @apply border-pink bg-warning-100 text-warning-700;
   }
   
   .sr-only {
@@ -57,7 +57,14 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-navy to-blue bg-clip-text text-transparent;
+  }
+  
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
   }
   
   .animate-float {

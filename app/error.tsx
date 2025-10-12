@@ -16,10 +16,10 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-cream flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <AlertTriangle className="w-8 h-8 text-red-600" />
+        <div className="w-16 h-16 bg-pink rounded-full flex items-center justify-center mx-auto mb-6">
+          <AlertTriangle className="w-8 h-8 text-white" />
         </div>
         
         <h1 className="text-2xl font-bold text-gray-900 mb-4">
@@ -41,7 +41,7 @@ export default function Error({
         <div className="flex space-x-4">
           <button
             onClick={reset}
-            className="flex-1 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors flex items-center justify-center space-x-2"
+            className="flex-1 bg-navy text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Try again</span>
