@@ -104,6 +104,17 @@ export default function PDFUploadPage() {
         newData.title = `${newData.grade} ${value} Weekly Test`;
       }
       
+      // Auto-generate title for coursework tests
+      if (field === 'type' && value === 'coursework' && newData.grade && newData.subject && newData.chapter) {
+        newData.title = `${newData.grade} ${newData.subject} - Chapter ${newData.chapter}`;
+      } else if (field === 'grade' && newData.type === 'coursework' && newData.subject && newData.chapter) {
+        newData.title = `${value} ${newData.subject} - Chapter ${newData.chapter}`;
+      } else if (field === 'subject' && newData.type === 'coursework' && newData.grade && newData.chapter) {
+        newData.title = `${newData.grade} ${value} - Chapter ${newData.chapter}`;
+      } else if (field === 'chapter' && newData.type === 'coursework' && newData.grade && newData.subject) {
+        newData.title = `${newData.grade} ${newData.subject} - Chapter ${value}`;
+      }
+      
       return newData;
     });
     setError('');
