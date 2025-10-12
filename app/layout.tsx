@@ -78,9 +78,9 @@ export const metadata: Metadata = {
     google: 'your-google-verification-code', // Replace with actual verification code
   },
   icons: [
+    { rel: 'icon', url: '/images/logo-square.jpg', sizes: 'any' },
     { rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' },
-    { rel: 'icon', url: '/icon.png', type: 'image/png', sizes: '32x32' },
-    { rel: 'apple-touch-icon', url: '/apple-icon.png', sizes: '180x180' },
+    { rel: 'apple-touch-icon', url: '/images/logo-square.jpg', sizes: '180x180' },
   ],
 }
 

@@ -493,7 +493,7 @@ function AdminPageContent() {
                       Board
                     </th>
                     <th className="w-[8%] px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Q's
+                      Q&apos;s
                     </th>
                     <th className="w-[10%] px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Duration
