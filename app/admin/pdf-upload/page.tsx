@@ -16,10 +16,34 @@ interface PDFUploadFormData {
   chapter: number;
   numTests: number;
   questionsPerTest: number;
+  startDate: string;
+  endDate: string;
 }
+
+// Helper function to get next Sunday to Saturday week
+const getNextWeekDates = () => {
+  const today = new Date();
+  const currentDay = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  
+  // Calculate days until next Sunday
+  const daysUntilSunday = currentDay === 0 ? 7 : 7 - currentDay;
+  
+  const nextSunday = new Date(today);
+  nextSunday.setDate(today.getDate() + daysUntilSunday);
+  
+  const nextSaturday = new Date(nextSunday);
+  nextSaturday.setDate(nextSunday.getDate() + 6);
+  
+  return {
+    startDate: nextSunday.toISOString().split('T')[0],
+    endDate: nextSaturday.toISOString().split('T')[0]
+  };
+};
 
 export default function PDFUploadPage() {
   const router = useRouter();
+  const nextWeekDates = getNextWeekDates();
+  
   const [formData, setFormData] = useState<PDFUploadFormData>({
     title: '',
     description: '',
@@ -33,6 +57,8 @@ export default function PDFUploadPage() {
     chapter: 1,
     numTests: 5,
     questionsPerTest: 10,
+    startDate: nextWeekDates.startDate,
+    endDate: nextWeekDates.endDate,
   });
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [currentFileIndex, setCurrentFileIndex] = useState(0);
@@ -56,6 +82,10 @@ export default function PDFUploadPage() {
         newData.numTests = 1;
         newData.questionsPerTest = 25;
         newData.duration = 45;
+        // Set default dates for next week
+        const nextWeekDates = getNextWeekDates();
+        newData.startDate = nextWeekDates.startDate;
+        newData.endDate = nextWeekDates.endDate;
       }
       
       return newData;
@@ -188,7 +218,15 @@ export default function PDFUploadPage() {
     uploadData.append('type', formData.type);
     uploadData.append('duration', formData.duration.toString());
     uploadData.append('customPrompt', formData.customPrompt);
-    uploadData.append('chapter', formData.chapter.toString());
+    
+    // Add chapter for coursework or dates for weekly tests
+    if (formData.type === 'weekly') {
+      uploadData.append('startDate', formData.startDate);
+      uploadData.append('endDate', formData.endDate);
+    } else {
+      uploadData.append('chapter', formData.chapter.toString());
+    }
+    
     uploadData.append('numTests', formData.numTests.toString());
     uploadData.append('questionsPerTest', formData.questionsPerTest.toString());
     
@@ -267,14 +305,28 @@ export default function PDFUploadPage() {
       }
     }
 
-    if (!formData.subject || !formData.grade || !formData.chapter) {
-      console.error('❌ [FRONTEND LOG] Missing required fields:', {
-        subject: formData.subject,
-        grade: formData.grade,
-        chapter: formData.chapter
-      });
-      setError('Please fill in all required fields.');
-      return;
+    // Validate required fields based on test type
+    if (formData.type === 'weekly') {
+      if (!formData.subject || !formData.grade || !formData.startDate || !formData.endDate) {
+        console.error('❌ [FRONTEND LOG] Missing required fields for weekly test:', {
+          subject: formData.subject,
+          grade: formData.grade,
+          startDate: formData.startDate,
+          endDate: formData.endDate
+        });
+        setError('Please fill in all required fields.');
+        return;
+      }
+    } else {
+      if (!formData.subject || !formData.grade || !formData.chapter) {
+        console.error('❌ [FRONTEND LOG] Missing required fields for coursework test:', {
+          subject: formData.subject,
+          grade: formData.grade,
+          chapter: formData.chapter
+        });
+        setError('Please fill in all required fields.');
+        return;
+      }
     }
 
     console.log('✅ [FRONTEND LOG] Validation passed, starting upload process');
@@ -484,6 +536,7 @@ export default function PDFUploadPage() {
                       <li>Upload multiple PDF files (one at a time)</li>
                       <li>Each PDF generates exactly 1 test</li>
                       <li>Default: 25 questions per test, 45 minutes duration</li>
+                      <li>Set start and end dates for test availability</li>
                       <li>Perfect for weekly assessments and practice tests</li>
                     </ul>
                   ) : (
@@ -491,6 +544,7 @@ export default function PDFUploadPage() {
                       <li>Upload a single PDF file</li>
                       <li>Generate multiple tests from the same content</li>
                       <li>Customizable: 1-10 tests, 5-50 questions per test</li>
+                      <li>Specify chapter number for organization</li>
                       <li>Perfect for comprehensive coursework and study materials</li>
                     </ul>
                   )}
@@ -833,23 +887,61 @@ export default function PDFUploadPage() {
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Chapter *
-                </label>
-                <select
-                  value={formData.chapter}
-                  onChange={(e) => handleInputChange('chapter', parseInt(e.target.value))}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  required
-                >
-                  {Array.from({ length: 20 }, (_, i) => i + 1).map(chapter => (
-                    <option key={chapter} value={chapter}>
-                      Chapter {chapter}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {formData.type === 'weekly' ? (
+                /* Weekly Tests - Date Range */
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Start Date *
+                    </label>
+                    <input
+                      type="date"
+                      value={formData.startDate}
+                      onChange={(e) => handleInputChange('startDate', e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      required
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Test will be available from this date
+                    </p>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      End Date *
+                    </label>
+                    <input
+                      type="date"
+                      value={formData.endDate}
+                      onChange={(e) => handleInputChange('endDate', e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      required
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Test will expire after this date
+                    </p>
+                  </div>
+                </>
+              ) : (
+                /* Coursework Tests - Chapter */
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Chapter *
+                  </label>
+                  <select
+                    value={formData.chapter}
+                    onChange={(e) => handleInputChange('chapter', parseInt(e.target.value))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    required
+                  >
+                    {Array.from({ length: 20 }, (_, i) => i + 1).map(chapter => (
+                      <option key={chapter} value={chapter}>
+                        Chapter {chapter}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
 
             {/* Board and Duration */}
