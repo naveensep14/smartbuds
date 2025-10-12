@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: {
-    default: 'SuccessBuds - Online Educational Testing Platform for Kids',
+    default: 'SuccessBuds - Online Educational Tests for Kids',
     template: '%s | SuccessBuds'
   },
   description: 'SuccessBuds is the leading online educational platform for kids. Take interactive multiple choice tests, track progress, and improve learning outcomes. Perfect for parents, teachers, and students.',
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://successbuds.com',
-    title: 'SuccessBuds - Online Educational Testing Platform for Kids',
+    title: 'SuccessBuds - Online Educational Tests for Kids',
     description: 'SuccessBuds is the leading online educational platform for kids. Take interactive multiple choice tests, track progress, and improve learning outcomes.',
     siteName: 'SuccessBuds',
     images: [
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SuccessBuds - Online Educational Testing Platform for Kids',
+    title: 'SuccessBuds - Online Educational Tests for Kids',
     description: 'SuccessBuds is the leading online educational platform for kids. Take interactive multiple choice tests, track progress, and improve learning outcomes.',
     images: ['/images/logo-wide.jpg'],
     creator: '@successbuds',
