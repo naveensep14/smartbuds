@@ -315,7 +315,7 @@ export default function TestsPage() {
                         className="flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
                       >
                         <Play className="w-4 h-4" />
-                        <span>Start Test</span>
+                        <span>{testStatus.status === 'completed' ? 'Retake Test' : 'Start Test'}</span>
                   </Link>
                   <button
                         onClick={() => handlePrintTest(test)}
