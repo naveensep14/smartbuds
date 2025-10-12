@@ -540,82 +540,70 @@ export default function PDFUploadPage() {
                 {formData.type === 'weekly' ? 'PDF Files *' : 'PDF File *'}
               </label>
               
-              {/* Drag and Drop Area */}
-              <div 
-                className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                  formData.type === 'weekly' 
-                    ? 'border-blue-300 bg-blue-50 hover:bg-blue-100' 
-                    : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
-                }`}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const files = e.dataTransfer.files;
-                  handleFileUpload(files);
-                }}
-                onDragOver={(e) => e.preventDefault()}
-                onDragEnter={(e) => e.preventDefault()}
-              >
-                <div className="space-y-2">
-                  <svg className={`mx-auto h-12 w-12 ${
-                    formData.type === 'weekly' ? 'text-blue-400' : 'text-gray-400'
-                  }`} stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <div className="text-sm text-gray-600">
-                    <span className="font-medium">
-                      {formData.type === 'weekly' 
-                        ? 'Drop multiple PDF files here or click to select' 
-                        : 'Drop a PDF file here or click to select'
-                      }
-                    </span>
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    {formData.type === 'weekly' 
-                      ? 'You can select multiple files at once' 
-                      : 'Single file selection'
-                    }
-                  </div>
-                </div>
-                
-                <input
-                  type="file"
-                  accept=".pdf"
-                  multiple={formData.type === 'weekly'}
-                  onChange={(e) => handleFileUpload(e.target.files)}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  required
-                />
-              </div>
-              
-              <div className="relative mt-4">
-                <input
-                  type="file"
-                  accept=".pdf"
-                  multiple={formData.type === 'weekly'}
-                  onChange={(e) => handleFileUpload(e.target.files)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  required
-                />
-                {formData.type === 'weekly' && (
-                  <div className="absolute top-2 left-2">
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
-                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                      Multiple Files
-                    </span>
-                  </div>
-                )}
-                {/* File size limit badge */}
-                <div className="absolute top-2 right-2">
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
-                    <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              {formData.type === 'weekly' ? (
+                /* Weekly Tests - Drag and Drop Multiple Files */
+                <div 
+                  className="border-2 border-dashed border-blue-300 bg-blue-50 hover:bg-blue-100 rounded-lg p-6 text-center transition-colors"
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const files = e.dataTransfer.files;
+                    handleFileUpload(files);
+                  }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDragEnter={(e) => e.preventDefault()}
+                >
+                  <div className="space-y-2">
+                    <svg className="mx-auto h-12 w-12 text-blue-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                      <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                    Max 4.5MB
-                  </span>
+                    <div className="text-sm text-gray-600">
+                      <span className="font-medium">Drop multiple PDF files here or click to select</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      You can select multiple files at once
+                    </div>
+                  </div>
+                  
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    multiple={true}
+                    onChange={(e) => handleFileUpload(e.target.files)}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    required
+                  />
+                  
+                  {/* File size limit badge */}
+                  <div className="absolute top-2 right-2">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      Max 4.5MB each
+                    </span>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                /* Coursework Tests - Simple File Input */
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => handleFileUpload(e.target.files)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    required
+                  />
+                  {/* File size limit badge */}
+                  <div className="absolute top-2 right-2">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      Max 4.5MB
+                    </span>
+                  </div>
+                </div>
+              )}
               
               {/* Display uploaded files */}
               {formData.type === 'weekly' && uploadedFiles.length > 0 && (
