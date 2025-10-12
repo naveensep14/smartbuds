@@ -347,10 +347,7 @@ export default function TestsPage() {
 
         {/* Tests Grid */}
         <div className="mb-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Available Tests
-            </h2>
+          <div className="flex items-center justify-end">
             <span className="text-sm text-gray-500">
               {filteredTests.length} test{filteredTests.length !== 1 ? 's' : ''} available
             </span>
