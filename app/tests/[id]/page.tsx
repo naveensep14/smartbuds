@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Clock, CheckCircle, XCircle, ArrowLeft, ArrowRight, Flag } from 'lucide-react';
+import { BookOpen, Clock, CheckCircle, XCircle, ArrowLeft, ArrowRight, Flag, X } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -744,7 +744,7 @@ export default function TestPage() {
           isOpen={showReportModal}
           onClose={() => {
             setShowReportModal(false);
-            setReportSubmitted(false);
+            // Don't reset reportSubmitted here - let it auto-dismiss
           }}
           onSubmit={handleSubmitReport}
           questionId={currentQuestion.id}
@@ -768,6 +768,12 @@ export default function TestPage() {
           <div className="flex items-center space-x-2">
             <CheckCircle className="w-5 h-5 text-green-600" />
             <p className="text-green-800 font-medium">Report submitted successfully!</p>
+            <button
+              onClick={() => setReportSubmitted(false)}
+              className="ml-2 text-green-600 hover:text-green-800 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
         </motion.div>
       )}
