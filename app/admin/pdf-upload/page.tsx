@@ -432,9 +432,64 @@ export default function PDFUploadPage() {
         </nav>
 
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">
-            📚 Upload PDF to Generate Tests
-          </h1>
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              📚 Upload PDF to Generate Tests
+            </h1>
+            <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
+              formData.type === 'weekly' 
+                ? 'bg-blue-100 text-blue-800 border border-blue-200' 
+                : 'bg-green-100 text-green-800 border border-green-200'
+            }`}>
+              <span className="mr-2">
+                {formData.type === 'weekly' ? '📅' : '📖'}
+              </span>
+              {formData.type === 'weekly' ? 'Weekly Test Mode' : 'Coursework Test Mode'}
+            </div>
+          </div>
+
+          {/* Test Type Information */}
+          <div className={`mb-6 p-4 rounded-lg border-l-4 ${
+            formData.type === 'weekly' 
+              ? 'bg-blue-50 border-blue-400' 
+              : 'bg-green-50 border-green-400'
+          }`}>
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <svg className={`w-5 h-5 mt-0.5 ${
+                  formData.type === 'weekly' ? 'text-blue-600' : 'text-green-600'
+                }`} fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className={`text-sm font-medium ${
+                  formData.type === 'weekly' ? 'text-blue-800' : 'text-green-800'
+                }`}>
+                  {formData.type === 'weekly' ? 'Weekly Test Configuration' : 'Coursework Test Configuration'}
+                </h3>
+                <div className={`mt-1 text-sm ${
+                  formData.type === 'weekly' ? 'text-blue-700' : 'text-green-700'
+                }`}>
+                  {formData.type === 'weekly' ? (
+                    <ul className="list-disc list-inside space-y-1">
+                      <li>Upload multiple PDF files (one at a time)</li>
+                      <li>Each PDF generates exactly 1 test</li>
+                      <li>Default: 25 questions per test, 45 minutes duration</li>
+                      <li>Perfect for weekly assessments and practice tests</li>
+                    </ul>
+                  ) : (
+                    <ul className="list-disc list-inside space-y-1">
+                      <li>Upload a single PDF file</li>
+                      <li>Generate multiple tests from the same content</li>
+                      <li>Customizable: 1-10 tests, 5-50 questions per test</li>
+                      <li>Perfect for comprehensive coursework and study materials</li>
+                    </ul>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* File Upload */}
@@ -732,14 +787,28 @@ export default function PDFUploadPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Test Type
                 </label>
-                <select
-                  value={formData.type}
-                  onChange={(e) => handleInputChange('type', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                >
-                  <option value="coursework">Coursework</option>
-                  <option value="weekly">Weekly Test</option>
-                </select>
+                <div className="relative">
+                  <select
+                    value={formData.type}
+                    onChange={(e) => handleInputChange('type', e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                      formData.type === 'weekly' 
+                        ? 'border-blue-300 bg-blue-50' 
+                        : 'border-green-300 bg-green-50'
+                    }`}
+                  >
+                    <option value="coursework">📖 Coursework Tests</option>
+                    <option value="weekly">📅 Weekly Tests</option>
+                  </select>
+                  <div className={`absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none ${
+                    formData.type === 'weekly' ? 'text-blue-600' : 'text-green-600'
+                  }`}>
+                    {formData.type === 'weekly' ? '📅' : '📖'}
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Switch between test types to see different configuration options
+                </p>
               </div>
 
               <div>
