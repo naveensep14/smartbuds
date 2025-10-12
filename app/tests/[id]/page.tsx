@@ -411,12 +411,12 @@ export default function TestPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+      <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-cream">
         <NavigationHeader />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-navy mx-auto mb-4"></div>
             <p className="text-gray-600">Loading test...</p>
           </div>
         </div>
@@ -426,7 +426,7 @@ export default function TestPage() {
 
   if (!test) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+      <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-cream">
         <NavigationHeader />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
@@ -443,7 +443,7 @@ export default function TestPage() {
 
   if (showResults && testResult) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+      <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-cream">
         <NavigationHeader />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -513,7 +513,7 @@ export default function TestPage() {
           </div>
           <p className="text-gray-600 mb-4">{test.description}</p>
           <div className="flex flex-wrap gap-2">
-            <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
+            <span className="px-3 py-1 bg-yellow text-white rounded-full text-sm font-medium">
               {test.subject}
             </span>
             <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">
@@ -585,7 +585,7 @@ export default function TestPage() {
                   <span>Answered</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-orange-500 rounded"></div>
+                  <div className="w-4 h-4 bg-yellow rounded"></div>
                   <span>Current</span>
                 </div>
               </div>
@@ -662,7 +662,7 @@ export default function TestPage() {
                       <div className="w-8 h-8 rounded-full border-2 border-gray-300 mr-4 flex items-center justify-center">
                         <span className="text-sm font-bold text-gray-600">{String.fromCharCode(65 + index)}</span>
                         {selectedAnswers[currentQuestion?.id] === index && (
-                          <div className="absolute w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
+                          <div className="absolute w-6 h-6 bg-yellow rounded-full flex items-center justify-center">
                             <div className="w-2 h-2 bg-white rounded-full"></div>
                           </div>
                         )}

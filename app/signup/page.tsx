@@ -51,7 +51,7 @@ export default function SignupPage() {
               </Link>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <Link href="/login" className="text-gray-600 hover:text-orange-600 transition-colors">
+              <Link href="/login" className="text-gray-600 hover:text-yellow transition-colors">
                 Login
               </Link>
             </nav>
@@ -76,7 +76,7 @@ export default function SignupPage() {
               <div className="flex flex-col space-y-3">
                 <Link 
                   href="/login" 
-                  className="text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
+                  className="text-gray-600 hover:text-yellow transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Login
@@ -140,7 +140,7 @@ export default function SignupPage() {
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link href="/login" className="text-orange-600 hover:text-orange-700 font-medium">
+              <Link href="/login" className="text-yellow hover:text-secondary-600 font-medium">
                 Sign in here
               </Link>
             </p>

@@ -177,7 +177,7 @@ export default function TestsPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-navy mx-auto"></div>
           <p className="mt-4 text-lg text-gray-600">Loading tests...</p>
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function TestsPage() {
                 placeholder="Search tests..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
               />
               </div>
             </div>
@@ -218,7 +218,7 @@ export default function TestsPage() {
             <select
               value={selectedSubject}
               onChange={(e) => setSelectedSubject(e.target.value)}
-                className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
             >
               <option value="">All Subjects</option>
               {subjects.map(subject => (
@@ -257,7 +257,7 @@ export default function TestsPage() {
             <select
               value={selectedChapter}
               onChange={(e) => setSelectedChapter(e.target.value)}
-                className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
             >
               <option value="">All Chapters</option>
               {chapters.map(chapter => (
@@ -278,7 +278,7 @@ export default function TestsPage() {
           if (weeklyTests.length === 0) return null;
           
           return (
-            <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl shadow-sm border border-orange-200 p-6 mb-8">
+            <div className="bg-gradient-to-r from-yellow to-secondary-500 rounded-xl shadow-sm border border-yellow p-6 mb-8">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 bg-yellow rounded-lg">
@@ -298,7 +298,7 @@ export default function TestsPage() {
                     </div>
                   )}
                   {expiringSoonTests.length > 0 && (
-                    <div className="text-orange-600 text-sm">
+                    <div className="text-yellow text-sm">
                       {expiringSoonTests.length} expiring soon
                     </div>
                   )}
@@ -318,7 +318,7 @@ export default function TestsPage() {
               onClick={() => setActiveTab('coursework')}
               className={`flex-1 py-3 px-4 text-sm font-medium rounded-md transition-colors ${
                 activeTab === 'coursework'
-                  ? 'bg-white text-orange-600 shadow-sm'
+                  ? 'bg-white text-yellow shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -331,7 +331,7 @@ export default function TestsPage() {
               onClick={() => setActiveTab('weekly')}
               className={`flex-1 py-3 px-4 text-sm font-medium rounded-md transition-colors ${
                 activeTab === 'weekly'
-                  ? 'bg-white text-orange-600 shadow-sm'
+                  ? 'bg-white text-yellow shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -403,7 +403,7 @@ export default function TestsPage() {
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-2">
-                      <BookOpen className="w-5 h-5 text-orange-600" />
+                      <BookOpen className="w-5 h-5 text-yellow" />
                       <span className="text-sm font-medium text-gray-600">{test.subject}</span>
                     </div>
                     <div className="flex items-center space-x-1">
@@ -473,7 +473,7 @@ export default function TestsPage() {
                   </Link>
                   <button
                         onClick={() => handlePrintTest(test)}
-                        className="flex items-center space-x-2 text-gray-600 hover:text-orange-600 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
+                        className="flex items-center space-x-2 text-gray-600 hover:text-yellow transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
                   >
                     <Printer className="w-4 h-4" />
                         <span>Print</span>

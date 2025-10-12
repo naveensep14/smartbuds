@@ -151,9 +151,9 @@ export default function MyResultsPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-cream flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-navy mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading...</p>
         </div>
       </div>
@@ -201,7 +201,7 @@ export default function MyResultsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-cream">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -220,10 +220,10 @@ export default function MyResultsPage() {
               </Link>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <Link href="/tests" className="text-gray-600 hover:text-orange-600 transition-colors">
+              <Link href="/tests" className="text-gray-600 hover:text-yellow transition-colors">
                 Take Tests
               </Link>
-              <Link href="/dashboard" className="text-gray-600 hover:text-orange-600 transition-colors">
+              <Link href="/dashboard" className="text-gray-600 hover:text-yellow transition-colors">
                 Dashboard
               </Link>
             </nav>
@@ -236,7 +236,7 @@ export default function MyResultsPage() {
         <div className="mb-6">
           <Link 
             href="/dashboard" 
-            className="inline-flex items-center space-x-2 text-gray-600 hover:text-orange-600 transition-colors"
+            className="inline-flex items-center space-x-2 text-gray-600 hover:text-yellow transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Back to Dashboard</span>
@@ -258,8 +258,8 @@ export default function MyResultsPage() {
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             <div className="flex items-center">
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-orange-600" />
+              <div className="w-12 h-12 bg-yellow rounded-lg flex items-center justify-center">
+                <BarChart3 className="w-6 h-6 text-white" />
               </div>
               <div className="ml-4">
                 <p className="text-sm text-gray-600">Tests Taken</p>
@@ -330,7 +330,7 @@ export default function MyResultsPage() {
             <select
               value={selectedTest}
               onChange={(e) => setSelectedTest(e.target.value)}
-              className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
             >
               <option value="">All Tests</option>
               {tests.map(test => (
@@ -340,7 +340,7 @@ export default function MyResultsPage() {
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
             >
               <option value="all">All Time</option>
               <option value="today">Today</option>
@@ -419,7 +419,7 @@ export default function MyResultsPage() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           <button
                             onClick={() => setReviewingResult({ test: test!, result })}
-                            className="flex items-center space-x-2 px-3 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                            className="flex items-center space-x-2 px-3 py-2 bg-navy text-white rounded-lg hover:bg-primary-700 transition-colors"
                           >
                             <Eye className="w-4 h-4" />
                             <span>Review</span>
@@ -446,7 +446,7 @@ export default function MyResultsPage() {
             <p className="text-gray-600 mb-6">You haven&apos;t taken any tests yet. Start your learning journey!</p>
             <Link 
               href="/tests" 
-              className="inline-flex items-center space-x-2 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors"
+              className="inline-flex items-center space-x-2 bg-navy text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors"
             >
               <BookOpen className="w-5 h-5" />
               <span>Take Your First Test</span>
@@ -494,7 +494,7 @@ export default function MyResultsPage() {
             >
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
               <div className="space-y-3">
-                <Link href="/tests" className="w-full flex items-center justify-center space-x-2 bg-orange-600 text-white px-4 py-3 rounded-lg hover:bg-orange-700 transition-colors">
+                <Link href="/tests" className="w-full flex items-center justify-center space-x-2 bg-navy text-white px-4 py-3 rounded-lg hover:bg-primary-700 transition-colors">
                   <BookOpen className="w-5 h-5" />
                   <span>Take More Tests</span>
                 </Link>
