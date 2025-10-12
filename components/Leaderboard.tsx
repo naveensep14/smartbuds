@@ -140,6 +140,9 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
         <span className="text-sm text-gray-500 bg-orange-100 px-2 py-1 rounded-full">
           Last 30 days
         </span>
+        <span className="text-sm text-gray-500 bg-green-100 px-2 py-1 rounded-full">
+          50%+ average
+        </span>
       </div>
 
       <div className="space-y-3">
@@ -201,7 +204,7 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
       {leaderboard.length >= limit && (
         <div className="mt-6 pt-4 border-t border-gray-200 text-center">
           <p className="text-sm text-gray-500">
-            Showing top {leaderboard.length} performers from the last 30 days
+            Showing top {leaderboard.length} performers (50%+ average) from the last 30 days
           </p>
         </div>
       )}

@@ -134,6 +134,7 @@ export class LeaderboardService {
             board: stats.profile?.board || undefined
           };
         })
+        .filter(entry => entry.averageScore >= 50) // Only show students with 50% or higher average score
         .sort((a, b) => {
           // Sort by average score (descending), then by total tests (descending), then by best score (descending)
           if (a.averageScore !== b.averageScore) {
