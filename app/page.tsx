@@ -99,6 +99,17 @@ export default function HomePage() {
               </span>
             </motion.h1>
             
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="mb-8"
+            >
+              <p className="text-2xl md:text-3xl font-semibold text-gradient mb-4">
+                "Budding Minds, Blooming Success"
+              </p>
+            </motion.div>
+            
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -223,7 +234,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-orange-600 to-red-600">
+      <section className="py-20 bg-gradient-to-r from-navy to-primary-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -231,17 +242,20 @@ export default function HomePage() {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Ready to Start Learning?
             </h2>
-            <p className="text-xl text-orange-100 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl font-semibold text-yellow mb-6">
+              "Budding Minds, Blooming Success"
+            </p>
+            <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
               Join thousands of students who are already improving their academic performance with SuccessBuds
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {user ? (
                 <Link
                   href="/tests"
-                  className="inline-flex items-center px-8 py-4 bg-white text-orange-600 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  className="inline-flex items-center px-8 py-4 bg-white text-navy font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   Browse Tests
                   <ArrowRight className="ml-2 w-5 h-5" />
@@ -249,7 +263,7 @@ export default function HomePage() {
               ) : (
                 <Link
                   href="/signup"
-                  className="inline-flex items-center px-8 py-4 bg-white text-orange-600 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  className="inline-flex items-center px-8 py-4 bg-white text-navy font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   Get Started Free
                   <ArrowRight className="ml-2 w-5 h-5" />
@@ -257,7 +271,7 @@ export default function HomePage() {
               )}
               <Link
                 href="/help"
-                className="inline-flex items-center px-8 py-4 border-2 border-white text-white font-semibold rounded-xl hover:bg-white hover:text-orange-600 transition-all duration-300"
+                className="inline-flex items-center px-8 py-4 border-2 border-white text-white font-semibold rounded-xl hover:bg-white hover:text-navy transition-all duration-300"
               >
                 Learn More
               </Link>
