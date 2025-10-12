@@ -492,6 +492,40 @@ export default function PDFUploadPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Test Type Selection - First Priority */}
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                🎯 Choose Test Type First
+              </h2>
+              <div className="max-w-md">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Test Type
+                </label>
+                <div className="relative">
+                  <select
+                    value={formData.type}
+                    onChange={(e) => handleInputChange('type', e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                      formData.type === 'weekly' 
+                        ? 'border-blue-300 bg-blue-50' 
+                        : 'border-green-300 bg-green-50'
+                    }`}
+                  >
+                    <option value="coursework">📖 Coursework Tests</option>
+                    <option value="weekly">📅 Weekly Tests</option>
+                  </select>
+                  <div className={`absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none ${
+                    formData.type === 'weekly' ? 'text-blue-600' : 'text-green-600'
+                  }`}>
+                    {formData.type === 'weekly' ? '📅' : '📖'}
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  This determines how many files you can upload and the default settings
+                </p>
+              </div>
+            </div>
+
             {/* File Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -783,33 +817,6 @@ export default function PDFUploadPage() {
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Test Type
-                </label>
-                <div className="relative">
-                  <select
-                    value={formData.type}
-                    onChange={(e) => handleInputChange('type', e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                      formData.type === 'weekly' 
-                        ? 'border-blue-300 bg-blue-50' 
-                        : 'border-green-300 bg-green-50'
-                    }`}
-                  >
-                    <option value="coursework">📖 Coursework Tests</option>
-                    <option value="weekly">📅 Weekly Tests</option>
-                  </select>
-                  <div className={`absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none ${
-                    formData.type === 'weekly' ? 'text-blue-600' : 'text-green-600'
-                  }`}>
-                    {formData.type === 'weekly' ? '📅' : '📖'}
-                  </div>
-                </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  Switch between test types to see different configuration options
-                </p>
-              </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
