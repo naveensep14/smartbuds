@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { cookies } from 'next/headers';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -10,15 +9,16 @@ const ADMIN_EMAILS = ['naveensep14@gmail.com', 'admin@successbuds.com'];
 
 export async function GET(request: NextRequest) {
   try {
-    // Get cookies for authentication
-    const cookieStore = cookies();
-    const allCookies = cookieStore.getAll();
+    // Get cookies from request headers
+    const cookieHeader = request.headers.get('cookie') || '';
     
-    // Create supabase client with cookies
+    console.log('🔍 [ADMIN REPORTS] Cookie header present:', !!cookieHeader);
+    
+    // Create supabase client with cookies from request
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
         headers: {
-          cookie: allCookies.map(c => `${c.name}=${c.value}`).join('; ')
+          cookie: cookieHeader
         }
       }
     });
@@ -109,15 +109,14 @@ export async function GET(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    // Get cookies for authentication
-    const cookieStore = cookies();
-    const allCookies = cookieStore.getAll();
+    // Get cookies from request headers
+    const cookieHeader = request.headers.get('cookie') || '';
     
-    // Create supabase client with cookies
+    // Create supabase client with cookies from request
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
         headers: {
-          cookie: allCookies.map(c => `${c.name}=${c.value}`).join('; ')
+          cookie: cookieHeader
         }
       }
     });
@@ -183,15 +182,14 @@ export async function PATCH(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    // Get cookies for authentication
-    const cookieStore = cookies();
-    const allCookies = cookieStore.getAll();
+    // Get cookies from request headers
+    const cookieHeader = request.headers.get('cookie') || '';
     
-    // Create supabase client with cookies
+    // Create supabase client with cookies from request
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
         headers: {
-          cookie: allCookies.map(c => `${c.name}=${c.value}`).join('; ')
+          cookie: cookieHeader
         }
       }
     });
