@@ -174,19 +174,19 @@ export default function ReportQuestionModal({
                         {String.fromCharCode(65 + index)}.
                       </span>
                       <span className={`${
-                        index === correctAnswer ? 'text-green-600 font-medium' : 
-                        index === userAnswer ? 'text-blue-600 font-medium' : 
+                        index === correctAnswer ? 'text-green font-medium' : 
+                        index === userAnswer ? 'text-blue font-medium' : 
                         'text-gray-700'
                       }`}>
                         {option}
                       </span>
                       {index === correctAnswer && (
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                        <span className="text-xs bg-green text-white px-2 py-1 rounded-full">
                           Correct
                         </span>
                       )}
                       {index === userAnswer && index !== correctAnswer && (
-                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                        <span className="text-xs bg-blue text-white px-2 py-1 rounded-full">
                           Your Answer
                         </span>
                       )}

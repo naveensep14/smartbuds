@@ -120,13 +120,13 @@ export function getUrgencyLevel(expiryDate: Date): 'low' | 'medium' | 'high' | '
 export function getUrgencyColorClass(urgencyLevel: 'low' | 'medium' | 'high' | 'critical'): string {
   switch (urgencyLevel) {
     case 'low':
-      return 'text-green-600 bg-green-50 border-green-200';
+      return 'text-green bg-green border-green';
     case 'medium':
-      return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+      return 'text-yellow bg-yellow border-yellow';
     case 'high':
-      return 'text-orange-600 bg-orange-50 border-orange-200';
+      return 'text-peach bg-peach border-peach';
     case 'critical':
-      return 'text-red-600 bg-red-50 border-red-200';
+      return 'text-pink bg-pink border-pink';
   }
 }
 

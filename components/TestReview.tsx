@@ -42,15 +42,15 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
   });
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 80) return 'text-green';
+    if (score >= 60) return 'text-yellow';
+    return 'text-pink';
   };
 
   const getScoreBgColor = (score: number) => {
-    if (score >= 80) return 'bg-green-50 border-green-200';
-    if (score >= 60) return 'bg-yellow-50 border-yellow-200';
-    return 'bg-red-50 border-red-200';
+    if (score >= 80) return 'bg-green border-green';
+    if (score >= 60) return 'bg-yellow border-yellow';
+    return 'bg-pink border-pink';
   };
 
   const handleSubmitReport = async (data: CreateQuestionReportData) => {
@@ -288,15 +288,15 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
                     
                     if (showAnswerKey) {
                       if (isCorrectAnswer) {
-                        optionClass += " bg-green-50 border-green-300 text-green-800";
+                        optionClass += " bg-green text-white border-green";
                       } else if (isWrongSelected) {
-                        optionClass += " bg-red-50 border-red-300 text-red-800";
+                        optionClass += " bg-pink text-white border-pink";
                       } else {
                         optionClass += " bg-gray-50 border-gray-200 text-gray-600";
                       }
                     } else {
                       if (isSelected) {
-                        optionClass += " bg-orange-50 border-orange-300 text-orange-800";
+                        optionClass += " bg-yellow text-white border-yellow";
                       } else {
                         optionClass += " bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100";
                       }

@@ -467,13 +467,13 @@ export default function TestPage() {
             </p>
             
             <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-orange-50 rounded-lg p-4">
-                <h3 className="font-semibold text-orange-700 mb-2">Correct Answers</h3>
-                <p className="text-2xl font-bold text-orange-600">{testResult.correctAnswers}</p>
+              <div className="bg-green rounded-lg p-4">
+                <h3 className="font-semibold text-white mb-2">Correct Answers</h3>
+                <p className="text-2xl font-bold text-white">{testResult.correctAnswers}</p>
               </div>
-              <div className="bg-red-50 rounded-lg p-4">
-                <h3 className="font-semibold text-red-700 mb-2">Total Questions</h3>
-                <p className="text-2xl font-bold text-red-600">{testResult.totalQuestions}</p>
+              <div className="bg-pink rounded-lg p-4">
+                <h3 className="font-semibold text-white mb-2">Total Questions</h3>
+                <p className="text-2xl font-bold text-white">{testResult.totalQuestions}</p>
               </div>
             </div>
 
@@ -563,9 +563,9 @@ export default function TestPage() {
                       onClick={() => setCurrentQuestionIndex(index)}
                       className={`w-10 h-10 rounded-lg text-sm font-medium transition-all duration-200 ${
                         isCurrent
-                          ? 'bg-orange-500 text-white ring-2 ring-orange-300'
+                          ? 'bg-yellow text-white ring-2 ring-yellow'
                           : isAnswered
-                          ? 'bg-green-500 text-white hover:bg-green-600'
+                          ? 'bg-green text-white hover:bg-success-600'
                           : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                       }`}
                       aria-label={`Question ${index + 1}${isAnswered ? ', answered' : ', not answered'}`}
@@ -599,12 +599,12 @@ export default function TestPage() {
                 className="bg-blue-50 border border-blue-200 rounded-xl p-4"
               >
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-5 h-5 text-blue-600" />
+                  <div className="w-8 h-8 bg-blue rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-blue-800">Resuming Test</h3>
-                    <p className="text-blue-600 text-sm">
+                    <h3 className="font-semibold text-navy">Resuming Test</h3>
+                    <p className="text-blue text-sm">
                       You have {answeredQuestions} answered questions. Continuing from question {currentQuestionIndex + 1}.
                     </p>
                   </div>
@@ -713,16 +713,16 @@ export default function TestPage() {
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Your Progress</h3>
                 <div className="space-y-6">
                   <div className="text-center pb-4 border-b border-gray-200">
-                    <div className="text-3xl font-bold text-blue-600 mb-1">{formatTime(timeRemaining)}</div>
+                    <div className="text-3xl font-bold text-blue mb-1">{formatTime(timeRemaining)}</div>
                     <div className="text-sm text-gray-600">Time Remaining</div>
                   </div>
                   
                   <div className="text-center pb-4 border-b border-gray-200">
-                    <div className="text-2xl font-bold text-green-600 mb-1">{answeredQuestions}/{totalQuestions}</div>
+                    <div className="text-2xl font-bold text-green mb-1">{answeredQuestions}/{totalQuestions}</div>
                     <div className="text-sm text-gray-600 mb-3">Questions Answered</div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div 
-                        className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                        className="bg-green h-2 rounded-full transition-all duration-300"
                         style={{ width: `${(answeredQuestions / totalQuestions) * 100}%` }}
                       ></div>
                     </div>
@@ -773,14 +773,14 @@ export default function TestPage() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -50, scale: 0.9 }}
           transition={{ duration: 0.3 }}
-          className="fixed top-4 right-4 z-60 bg-green-50 border border-green-200 rounded-lg p-4 shadow-lg"
+          className="fixed top-4 right-4 z-60 bg-green border border-green rounded-lg p-4 shadow-lg"
         >
           <div className="flex items-center space-x-2">
-            <CheckCircle className="w-5 h-5 text-green-600" />
-            <p className="text-green-800 font-medium">Report submitted successfully!</p>
+            <CheckCircle className="w-5 h-5 text-white" />
+            <p className="text-white font-medium">Report submitted successfully!</p>
             <button
               onClick={() => setReportSubmitted(false)}
-              className="ml-2 text-green-600 hover:text-green-800 transition-colors"
+              className="ml-2 text-white hover:text-gray-200 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -806,8 +806,8 @@ export default function TestPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <XCircle className="w-10 h-10 text-orange-600" />
+                <div className="w-16 h-16 bg-pink rounded-full flex items-center justify-center mx-auto mb-4">
+                  <XCircle className="w-10 h-10 text-white" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">
                   Submit Incomplete Test?
@@ -828,7 +828,7 @@ export default function TestPage() {
                   </button>
                   <button
                     onClick={handleSubmitTest}
-                    className="flex-1 px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium"
+                    className="flex-1 px-6 py-3 bg-pink text-white rounded-lg hover:bg-warning-600 transition-colors font-medium"
                   >
                     Submit Anyway
                   </button>
