@@ -40,10 +40,10 @@ export default function InProgressTests() {
         progressList.map(async (progress) => {
           try {
             const test = await testService.getById(progress.testId);
-            return { ...progress, test };
+            return { ...progress, test: test || undefined };
           } catch (err) {
             console.error('Error loading test details:', err);
-            return progress;
+            return { ...progress, test: undefined };
           }
         })
       );
