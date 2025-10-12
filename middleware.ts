@@ -9,11 +9,8 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  // Use proxy URL for authentication, fallback to direct Supabase URL
-  const proxyUrl = process.env.NEXT_PUBLIC_SUPABASE_PROXY_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  
   const supabase = createServerClient(
-    proxyUrl,
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
