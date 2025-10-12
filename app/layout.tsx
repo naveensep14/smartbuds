@@ -77,11 +77,11 @@ export const metadata: Metadata = {
   verification: {
     google: 'your-google-verification-code', // Replace with actual verification code
   },
-  icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
-    apple: '/apple-touch-icon.png',
-  },
+  icons: [
+    { rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' },
+    { rel: 'icon', url: '/icon.png', type: 'image/png', sizes: '32x32' },
+    { rel: 'apple-touch-icon', url: '/apple-icon.png', sizes: '180x180' },
+  ],
 }
 
 export default function RootLayout({
@@ -92,9 +92,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="alternate icon" href="/favicon.svg" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
