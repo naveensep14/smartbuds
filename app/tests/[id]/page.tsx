@@ -39,6 +39,8 @@ export default function TestPage() {
   const [showReview, setShowReview] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportSubmitted, setReportSubmitted] = useState(false);
+  const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
+  const [confidenceRatings, setConfidenceRatings] = useState<{ [key: string]: number }>({});
 
   // Load test from database
   useEffect(() => {
@@ -223,6 +225,7 @@ export default function TestPage() {
   const currentQuestion = test.questions[currentQuestionIndex];
   const totalQuestions = test.questions.length;
   const answeredQuestions = Object.keys(selectedAnswers).length;
+  const flaggedCount = flaggedQuestions.size;
 
   // Save progress when answers change
   const saveProgress = async () => {
@@ -249,6 +252,77 @@ export default function TestPage() {
     // Save progress after a short delay to avoid too many saves
     setTimeout(saveProgress, 500);
   };
+
+  const handleConfidenceChange = (questionId: string, confidence: number) => {
+    setConfidenceRatings(prev => ({
+      ...prev,
+      [questionId]: confidence
+    }));
+  };
+
+  const handleFlagQuestion = (questionId: string) => {
+    setFlaggedQuestions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+      } else {
+        newSet.add(questionId);
+      }
+      return newSet;
+    });
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return; // Don't interfere with form inputs
+      }
+
+      switch (e.key) {
+        case 'ArrowDown':
+        case 'ArrowRight':
+          e.preventDefault();
+          if (currentQuestionIndex < totalQuestions - 1) {
+            handleNextQuestion();
+          }
+          break;
+        case 'ArrowUp':
+        case 'ArrowLeft':
+          e.preventDefault();
+          if (currentQuestionIndex > 0) {
+            handlePreviousQuestion();
+          }
+          break;
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+          e.preventDefault();
+          const optionIndex = parseInt(e.key) - 1;
+          if (optionIndex < currentQuestion.options.length) {
+            handleAnswerSelect(optionIndex);
+          }
+          break;
+        case 'f':
+        case 'F':
+          e.preventDefault();
+          handleFlagQuestion(currentQuestion.id);
+          break;
+        case 'Enter':
+          e.preventDefault();
+          if (currentQuestionIndex === totalQuestions - 1) {
+            handleSubmitTest();
+          } else {
+            handleNextQuestion();
+          }
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [currentQuestionIndex, totalQuestions, currentQuestion.id, currentQuestion.options.length]);
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < totalQuestions - 1) {
@@ -588,6 +662,79 @@ export default function TestPage() {
           </div>
         </div>
 
+        {/* Progress Analytics */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Your Progress</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">{answeredQuestions}</div>
+              <div className="text-sm text-gray-600">Answered</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-600">{flaggedCount}</div>
+              <div className="text-sm text-gray-600">Flagged</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">{formatTime(timeRemaining)}</div>
+              <div className="text-sm text-gray-600">Time Left</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-purple-600">{Math.round((answeredQuestions / totalQuestions) * 100)}%</div>
+              <div className="text-sm text-gray-600">Complete</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Question Navigation */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Question Navigation</h3>
+          <div className="grid grid-cols-5 sm:grid-cols-10 md:grid-cols-15 gap-2">
+            {test.questions.map((question, index) => {
+              const isAnswered = selectedAnswers[question.id] !== undefined;
+              const isFlagged = flaggedQuestions.has(question.id);
+              const isCurrent = index === currentQuestionIndex;
+              
+              return (
+                <button
+                  key={question.id}
+                  onClick={() => setCurrentQuestionIndex(index)}
+                  className={`w-10 h-10 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    isCurrent
+                      ? 'bg-orange-500 text-white ring-2 ring-orange-300'
+                      : isAnswered
+                      ? 'bg-green-500 text-white hover:bg-green-600'
+                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  } ${isFlagged ? 'ring-2 ring-orange-400' : ''}`}
+                  aria-label={`Question ${index + 1}${isAnswered ? ', answered' : ', not answered'}${isFlagged ? ', flagged' : ''}`}
+                >
+                  {index + 1}
+                  {isFlagged && (
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full"></div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-600">
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-gray-200 rounded"></div>
+              <span>Not answered</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-green-500 rounded"></div>
+              <span>Answered</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-orange-500 rounded"></div>
+              <span>Current</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-gray-200 rounded ring-2 ring-orange-400"></div>
+              <span>Flagged</span>
+            </div>
+          </div>
+        </div>
+
         {/* Resume Notification */}
         {isResuming && (
           <motion.div
@@ -619,19 +766,44 @@ export default function TestPage() {
           transition={{ duration: 0.3 }}
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-800">Question {currentQuestionIndex + 1}</h2>
-            <button
-              onClick={() => setShowReportModal(true)}
-              className="flex items-center space-x-2 px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors"
-            >
-              <Flag className="w-4 h-4" />
-              <span className="text-sm font-medium">Report Issue</span>
-            </button>
+            <h2 className="text-2xl font-bold text-gray-800">Question {currentQuestionIndex + 1}</h2>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => handleFlagQuestion(currentQuestion.id)}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                  flaggedQuestions.has(currentQuestion.id)
+                    ? 'bg-orange-100 text-orange-700 border-2 border-orange-300'
+                    : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                }`}
+                aria-label={flaggedQuestions.has(currentQuestion.id) ? 'Remove flag' : 'Flag question'}
+              >
+                <Flag className="w-4 h-4" />
+                <span className="text-sm font-medium">
+                  {flaggedQuestions.has(currentQuestion.id) ? 'Flagged' : 'Flag'}
+                </span>
+              </button>
+              <button
+                onClick={() => setShowReportModal(true)}
+                className="flex items-center space-x-2 px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors"
+                aria-label="Report issue with this question"
+              >
+                <Flag className="w-4 h-4" />
+                <span className="text-sm font-medium">Report Issue</span>
+              </button>
+            </div>
           </div>
           
-          <p className="text-lg text-gray-700 mb-8">{currentQuestion.text}</p>
+          <p id="question-text" className="text-xl text-gray-800 mb-8 leading-relaxed">{currentQuestion.text}</p>
           
-          <div className="space-y-4">
+          <div 
+            className="space-y-4" 
+            role="radiogroup" 
+            aria-labelledby="question-text"
+            aria-describedby="question-instructions"
+          >
+            <div id="question-instructions" className="sr-only">
+              Select one option using number keys 1-4, arrow keys to navigate, or click to select. Press F to flag this question.
+            </div>
             {currentQuestion.options.map((option, index) => (
               <motion.button
                 key={index}
@@ -641,19 +813,37 @@ export default function TestPage() {
                 }`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                role="radio"
+                aria-checked={selectedAnswers[currentQuestion.id] === index}
+                aria-describedby={`option-${index}-text`}
+                aria-label={`Option ${index + 1}: ${option}`}
               >
                 <div className="flex items-center">
-                  <div className="w-6 h-6 rounded-full border-2 border-gray-300 mr-4 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full border-2 border-gray-300 mr-4 flex items-center justify-center">
+                    <span className="text-sm font-bold text-gray-600">{String.fromCharCode(65 + index)}</span>
                     {selectedAnswers[currentQuestion.id] === index && (
-                      <div className="w-3 h-3 bg-primary-500 rounded-full"></div>
+                      <div className="absolute w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                      </div>
                     )}
                   </div>
-                  <span className="text-lg">{option}</span>
+                  <span id={`option-${index}-text`} className="text-lg font-medium">{option}</span>
                 </div>
               </motion.button>
             ))}
           </div>
         </motion.div>
+
+        {/* Keyboard Shortcuts Help */}
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+          <h4 className="font-semibold text-blue-800 mb-2">Keyboard Shortcuts</h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-blue-700">
+            <div>• <kbd className="px-1 py-0.5 bg-blue-100 rounded text-xs">1-4</kbd> Select answer</div>
+            <div>• <kbd className="px-1 py-0.5 bg-blue-100 rounded text-xs">←→</kbd> Navigate questions</div>
+            <div>• <kbd className="px-1 py-0.5 bg-blue-100 rounded text-xs">F</kbd> Flag question</div>
+            <div>• <kbd className="px-1 py-0.5 bg-blue-100 rounded text-xs">Enter</kbd> Next/Submit</div>
+          </div>
+        </div>
 
         {/* Navigation */}
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
