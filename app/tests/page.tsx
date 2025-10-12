@@ -12,6 +12,7 @@ import { supabase } from '@/lib/supabase';
 import { TestProgressService } from '@/lib/test-progress';
 import NavigationHeader from '@/components/NavigationHeader';
 import { normalizeGrade } from '@/lib/grade-utils';
+import InProgressTests from '@/components/InProgressTests';
 
 export default function TestsPage() {
   const [tests, setTests] = useState<Test[]>([]);
@@ -257,8 +258,11 @@ export default function TestsPage() {
           </div>
         </div>
 
+        {/* In-Progress Tests */}
+        {user && <InProgressTests />}
+
         {/* Tests Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
           {filteredTests.map((test) => {
             const testStatus = getTestStatus(test.id);
             const StatusIcon = testStatus.icon;
