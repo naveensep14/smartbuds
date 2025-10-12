@@ -281,8 +281,8 @@ export default function TestsPage() {
             <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl shadow-sm border border-orange-200 p-6 mb-8">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-orange-100 rounded-lg">
-                    <Clock className="w-6 h-6 text-orange-600" />
+                  <div className="p-2 bg-yellow rounded-lg">
+                    <Clock className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">Weekly Tests Available</h3>
@@ -382,7 +382,7 @@ export default function TestsPage() {
                   setSelectedBoard('');
                   setSelectedChapter('');
                 }}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-orange-600 bg-orange-100 hover:bg-orange-200 transition-colors"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-navy bg-yellow hover:bg-secondary-600 transition-colors"
               >
                 Clear Filters
               </button>
@@ -433,7 +433,7 @@ export default function TestsPage() {
                   
                   {extractChapter(test.title) && (
                     <div className="mb-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue text-white">
                         {extractChapter(test.title)}
                       </span>
                     </div>
@@ -463,7 +463,7 @@ export default function TestsPage() {
                     <div className="flex space-x-2">
                   <Link 
                     href={`/tests/${test.id}`}
-                        className="flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+                        className="flex items-center space-x-2 bg-navy text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
                       >
                         <Play className="w-4 h-4" />
                         <span>
@@ -501,7 +501,7 @@ export default function TestsPage() {
                   onClick={() => setPrintMode('test')}
                   className={`px-4 py-2 rounded-lg transition-colors ${
                     printMode === 'test'
-                      ? 'bg-orange-600 text-white'
+                      ? 'bg-navy text-white'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                 >
@@ -511,7 +511,7 @@ export default function TestsPage() {
                   onClick={() => setPrintMode('answer-key')}
                   className={`px-4 py-2 rounded-lg transition-colors ${
                     printMode === 'answer-key'
-                      ? 'bg-orange-600 text-white'
+                      ? 'bg-navy text-white'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                   >

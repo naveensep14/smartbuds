@@ -8,53 +8,87 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Success Buds Brand Colors
+        navy: '#283B4B',        // Navy Blue Cap - Primary brand color
+        yellow: '#E9B921',      // Yellow Tussel - Accent/highlight
+        green: '#B6C854',       // Green Leaf - Success/positive actions
+        peach: '#FFBCAB',       // Face Peach - Warm accent
+        blue: '#5C9DB8',        // Blue in Book - Secondary actions
+        pink: '#F18D77',        // Pink in Book - Attention/warning
+        cream: '#FAEBD6',       // Book Cream - Background/neutral
+        
+        // Semantic color mappings for better UX
         primary: {
-          50: '#fff7ed',
-          100: '#ffedd5',
-          200: '#fed7aa',
-          300: '#fdba74',
-          400: '#fb923c',
-          500: '#f97316',
-          600: '#ea580c',
-          700: '#c2410c',
-          800: '#9a3412',
-          900: '#7c2d12',
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#283B4B',       // Navy as primary
+          600: '#1e2a35',
+          700: '#1a2329',
+          800: '#151c21',
+          900: '#0f1418',
         },
         secondary: {
-          50: '#fef2f2',
-          100: '#fee2e2',
-          200: '#fecaca',
-          300: '#fca5a5',
-          400: '#f87171',
-          500: '#ef4444',
-          600: '#dc2626',
-          700: '#b91c1c',
-          800: '#991b1b',
-          900: '#7f1d1d',
+          50: '#fef7ed',
+          100: '#fdedd3',
+          200: '#fbd9a7',
+          300: '#f8c17b',
+          400: '#f5a94f',
+          500: '#E9B921',       // Yellow as secondary
+          600: '#d4a61e',
+          700: '#bf931a',
+          800: '#aa8017',
+          900: '#956d14',
         },
         success: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
+          50: '#f7f8f0',
+          100: '#eff1e1',
+          200: '#dfe3c3',
+          300: '#cfd5a5',
+          400: '#bfc787',
+          500: '#B6C854',       // Green as success
+          600: '#a4b34c',
+          700: '#929e44',
+          800: '#80893c',
+          900: '#6e7434',
         },
         warning: {
-          50: '#fffbeb',
-          100: '#fef3c7',
-          200: '#fde68a',
-          300: '#fcd34d',
-          400: '#fbbf24',
-          500: '#f59e0b',
-          600: '#d97706',
-          700: '#b45309',
-          800: '#92400e',
-          900: '#78350f',
+          50: '#fef2f0',
+          100: '#fde5e1',
+          200: '#fbcbc3',
+          300: '#f9b1a5',
+          400: '#f79787',
+          500: '#F18D77',       // Pink as warning
+          600: '#d97f6b',
+          700: '#c1715f',
+          800: '#a96353',
+          900: '#915547',
+        },
+        accent: {
+          50: '#f0f7fa',
+          100: '#e1eff5',
+          200: '#c3dfeb',
+          300: '#a5cfe1',
+          400: '#87bfd7',
+          500: '#5C9DB8',       // Blue as accent
+          600: '#538da6',
+          700: '#4a7d94',
+          800: '#416d82',
+          900: '#385d70',
+        },
+        neutral: {
+          50: '#FAEBD6',        // Cream as neutral background
+          100: '#f5e0c7',
+          200: '#ebc18f',
+          300: '#e1a257',
+          400: '#d7831f',
+          500: '#cd6400',
+          600: '#b75700',
+          700: '#a14a00',
+          800: '#8b3d00',
+          900: '#753000',
         },
       },
       animation: {

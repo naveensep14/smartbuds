@@ -30,7 +30,7 @@ export default function NavigationHeader({
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-100">
+    <header className="bg-white shadow-sm border-b border-neutral-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
@@ -45,19 +45,19 @@ export default function NavigationHeader({
                 unoptimized
               />
             ) : (
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                <span className="text-orange-600 font-bold text-lg">S</span>
+              <div className="w-12 h-12 bg-navy rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">S</span>
               </div>
             )}
             <h1 className="text-2xl font-bold text-gradient">SuccessBuds</h1>
           </Link>
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/help" className="text-gray-600 hover:text-orange-600 transition-colors">
+            <Link href="/help" className="text-gray-600 hover:text-navy transition-colors">
               Help
             </Link>
             {user ? (
               <div className="flex items-center space-x-4">
-                <Link href="/dashboard" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                <Link href="/dashboard" className="bg-navy text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">
                   Dashboard
                 </Link>
                 <div className="flex items-center space-x-2">
@@ -72,8 +72,8 @@ export default function NavigationHeader({
                       unoptimized
                     />
                   ) : (
-                    <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                      <span className="text-orange-600 font-bold text-sm">
+                    <div className="w-8 h-8 bg-navy rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">
                         {user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
                       </span>
                     </div>
@@ -84,7 +84,7 @@ export default function NavigationHeader({
                     </span>
                     <button
                       onClick={handleSignOut}
-                      className="text-xs text-gray-500 hover:text-red-600 transition-colors"
+                      className="text-xs text-gray-500 hover:text-pink transition-colors"
                     >
                       Sign Out
                     </button>
@@ -92,7 +92,7 @@ export default function NavigationHeader({
                 </div>
               </div>
             ) : (
-              <Link href="/login" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+              <Link href="/login" className="bg-navy text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">
                 Get Started
               </Link>
             )}

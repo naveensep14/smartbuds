@@ -35,25 +35,25 @@ export default function HomePage() {
       icon: BookOpen,
       title: "Interactive Tests",
       description: "Comprehensive multiple choice tests covering all subjects and grade levels",
-      color: "from-blue-500 to-blue-600"
+      color: "from-blue to-accent-500"
     },
     {
       icon: BarChart3,
       title: "Progress Tracking",
       description: "Detailed analytics and performance insights to monitor learning growth",
-      color: "from-green-500 to-green-600"
+      color: "from-green to-success-500"
     },
     {
       icon: Trophy,
       title: "Achievements",
       description: "Gamified learning with badges, leaderboards, and achievement rewards",
-      color: "from-yellow-500 to-yellow-600"
+      color: "from-yellow to-secondary-500"
     },
     {
       icon: Users,
       title: "Parent Dashboard",
       description: "Comprehensive tools for parents to monitor and support their child's learning",
-      color: "from-purple-500 to-purple-600"
+      color: "from-peach to-pink"
     }
   ];
 
@@ -82,7 +82,7 @@ export default function HomePage() {
       <NavigationHeader />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-white to-red-50">
+      <section className="relative overflow-hidden bg-gradient-to-br from-neutral-50 via-cream to-peach">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
           <div className="text-center">
@@ -94,7 +94,7 @@ export default function HomePage() {
               className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight"
             >
               Learn Better with{' '}
-              <span className="bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-navy via-blue to-accent-500 bg-clip-text text-transparent">
                 SuccessBuds
               </span>
             </motion.h1>
@@ -118,7 +118,7 @@ export default function HomePage() {
               {user ? (
                 <Link
                   href="/tests"
-                  className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white font-semibold rounded-xl hover:from-orange-700 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-navy to-primary-600 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 >
                   Start Learning
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -127,14 +127,14 @@ export default function HomePage() {
                 <>
                   <Link
                     href="/login"
-                    className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white font-semibold rounded-xl hover:from-orange-700 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                    className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-navy to-primary-600 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                   >
                     Get Started Free
                     <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                   <Link
                     href="/signup"
-                    className="inline-flex items-center px-8 py-4 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-all duration-300"
+                    className="inline-flex items-center px-8 py-4 border-2 border-blue text-blue font-semibold rounded-xl hover:border-accent-500 hover:bg-accent-50 transition-all duration-300"
                   >
                     Sign Up
                   </Link>

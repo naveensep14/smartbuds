@@ -130,7 +130,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <AuthProvider>
-          <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+          <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-cream">
             {children}
           </div>
         </AuthProvider>

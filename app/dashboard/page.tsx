@@ -212,14 +212,14 @@ export default function DashboardPage() {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className="bg-blue-100 p-3 rounded-xl">
-                  <User className="w-8 h-8 text-blue-600" />
+                <div className="bg-blue p-3 rounded-xl">
+                  <User className="w-8 h-8 text-white" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900">Student Profile</h3>
                   {!isEditingProfile ? (
                     <div className="flex items-center space-x-4 mt-2">
-                      <span className="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-medium">
+                      <span className="text-sm bg-blue text-white px-3 py-1 rounded-full font-medium">
                         {userProfile.grade}
                       </span>
                       <span className="text-sm bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-medium">
@@ -280,8 +280,8 @@ export default function DashboardPage() {
 
                       {/* Error Message */}
                       {profileUpdateError && (
-                        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                          <p className="text-red-800 text-sm">{profileUpdateError}</p>
+                        <div className="bg-pink border border-pink rounded-lg p-3">
+                          <p className="text-white text-sm">{profileUpdateError}</p>
                         </div>
                       )}
 
@@ -290,7 +290,7 @@ export default function DashboardPage() {
                         <button
                           onClick={handleSaveProfile}
                           disabled={profileUpdateLoading}
-                          className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          className="flex items-center space-x-2 bg-navy text-white px-4 py-2 rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-blue focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                           <Save className="w-4 h-4" />
                           <span>{profileUpdateLoading ? 'Saving...' : 'Save Changes'}</span>
@@ -331,8 +331,8 @@ export default function DashboardPage() {
             <Link href="/tests" className="block">
               <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
                 <div className="flex items-center space-x-4">
-                  <div className="bg-orange-100 p-3 rounded-xl">
-                    <BookOpen className="w-8 h-8 text-orange-600" />
+                  <div className="bg-yellow p-3 rounded-xl">
+                    <BookOpen className="w-8 h-8 text-white" />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900">Take Tests</h3>
@@ -351,8 +351,8 @@ export default function DashboardPage() {
             <Link href="/my-results" className="block">
               <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
                 <div className="flex items-center space-x-4">
-                  <div className="bg-green-100 p-3 rounded-xl">
-                    <Trophy className="w-8 h-8 text-green-600" />
+                  <div className="bg-green p-3 rounded-xl">
+                    <Trophy className="w-8 h-8 text-white" />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900">View Results</h3>
@@ -372,8 +372,8 @@ export default function DashboardPage() {
               <Link href="/admin" className="block">
                 <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
                   <div className="flex items-center space-x-4">
-                    <div className="bg-blue-100 p-3 rounded-xl">
-                      <User className="w-8 h-8 text-blue-600" />
+                    <div className="bg-blue p-3 rounded-xl">
+                      <User className="w-8 h-8 text-white" />
                     </div>
                     <div>
                       <h3 className="text-xl font-semibold text-gray-900">Admin Panel</h3>
@@ -443,7 +443,7 @@ export default function DashboardPage() {
               <p className="text-sm mb-4">Complete your first test to see your activity here!</p>
               <Link 
                 href="/tests" 
-                className="inline-flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+                className="inline-flex items-center space-x-2 bg-navy text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Take Your First Test</span>
