@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Clock, CheckCircle, XCircle, ArrowLeft, ArrowRight, Flag, Menu, X, Printer } from 'lucide-react';
 import Link from 'next/link';
@@ -43,6 +43,9 @@ export default function TestPage() {
   const [confidenceRatings, setConfidenceRatings] = useState<{ [key: string]: number }>({});
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
   const [showSubmitConfirmation, setShowSubmitConfirmation] = useState(false);
+  
+  // Ref for debouncing progress saves
+  const saveProgressTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Derived values
   const currentQuestion = test?.questions[currentQuestionIndex];
@@ -50,21 +53,38 @@ export default function TestPage() {
   const answeredQuestions = Object.keys(selectedAnswers).length;
   const flaggedCount = flaggedQuestions.size;
 
-  // Save progress when answers change
-  const saveProgress = useCallback(async () => {
-    if (user?.email && test) {
-      const timeSpent = TestProgressService.calculateTimeSpent(startTime);
-      await TestProgressService.saveProgress({
-        userEmail: user.email,
-        testId: test.id,
-        currentQuestionIndex,
-        selectedAnswers,
-        startTime,
-        timeSpent,
-        isCompleted: false
-      });
+  // Save progress when answers change (debounced to avoid excessive API calls)
+  const saveProgressDebounced = useCallback((delay: number = 2000) => {
+    // Clear any existing timeout
+    if (saveProgressTimeoutRef.current) {
+      clearTimeout(saveProgressTimeoutRef.current);
     }
+    
+    // Set new timeout
+    saveProgressTimeoutRef.current = setTimeout(async () => {
+      if (user?.email && test) {
+        const timeSpent = TestProgressService.calculateTimeSpent(startTime);
+        await TestProgressService.saveProgress({
+          userEmail: user.email,
+          testId: test.id,
+          currentQuestionIndex,
+          selectedAnswers,
+          startTime,
+          timeSpent,
+          isCompleted: false
+        });
+      }
+    }, delay);
   }, [user?.email, test, startTime, currentQuestionIndex, selectedAnswers]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (saveProgressTimeoutRef.current) {
+        clearTimeout(saveProgressTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleAnswerSelect = useCallback((answerIndex: number) => {
     if (!currentQuestion) return;
@@ -73,9 +93,9 @@ export default function TestPage() {
       [currentQuestion.id]: answerIndex
     }));
     
-    // Save progress after a short delay to avoid too many saves
-    setTimeout(saveProgress, 500);
-  }, [currentQuestion, saveProgress]);
+    // Save progress after a delay (debounced)
+    saveProgressDebounced(2000);
+  }, [currentQuestion, saveProgressDebounced]);
 
   const handleConfidenceChange = (questionId: string, confidence: number) => {
     setConfidenceRatings(prev => ({
@@ -99,38 +119,29 @@ export default function TestPage() {
   const handleNextQuestion = useCallback(() => {
     if (currentQuestionIndex < totalQuestions - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
-      // Save progress when navigating
-      setTimeout(saveProgress, 100);
+      // Save progress when navigating (debounced)
+      saveProgressDebounced(2000);
     }
-  }, [currentQuestionIndex, totalQuestions, saveProgress]);
+  }, [currentQuestionIndex, totalQuestions, saveProgressDebounced]);
 
   const handlePreviousQuestion = useCallback(() => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(prev => prev - 1);
-      // Save progress when navigating
-      setTimeout(saveProgress, 100);
+      // Save progress when navigating (debounced)
+      saveProgressDebounced(2000);
     }
-  }, [currentQuestionIndex, saveProgress]);
-
-  const handleSubmitAttempt = useCallback(() => {
-    if (!test) return;
-    
-    const allQuestionsAnswered = answeredQuestions === totalQuestions;
-    
-    if (allQuestionsAnswered) {
-      // All questions answered, submit directly
-      handleSubmitTest();
-    } else {
-      // Not all questions answered, show confirmation
-      setShowSubmitConfirmation(true);
-    }
-  }, [test, answeredQuestions, totalQuestions]);
+  }, [currentQuestionIndex, saveProgressDebounced]);
 
   const handleSubmitTest = useCallback(async () => {
     if (!test || !user) return;
 
     // Close confirmation dialog if open
     setShowSubmitConfirmation(false);
+    
+    // Clear any pending progress saves
+    if (saveProgressTimeoutRef.current) {
+      clearTimeout(saveProgressTimeoutRef.current);
+    }
 
     try {
       // Calculate test results
@@ -199,6 +210,20 @@ export default function TestPage() {
       setShowResults(true);
     }
   }, [test, user, selectedAnswers, startTime, currentQuestionIndex]);
+
+  const handleSubmitAttempt = useCallback(() => {
+    if (!test) return;
+    
+    const allQuestionsAnswered = answeredQuestions === totalQuestions;
+    
+    if (allQuestionsAnswered) {
+      // All questions answered, submit directly
+      handleSubmitTest();
+    } else {
+      // Not all questions answered, show confirmation
+      setShowSubmitConfirmation(true);
+    }
+  }, [test, answeredQuestions, totalQuestions, handleSubmitTest]);
 
   // Load test from database
   useEffect(() => {
@@ -302,7 +327,7 @@ export default function TestPage() {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentQuestionIndex, totalQuestions, currentQuestion, handleAnswerSelect, handleNextQuestion, handlePreviousQuestion, handleSubmitTest]);
+  }, [currentQuestionIndex, totalQuestions, currentQuestion, handleAnswerSelect, handleNextQuestion, handlePreviousQuestion, handleSubmitAttempt]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -943,6 +968,57 @@ export default function TestPage() {
           </div>
         </div>
       )}
+
+      {/* Submit Confirmation Modal */}
+      <AnimatePresence>
+        {showSubmitConfirmation && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            onClick={() => setShowSubmitConfirmation(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-xl shadow-xl max-w-md w-full p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-center">
+                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <XCircle className="w-10 h-10 text-orange-600" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  Submit Incomplete Test?
+                </h2>
+                <p className="text-gray-600 mb-4">
+                  You have only answered <strong>{answeredQuestions}</strong> out of <strong>{totalQuestions}</strong> questions.
+                </p>
+                <p className="text-gray-600 mb-6">
+                  Unanswered questions will be marked as incorrect. Are you sure you want to submit?
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={() => setShowSubmitConfirmation(false)}
+                    className="flex-1 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                  >
+                    Continue Test
+                  </button>
+                  <button
+                    onClick={handleSubmitTest}
+                    className="flex-1 px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium"
+                  >
+                    Submit Anyway
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
