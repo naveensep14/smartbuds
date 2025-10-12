@@ -106,10 +106,6 @@ export default function AdminReportsPage() {
   };
 
   const deleteReport = async (reportId: string) => {
-    if (!confirm('Are you sure you want to delete this report? This action cannot be undone.')) {
-      return;
-    }
-
     try {
       const response = await fetch('/api/admin/reports', {
         method: 'DELETE',
@@ -388,6 +384,16 @@ export default function AdminReportsPage() {
                     </div>
                     
                     <div className="flex items-center space-x-2 ml-4">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteReport(report.id);
+                        }}
+                        className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete report"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                       <Eye className="w-5 h-5 text-gray-400" />
                       <span className="text-sm text-gray-500">View Details</span>
                     </div>
