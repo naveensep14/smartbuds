@@ -73,17 +73,20 @@ export default function ReportQuestionModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔍 [MODAL] Form submitted');
     
     if (!selectedIssueType) {
+      console.log('❌ [MODAL] No issue type selected');
       setError('Please select an issue type');
       return;
     }
 
+    console.log('🔍 [MODAL] Starting submission...');
     setIsSubmitting(true);
     setError('');
 
     try {
-      await onSubmit({
+      const reportData = {
         testId,
         questionId,
         questionText,
@@ -92,13 +95,18 @@ export default function ReportQuestionModal({
         userAnswer,
         issueType: selectedIssueType as IssueType,
         description: description.trim() || undefined
-      });
+      };
+      
+      console.log('🔍 [MODAL] Calling onSubmit with data:', reportData);
+      await onSubmit(reportData);
+      console.log('✅ [MODAL] onSubmit completed successfully');
 
       // Reset form
       setSelectedIssueType('');
       setDescription('');
       onClose();
     } catch (err) {
+      console.error('❌ [MODAL] Error in handleSubmit:', err);
       setError('Failed to submit report. Please try again.');
     } finally {
       setIsSubmitting(false);

@@ -43,11 +43,23 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
 
   const handleSubmitReport = async (data: CreateQuestionReportData) => {
     try {
+      console.log('🔍 [FRONTEND] Starting report submission...');
+      
       // Get the current session token
       const { data: { session } } = await supabase.auth.getSession();
+      console.log('🔍 [FRONTEND] Session present:', !!session);
+      
       if (!session) {
+        console.log('❌ [FRONTEND] No active session');
         throw new Error('No active session');
       }
+
+      console.log('🔍 [FRONTEND] Token length:', session.access_token.length);
+      console.log('🔍 [FRONTEND] Report data:', {
+        testId: data.testId,
+        questionId: data.questionId,
+        issueType: data.issueType
+      });
 
       const response = await fetch('/api/reports/submit', {
         method: 'POST',
@@ -58,15 +70,20 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
         body: JSON.stringify(data),
       });
 
+      console.log('🔍 [FRONTEND] Response status:', response.status);
+
       if (!response.ok) {
+        const errorText = await response.text();
+        console.log('❌ [FRONTEND] Error response:', errorText);
         throw new Error('Failed to submit report');
       }
 
       const result = await response.json();
+      console.log('✅ [FRONTEND] Report submitted successfully:', result);
       setReportSubmitted(true);
       return result;
     } catch (error) {
-      console.error('Error submitting report:', error);
+      console.error('❌ [FRONTEND] Error submitting report:', error);
       throw error;
     }
   };
