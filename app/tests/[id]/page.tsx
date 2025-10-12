@@ -17,7 +17,7 @@ import NavigationHeader from '@/components/NavigationHeader';
 export default function TestPage() {
   const params = useParams();
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, refreshSession } = useAuth();
   const [test, setTest] = useState<Test | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -345,12 +345,19 @@ export default function TestPage() {
   const handleSubmitReport = async (data: CreateQuestionReportData) => {
     try {
       console.log('📤 [TEST PAGE] Getting session...');
-      // Get the current session token
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      // Try to refresh session first
+      let session = await refreshSession();
       
-      if (sessionError) {
-        console.error('❌ [TEST PAGE] Session error:', sessionError);
-        throw new Error('Failed to get session: ' + sessionError.message);
+      // If refresh fails, try to get current session
+      if (!session) {
+        const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error('❌ [TEST PAGE] Session error:', sessionError);
+          throw new Error('Session error: ' + sessionError.message);
+        }
+        
+        session = currentSession;
       }
       
       if (!session) {

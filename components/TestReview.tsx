@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { BookOpen, X, CheckCircle, XCircle, Clock, BarChart3, Eye, ArrowLeft, ArrowRight, Flag } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
+import { useAuth } from '@/lib/auth';
 import { Test, Question, TestResult, CreateQuestionReportData } from '@/types';
 import ReportQuestionModal from './ReportQuestionModal';
 
@@ -23,6 +24,7 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
   const [showAnswerKey, setShowAnswerKey] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportSubmitted, setReportSubmitted] = useState(false);
+  const { refreshSession } = useAuth();
 
   const currentQuestion = test.questions[currentQuestionIndex];
   const userAnswer = testResult.answers.find(a => a.questionId === currentQuestion.id);
@@ -45,13 +47,26 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
     try {
       console.log('🔍 [FRONTEND] Starting report submission...');
       
-      // Get the current session token
-      const { data: { session } } = await supabase.auth.getSession();
-      console.log('🔍 [FRONTEND] Session present:', !!session);
+      // Try to refresh session first
+      let session = await refreshSession();
+      
+      // If refresh fails, try to get current session
+      if (!session) {
+        const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
+        console.log('🔍 [FRONTEND] Session present:', !!currentSession);
+        console.log('🔍 [FRONTEND] Session error:', sessionError);
+        
+        if (sessionError) {
+          console.log('❌ [FRONTEND] Session error:', sessionError);
+          throw new Error('Session error: ' + sessionError.message);
+        }
+        
+        session = currentSession;
+      }
       
       if (!session) {
         console.log('❌ [FRONTEND] No active session');
-        throw new Error('No active session');
+        throw new Error('No active session. Please log in again.');
       }
 
       console.log('🔍 [FRONTEND] Token length:', session.access_token.length);

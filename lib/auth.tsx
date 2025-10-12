@@ -12,6 +12,7 @@ interface AuthContextType {
   userRole: 'admin' | 'user';
   signInWithGoogle: () => Promise<{ error: any }>;
   signOut: () => Promise<void>;
+  refreshSession: () => Promise<any>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -60,8 +61,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
   };
 
+  const refreshSession = async () => {
+    try {
+      const { data: { session }, error } = await supabase.auth.refreshSession();
+      if (error) {
+        console.error('Session refresh error:', error);
+        return null;
+      }
+      return session;
+    } catch (error) {
+      console.error('Session refresh error:', error);
+      return null;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin, userRole, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, userRole, signInWithGoogle, signOut, refreshSession }}>
       {children}
     </AuthContext.Provider>
   );
