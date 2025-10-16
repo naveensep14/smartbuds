@@ -211,7 +211,7 @@ export default function MyResultsPage() {
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-3">
                 <Image
-                  src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
+                  src="/images/logo-square.jpg"
                   alt="SuccessBuds Logo"
                   width={48}
                   height={48}

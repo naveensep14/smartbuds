@@ -40,7 +40,7 @@ export default function LoginPage() {
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-3">
                 <img
-                  src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
+                  src="/images/logo-square.jpg"
                   alt="SuccessBuds Logo"
                   className="w-12 h-12 rounded-lg object-cover"
                 />
@@ -85,7 +85,7 @@ export default function LoginPage() {
           {/* Logo */}
           <div className="text-center mb-8">
             <img
-              src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
+              src="/images/logo-square.jpg"
               alt="SuccessBuds Logo"
               className="mx-auto w-20 h-20 rounded-xl object-cover shadow-lg"
             />

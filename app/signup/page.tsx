@@ -41,7 +41,7 @@ export default function SignupPage() {
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-3">
                 <Image
-                  src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
+                  src="/images/logo-square.jpg"
                   alt="SuccessBuds Logo"
                   width={48}
                   height={48}
@@ -98,7 +98,7 @@ export default function SignupPage() {
           {/* Logo */}
           <div className="text-center mb-8">
             <Image
-              src="https://i.ibb.co/6RcwZjJr/logo-square.jpg"
+              src="/images/logo-square.jpg"
               alt="SuccessBuds Logo"
               width={80}
               height={80}
