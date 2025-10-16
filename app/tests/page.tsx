@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Clock, Users, Play, Search, Filter, Printer, CheckCircle } from 'lucide-react';
+import { BookOpen, Clock, Users, Play, Search, Filter, Printer, CheckCircle, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { Test } from '@/types';
 import { testService } from '@/lib/database';
@@ -36,6 +36,22 @@ export default function TestsPage() {
     const loadUserProfile = async () => {
       if (user && !isAdmin) {
         try {
+          // First verify profile completion
+          const { data: isCompleted, error: completionError } = await supabase
+            .rpc('is_profile_completed', { user_id: user.id });
+
+          if (completionError) {
+            console.error('Error checking profile completion:', completionError);
+            return;
+          }
+
+          if (!isCompleted) {
+            console.log('Profile not completed, redirecting to complete-profile');
+            window.location.href = '/complete-profile';
+            return;
+          }
+
+          // Load profile data
           const { data, error } = await supabase
             .from('profiles')
             .select('student_name, grade, board')
@@ -130,29 +146,34 @@ export default function TestsPage() {
         (test.startDate && test.endDate ? isWeeklyTestInDateRange(test.startDate, test.endDate) : true)
       : true;
     
-    // For non-admin users, only show tests matching their grade and board
-    if (!isAdmin && userProfile) {
-      const matchesUserGrade = test.grade === userProfile.grade;
-      const matchesUserBoard = test.board === userProfile.board;
-      return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter && matchesType && matchesUserGrade && matchesUserBoard && isAvailable;
-    }
-    
+    // NEW: All tests are visible to everyone (no hard filter)
     return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter && matchesType && isAvailable;
   });
+  
+  // Helper function to check if a test is locked for the current user
+  const isTestLocked = (test: Test): boolean => {
+    // Admin users have access to everything
+    if (isAdmin || !userProfile) return false;
+    
+    // Extract chapter number from test title
+    const chapterMatch = test.title.match(/Chapter (\d+)/);
+    const chapterNum = chapterMatch ? parseInt(chapterMatch[1]) : null;
+    
+    // Chapter 1 is always accessible to everyone
+    if (chapterNum === 1) return false;
+    
+    // For other chapters, check if test matches user's profile
+    const matchesUserProfile = test.grade === userProfile.grade && test.board === userProfile.board;
+    
+    // Lock the test if it doesn't match user's profile AND it's not Chapter 1
+    return !matchesUserProfile;
+  };
 
-  // Filter options based on user role and active tab
+  // Filter options - show ALL options to everyone (no restrictions)
   const currentTabTests = tests.filter(test => test.type === activeTab);
   const subjects = Array.from(new Set(currentTabTests.map(test => test.subject)));
-  const grades = isAdmin 
-    ? Array.from(new Set(currentTabTests.map(test => test.grade)))
-    : userProfile 
-      ? [userProfile.grade]
-      : [];
-  const boards = isAdmin 
-    ? Array.from(new Set(currentTabTests.map(test => test.board)))
-    : userProfile 
-      ? [userProfile.board]
-      : [];
+  const grades = Array.from(new Set(currentTabTests.map(test => test.grade)));
+  const boards = Array.from(new Set(currentTabTests.map(test => test.board)));
   const chapters = Array.from(new Set(currentTabTests.map(test => extractChapter(test.title)).filter(Boolean))).sort((a, b) => {
     const aNum = parseInt(a?.match(/\d+/)?.[0] || '0');
     const bNum = parseInt(b?.match(/\d+/)?.[0] || '0');
@@ -229,10 +250,7 @@ export default function TestsPage() {
             <select
               value={selectedGrade}
               onChange={(e) => setSelectedGrade(e.target.value)}
-              disabled={!isAdmin}
-              className={`px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                !isAdmin ? 'bg-gray-100 cursor-not-allowed' : ''
-              }`}
+              className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
             >
               <option value="">All Grades</option>
               {grades.map(grade => (
@@ -243,10 +261,7 @@ export default function TestsPage() {
             <select
               value={selectedBoard}
               onChange={(e) => setSelectedBoard(e.target.value)}
-              disabled={!isAdmin}
-              className={`px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                !isAdmin ? 'bg-gray-100 cursor-not-allowed' : ''
-              }`}
+              className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
             >
               <option value="">All Boards</option>
               {boards.map(board => (
@@ -391,6 +406,7 @@ export default function TestsPage() {
             filteredTests.map((test) => {
             const testStatus = getTestStatus(test.id);
             const StatusIcon = testStatus.icon;
+            const locked = isTestLocked(test);
             
             return (
               <motion.div
@@ -398,13 +414,23 @@ export default function TestsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
-                className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+                className={`bg-white rounded-xl shadow-sm border overflow-hidden transition-shadow ${
+                  locked 
+                    ? 'border-gray-300 opacity-75' 
+                    : 'border-gray-100 hover:shadow-md'
+                }`}
               >
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2">
                       <BookOpen className="w-5 h-5 text-yellow" />
                       <span className="text-sm font-medium text-gray-600">{test.subject}</span>
+                      {locked && (
+                        <div className="flex items-center space-x-1 text-red-600">
+                          <Lock className="w-4 h-4" />
+                          <span className="text-xs font-medium">Locked</span>
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center space-x-1">
                       <StatusIcon className={`w-4 h-4 ${testStatus.color}`} />
@@ -413,7 +439,7 @@ export default function TestsPage() {
                          testStatus.status === 'incomplete' ? 'In Progress' : 'Not Started'}
                       </span>
                     </div>
-                </div>
+                  </div>
                 
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{test.title}</h3>
                   <p className="text-gray-600 mb-4 line-clamp-2">{test.description}</p>
@@ -461,23 +487,35 @@ export default function TestsPage() {
                 
                   <div className="flex items-center justify-between">
                     <div className="flex space-x-2">
-                  <Link 
-                    href={`/tests/${test.id}`}
-                        className="flex items-center space-x-2 bg-navy text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
-                      >
-                        <Play className="w-4 h-4" />
-                        <span>
-                          {testStatus.status === 'completed' ? 'Retake Test' : 
-                           testStatus.status === 'incomplete' ? 'Resume Test' : 'Start Test'}
-                        </span>
-                  </Link>
-                  <button
+                      {locked ? (
+                        <div className="flex items-center space-x-2 bg-gray-300 text-gray-600 px-4 py-2 rounded-lg cursor-not-allowed">
+                          <Lock className="w-4 h-4" />
+                          <span>Locked</span>
+                        </div>
+                      ) : (
+                        <Link 
+                          href={`/tests/${test.id}`}
+                          className="flex items-center space-x-2 bg-navy text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+                        >
+                          <Play className="w-4 h-4" />
+                          <span>
+                            {testStatus.status === 'completed' ? 'Retake Test' : 
+                             testStatus.status === 'incomplete' ? 'Resume Test' : 'Start Test'}
+                          </span>
+                        </Link>
+                      )}
+                      <button
                         onClick={() => handlePrintTest(test)}
-                        className="flex items-center space-x-2 text-gray-600 hover:text-yellow transition-colors px-4 py-2 rounded-lg hover:bg-gray-50"
-                  >
-                    <Printer className="w-4 h-4" />
+                        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                          locked 
+                            ? 'text-gray-400 cursor-not-allowed' 
+                            : 'text-gray-600 hover:text-yellow hover:bg-gray-50'
+                        }`}
+                        disabled={locked}
+                      >
+                        <Printer className="w-4 h-4" />
                         <span>Print</span>
-                  </button>
+                      </button>
                     </div>
                   </div>
                 </div>
