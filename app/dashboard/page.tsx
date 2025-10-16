@@ -74,10 +74,10 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const loadActivities = async () => {
-      if (user && user.email) {
+      if (user && user.id) {
         try {
-          console.log('Dashboard - Loading activities for user:', user.email);
-          const userActivities = await ActivityService.getRecentActivities(user.email, 5);
+          console.log('Dashboard - Loading activities for user:', user.id);
+          const userActivities = await ActivityService.getRecentActivities(user.id, 5);
           console.log('Dashboard - Loaded activities:', userActivities);
           setActivities(userActivities);
         } catch (error) {

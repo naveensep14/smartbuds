@@ -148,6 +148,14 @@ export default function TestsPage() {
     
     // NEW: All tests are visible to everyone (no hard filter)
     return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter && matchesType && isAvailable;
+  }).sort((a, b) => {
+    // Sort unlocked tests first, then locked tests
+    const aLocked = isTestLocked(a);
+    const bLocked = isTestLocked(b);
+    
+    if (aLocked && !bLocked) return 1;  // b (unlocked) comes first
+    if (!aLocked && bLocked) return -1; // a (unlocked) comes first
+    return 0; // same lock status, maintain original order
   });
   
   // Helper function to check if a test is locked for the current user
