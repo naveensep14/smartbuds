@@ -131,6 +131,25 @@ export default function TestsPage() {
     return chapterMatch ? `Chapter ${chapterMatch[1]}` : null;
   };
 
+  // Helper function to check if a test is locked for the current user
+  const isTestLocked = (test: Test): boolean => {
+    // Admin users have access to everything
+    if (isAdmin || !userProfile) return false;
+    
+    // Extract chapter number from test title
+    const chapterMatch = test.title.match(/Chapter (\d+)/);
+    const chapterNum = chapterMatch ? parseInt(chapterMatch[1]) : null;
+    
+    // Chapter 1 is always accessible to everyone
+    if (chapterNum === 1) return false;
+    
+    // For other chapters, check if test matches user's profile
+    const matchesUserProfile = test.grade === userProfile.grade && test.board === userProfile.board;
+    
+    // Lock the test if it doesn't match user's profile AND it's not Chapter 1
+    return !matchesUserProfile;
+  };
+
   const filteredTests = tests.filter(test => {
     const matchesSearch = test.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          test.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -157,25 +176,6 @@ export default function TestsPage() {
     if (!aLocked && bLocked) return -1; // a (unlocked) comes first
     return 0; // same lock status, maintain original order
   });
-  
-  // Helper function to check if a test is locked for the current user
-  const isTestLocked = (test: Test): boolean => {
-    // Admin users have access to everything
-    if (isAdmin || !userProfile) return false;
-    
-    // Extract chapter number from test title
-    const chapterMatch = test.title.match(/Chapter (\d+)/);
-    const chapterNum = chapterMatch ? parseInt(chapterMatch[1]) : null;
-    
-    // Chapter 1 is always accessible to everyone
-    if (chapterNum === 1) return false;
-    
-    // For other chapters, check if test matches user's profile
-    const matchesUserProfile = test.grade === userProfile.grade && test.board === userProfile.board;
-    
-    // Lock the test if it doesn't match user's profile AND it's not Chapter 1
-    return !matchesUserProfile;
-  };
 
   // Filter options - show ALL options to everyone (no restrictions)
   const currentTabTests = tests.filter(test => test.type === activeTab);
