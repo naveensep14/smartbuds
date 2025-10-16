@@ -12,6 +12,7 @@ const sampleResults: TestResult[] = [
   {
     id: '1',
     testId: '1',
+    user_id: 'sample-user-1',
     studentName: 'Alice Johnson',
     score: 85,
     totalQuestions: 5,
@@ -29,6 +30,7 @@ const sampleResults: TestResult[] = [
   {
     id: '2',
     testId: '1',
+    user_id: 'sample-user-2',
     studentName: 'Bob Smith',
     score: 60,
     totalQuestions: 5,
@@ -46,6 +48,7 @@ const sampleResults: TestResult[] = [
   {
     id: '3',
     testId: '2',
+    user_id: 'sample-user-3',
     studentName: 'Charlie Brown',
     score: 100,
     totalQuestions: 1,
@@ -332,11 +335,11 @@ export default function ResultsPage() {
                         <div className="flex items-center">
                           <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
                             <span className="text-sm font-medium text-primary-600">
-                              {result.studentName.charAt(0)}
+                              {(result.studentName || 'Anonymous').charAt(0)}
                             </span>
                           </div>
                           <div className="ml-3">
-                            <div className="text-sm font-medium text-gray-900">{result.studentName}</div>
+                            <div className="text-sm font-medium text-gray-900">{result.studentName || 'Anonymous'}</div>
                           </div>
                         </div>
                       </td>
