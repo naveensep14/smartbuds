@@ -298,10 +298,10 @@ export default function CompleteProfilePage() {
             <div className="border-t pt-6">
               <div className="text-center mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Don't see your grade or board?
+                  Don&apos;t see your grade or board?
                 </h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  We're constantly adding new grades and boards. Let us know what you need!
+                  We&apos;re constantly adding new grades and boards. Let us know what you need!
                 </p>
                 {!showRequestForm && (
                   <button
@@ -388,7 +388,7 @@ export default function CompleteProfilePage() {
                       <div className="flex items-center space-x-2">
                         <CheckCircle className="w-4 h-4 text-green-600" />
                         <p className="text-green-800 text-sm font-medium">
-                          Request sent successfully! We'll review and add your grade/board soon.
+                          Request sent successfully! We&apos;ll review and add your grade/board soon.
                         </p>
                       </div>
                     </div>
