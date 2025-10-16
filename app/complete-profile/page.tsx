@@ -5,11 +5,18 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import { VALID_GRADES, normalizeGrade, type ValidGrade } from '@/lib/grade-utils';
+import { MessageCircle, Send, CheckCircle } from 'lucide-react';
 
 interface ProfileFormData {
   studentName: string;
   grade: ValidGrade | '';
   board: string;
+}
+
+interface RequestFormData {
+  requestedGrade: string;
+  requestedBoard: string;
+  message: string;
 }
 
 export default function CompleteProfilePage() {
@@ -20,9 +27,18 @@ export default function CompleteProfilePage() {
     grade: '',
     board: 'CBSE',
   });
+  const [requestFormData, setRequestFormData] = useState<RequestFormData>({
+    requestedGrade: '',
+    requestedBoard: '',
+    message: '',
+  });
   const [isLoading, setIsLoading] = useState(false);
+  const [isRequestLoading, setIsRequestLoading] = useState(false);
   const [error, setError] = useState('');
+  const [requestError, setRequestError] = useState('');
+  const [requestSuccess, setRequestSuccess] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
+  const [showRequestForm, setShowRequestForm] = useState(false);
 
   const checkProfileCompletion = useCallback(async () => {
     try {
@@ -91,6 +107,63 @@ export default function CompleteProfilePage() {
       setFormData(prev => ({ ...prev, [field]: value }));
     }
     setError('');
+  };
+
+  const handleRequestInputChange = (field: keyof RequestFormData, value: string) => {
+    setRequestFormData(prev => ({ ...prev, [field]: value }));
+    setRequestError('');
+  };
+
+  const handleSendRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!requestFormData.requestedGrade.trim() || !requestFormData.requestedBoard.trim()) {
+      setRequestError('Please provide both grade and board information.');
+      return;
+    }
+
+    setIsRequestLoading(true);
+    setRequestError('');
+
+    try {
+      // Send request to admin via email or store in database
+      const response = await fetch('/api/admin/grade-board-request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userEmail: user?.email,
+          userName: user?.email?.split('@')[0] || 'User',
+          requestedGrade: requestFormData.requestedGrade.trim(),
+          requestedBoard: requestFormData.requestedBoard.trim(),
+          message: requestFormData.message.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send request');
+      }
+
+      setRequestSuccess(true);
+      setRequestFormData({
+        requestedGrade: '',
+        requestedBoard: '',
+        message: '',
+      });
+      
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        setRequestSuccess(false);
+        setShowRequestForm(false);
+      }, 5000);
+      
+    } catch (error) {
+      console.error('Error sending request:', error);
+      setRequestError('Failed to send request. Please try again.');
+    } finally {
+      setIsRequestLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -219,6 +292,128 @@ export default function CompleteProfilePage() {
                 <option value="IB">IB</option>
                 <option value="IGCSE">IGCSE</option>
               </select>
+            </div>
+
+            {/* Request Additional Options */}
+            <div className="border-t pt-6">
+              <div className="text-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Don't see your grade or board?
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  We're constantly adding new grades and boards. Let us know what you need!
+                </p>
+                {!showRequestForm && (
+                  <button
+                    type="button"
+                    onClick={() => setShowRequestForm(true)}
+                    className="inline-flex items-center space-x-2 bg-navy text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>Request Grade/Board</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Request Form */}
+              {showRequestForm && (
+                <div className="bg-gray-50 rounded-lg p-4 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-gray-900">Request New Options</h4>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowRequestForm(false);
+                        setRequestError('');
+                        setRequestFormData({
+                          requestedGrade: '',
+                          requestedBoard: '',
+                          message: '',
+                        });
+                      }}
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Requested Grade
+                      </label>
+                      <input
+                        type="text"
+                        value={requestFormData.requestedGrade}
+                        onChange={(e) => handleRequestInputChange('requestedGrade', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-navy focus:border-transparent text-sm"
+                        placeholder="e.g., Grade 8, Class 9"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Requested Board
+                      </label>
+                      <input
+                        type="text"
+                        value={requestFormData.requestedBoard}
+                        onChange={(e) => handleRequestInputChange('requestedBoard', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-navy focus:border-transparent text-sm"
+                        placeholder="e.g., Maharashtra Board, Karnataka Board"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Additional Message (Optional)
+                    </label>
+                    <textarea
+                      value={requestFormData.message}
+                      onChange={(e) => handleRequestInputChange('message', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-navy focus:border-transparent text-sm"
+                      rows={3}
+                      placeholder="Tell us more about your requirements..."
+                    />
+                  </div>
+
+                  {requestError && (
+                    <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                      <p className="text-red-800 text-sm">{requestError}</p>
+                    </div>
+                  )}
+
+                  {requestSuccess && (
+                    <div className="bg-green-50 border border-green-200 rounded-md p-3">
+                      <div className="flex items-center space-x-2">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                        <p className="text-green-800 text-sm font-medium">
+                          Request sent successfully! We'll review and add your grade/board soon.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={handleSendRequest}
+                    disabled={isRequestLoading || !requestFormData.requestedGrade.trim() || !requestFormData.requestedBoard.trim()}
+                    className="w-full bg-navy text-white py-2 px-4 rounded-md font-medium hover:bg-primary-700 focus:ring-2 focus:ring-navy focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm flex items-center justify-center space-x-2"
+                  >
+                    {isRequestLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <span>Sending...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        <span>Send Request</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Error Message */}
