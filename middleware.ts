@@ -59,13 +59,16 @@ export async function middleware(request: NextRequest) {
 
     // Check profile completion for non-admin users
     if (user.email && !ADMIN_EMAILS.includes(user.email.toLowerCase() as any)) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('profile_completed')
-        .eq('id', user.id)
-        .single();
+      // Use the database function to properly validate profile completion
+      const { data: isCompleted, error } = await supabase
+        .rpc('is_profile_completed', { user_id: user.id });
 
-      if (!profile?.profile_completed) {
+      if (error) {
+        console.error('Error checking profile completion:', error);
+        return NextResponse.redirect(new URL('/complete-profile', request.url));
+      }
+
+      if (!isCompleted) {
         return NextResponse.redirect(new URL('/complete-profile', request.url));
       }
     }
@@ -79,13 +82,16 @@ export async function middleware(request: NextRequest) {
 
     // Check profile completion for non-admin users
     if (user.email && !ADMIN_EMAILS.includes(user.email.toLowerCase() as any)) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('profile_completed')
-        .eq('id', user.id)
-        .single();
+      // Use the database function to properly validate profile completion
+      const { data: isCompleted, error } = await supabase
+        .rpc('is_profile_completed', { user_id: user.id });
 
-      if (!profile?.profile_completed) {
+      if (error) {
+        console.error('Error checking profile completion:', error);
+        return NextResponse.redirect(new URL('/complete-profile', request.url));
+      }
+
+      if (!isCompleted) {
         return NextResponse.redirect(new URL('/complete-profile', request.url));
       }
     }
@@ -99,13 +105,16 @@ export async function middleware(request: NextRequest) {
 
     // Check profile completion for non-admin users
     if (user.email && !ADMIN_EMAILS.includes(user.email.toLowerCase() as any)) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('profile_completed')
-        .eq('id', user.id)
-        .single();
+      // Use the database function to properly validate profile completion
+      const { data: isCompleted, error } = await supabase
+        .rpc('is_profile_completed', { user_id: user.id });
 
-      if (!profile?.profile_completed) {
+      if (error) {
+        console.error('Error checking profile completion:', error);
+        return NextResponse.redirect(new URL('/complete-profile', request.url));
+      }
+
+      if (!isCompleted) {
         return NextResponse.redirect(new URL('/complete-profile', request.url));
       }
     }

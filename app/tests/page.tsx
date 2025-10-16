@@ -13,7 +13,6 @@ import { TestProgressService } from '@/lib/test-progress';
 import NavigationHeader from '@/components/NavigationHeader';
 import { normalizeGrade } from '@/lib/grade-utils';
 import InProgressTests from '@/components/InProgressTests';
-import GradeBoardRequest from '@/components/GradeBoardRequest';
 import { getTimeUntilExpiry, getTimeRemainingString, getUrgencyLevel, getUrgencyColorClass, isWeeklyTestAvailable, isWeeklyTestInDateRange } from '@/lib/weekly-test-utils';
 
 export default function TestsPage() {
@@ -289,11 +288,6 @@ export default function TestsPage() {
               ))}
             </select>
 
-            </div>
-
-            {/* Grade/Board Request */}
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <GradeBoardRequest compact={true} />
             </div>
           </div>
         </div>

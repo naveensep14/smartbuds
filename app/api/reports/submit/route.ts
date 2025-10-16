@@ -33,6 +33,23 @@ export async function POST(request: NextRequest) {
     
     console.log('✅ [REPORT API] User authenticated:', user.id);
     
+    // Check if user has completed profile (for non-admin users)
+    const ADMIN_EMAILS = ['naveensep14@gmail.com', 'admin@successbuds.com'];
+    if (!ADMIN_EMAILS.includes(user.email?.toLowerCase() || '')) {
+      const { data: isCompleted, error: completionError } = await anonClient
+        .rpc('is_profile_completed', { user_id: user.id });
+
+      if (completionError) {
+        console.log('❌ [REPORT API] Error checking profile completion:', completionError);
+        return NextResponse.json({ error: 'Profile validation failed' }, { status: 403 });
+      }
+
+      if (!isCompleted) {
+        console.log('❌ [REPORT API] Profile not completed');
+        return NextResponse.json({ error: 'Profile must be completed to submit reports' }, { status: 403 });
+      }
+    }
+    
     // Now use service role key to insert data (bypasses RLS)
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
