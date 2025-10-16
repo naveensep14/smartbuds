@@ -76,6 +76,7 @@ export default function MyResultsPage() {
           .select(`
             id,
             testId,
+            user_id,
             studentName,
             score,
             totalQuestions,
@@ -94,6 +95,7 @@ export default function MyResultsPage() {
           const formattedResults: TestResult[] = resultsData.map(result => ({
             id: result.id,
             testId: result.testId,
+            user_id: result.user_id,
             studentName: result.studentName,
             score: result.score,
             totalQuestions: result.totalQuestions,
