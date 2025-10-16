@@ -31,22 +31,22 @@ export default function Toast({ message, type, isVisible, onClose }: ToastProps)
           exit={{ opacity: 0, y: -50, scale: 0.9 }}
           className="fixed top-4 right-4 z-50"
         >
-          <div className={`flex items-center space-x-3 px-4 py-3 rounded-lg shadow-lg border ${
+          <div className={`flex items-center space-x-3 px-6 py-4 rounded-xl shadow-xl border-2 ${
             type === 'success' 
-              ? 'bg-green-50 border-green-200 text-green-800' 
-              : 'bg-red-50 border-red-200 text-red-800'
+              ? 'bg-green-50 border-green-300 text-green-900' 
+              : 'bg-red-50 border-red-300 text-red-900'
           }`}>
             {type === 'success' ? (
-              <CheckCircle className="w-5 h-5 text-green-600" />
+              <CheckCircle className="w-6 h-6 text-green-600" />
             ) : (
-              <XCircle className="w-5 h-5 text-red-600" />
+              <XCircle className="w-6 h-6 text-red-600" />
             )}
-            <span className="font-medium">{message}</span>
+            <span className="font-semibold text-lg">{message}</span>
             <button
               onClick={onClose}
               className="ml-2 p-1 rounded-full hover:bg-black hover:bg-opacity-10 transition-colors"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
           </div>
         </motion.div>
