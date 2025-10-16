@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Medal, Award, Clock, Star, TrendingUp } from 'lucide-react';
+import { Trophy, Medal, Award, Star, TrendingUp } from 'lucide-react';
 import { LeaderboardService, LeaderboardEntry } from '@/lib/leaderboard';
 
 interface LeaderboardProps {
@@ -72,9 +72,6 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
             <div className="flex items-center space-x-1 sm:space-x-2">
               <div className="bg-gray-600 bg-opacity-80 px-2 py-1 rounded-full">
                 <span className="text-xs sm:text-sm text-white font-medium">Last 30 days</span>
-              </div>
-              <div className="bg-gray-600 bg-opacity-80 px-2 py-1 rounded-full">
-                <span className="text-xs sm:text-sm text-white font-medium">50%+ average</span>
               </div>
             </div>
           </div>
@@ -170,9 +167,6 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
             <div className="bg-gray-600 bg-opacity-80 px-2 py-1 rounded-full">
               <span className="text-xs sm:text-sm text-white font-medium">Last 30 days</span>
             </div>
-            <div className="bg-gray-600 bg-opacity-80 px-2 py-1 rounded-full">
-              <span className="text-xs sm:text-sm text-white font-medium">50%+ average</span>
-            </div>
           </div>
         </div>
       </div>
@@ -213,10 +207,6 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
                   </div>
                   
                   <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-3 text-xs sm:text-sm text-gray-600">
-                    <span className="flex items-center space-x-1">
-                      <Clock className="w-3 h-3 flex-shrink-0" />
-                      <span className="truncate">{LeaderboardService.formatDate(entry.lastTestDate)}</span>
-                    </span>
                     {entry.grade && entry.board && (
                       <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full font-medium flex-shrink-0">
                         {entry.grade} {entry.board}
