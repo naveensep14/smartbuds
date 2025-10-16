@@ -63,31 +63,38 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
   if (loading) {
     return (
       <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-navy to-primary-600 px-6 py-4">
-          <div className="flex items-center space-x-3">
-            <Trophy className="w-6 h-6 text-white" />
-            <h2 className="text-xl font-bold text-white">Top Performers</h2>
-            <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full">
-              <span className="text-sm text-white font-medium">Last 30 days</span>
+        <div className="bg-gradient-to-r from-navy to-primary-600 px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-yellow" />
+              <h2 className="text-lg sm:text-xl font-bold text-white">Top Performers</h2>
+            </div>
+            <div className="flex items-center space-x-1 sm:space-x-2">
+              <div className="bg-gray-600 bg-opacity-80 px-2 py-1 rounded-full">
+                <span className="text-xs sm:text-sm text-white font-medium">Last 30 days</span>
+              </div>
+              <div className="bg-gray-600 bg-opacity-80 px-2 py-1 rounded-full">
+                <span className="text-xs sm:text-sm text-white font-medium">50%+ average</span>
+              </div>
             </div>
           </div>
         </div>
         
-        <div className="p-6">
-          <div className="space-y-4">
+        <div className="p-3 sm:p-6">
+          <div className="space-y-2 sm:space-y-4">
             {[...Array(5)].map((_, index) => (
               <div key={index} className="animate-pulse">
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                    <div className="space-y-2">
-                      <div className="h-4 bg-gray-300 rounded w-32"></div>
-                      <div className="h-3 bg-gray-300 rounded w-24"></div>
+                <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center space-x-2 sm:space-x-4">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-300 rounded-full"></div>
+                    <div className="space-y-1 sm:space-y-2">
+                      <div className="h-3 sm:h-4 bg-gray-300 rounded w-24 sm:w-32"></div>
+                      <div className="h-2 sm:h-3 bg-gray-300 rounded w-16 sm:w-24"></div>
                     </div>
                   </div>
-                  <div className="text-right space-y-2">
-                    <div className="h-6 bg-gray-300 rounded w-16"></div>
-                    <div className="h-3 bg-gray-300 rounded w-12"></div>
+                  <div className="text-right space-y-1 sm:space-y-2">
+                    <div className="h-5 sm:h-6 bg-gray-300 rounded w-12 sm:w-16"></div>
+                    <div className="h-2 sm:h-3 bg-gray-300 rounded w-8 sm:w-12"></div>
                   </div>
                 </div>
               </div>
@@ -153,69 +160,69 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-navy to-primary-600 px-6 py-4">
+      <div className="bg-gradient-to-r from-navy to-primary-600 px-4 sm:px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <Trophy className="w-6 h-6 text-white" />
-            <h2 className="text-xl font-bold text-white">Top Performers</h2>
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-yellow" />
+            <h2 className="text-lg sm:text-xl font-bold text-white">Top Performers</h2>
           </div>
-          <div className="flex items-center space-x-2">
-            <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full">
-              <span className="text-sm text-white font-medium">Last 30 days</span>
+          <div className="flex items-center space-x-1 sm:space-x-2">
+            <div className="bg-gray-600 bg-opacity-80 px-2 py-1 rounded-full">
+              <span className="text-xs sm:text-sm text-white font-medium">Last 30 days</span>
             </div>
-            <div className="bg-success-500 bg-opacity-20 px-3 py-1 rounded-full">
-              <span className="text-sm text-white font-medium">50%+ average</span>
+            <div className="bg-gray-600 bg-opacity-80 px-2 py-1 rounded-full">
+              <span className="text-xs sm:text-sm text-white font-medium">50%+ average</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Leaderboard Content */}
-      <div className="p-6">
-        <div className="space-y-3">
+      <div className="p-3 sm:p-6">
+        <div className="space-y-2 sm:space-y-3">
           {leaderboard.map((entry, index) => (
             <motion.div
               key={entry.studentName}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className={`flex items-center justify-between p-4 rounded-lg border transition-all hover:shadow-md ${
+              className={`flex items-center justify-between p-3 sm:p-4 rounded-lg border transition-all hover:shadow-md ${
                 entry.rank <= 3 
                   ? 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-300' 
                   : 'bg-white border-gray-200 hover:border-gray-300'
               }`}
             >
               {/* Left Section - Rank & Student Info */}
-              <div className="flex items-center space-x-4 flex-1 min-w-0">
+              <div className="flex items-center space-x-2 sm:space-x-4 flex-1 min-w-0">
                 {/* Rank */}
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100">
+                <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 flex-shrink-0">
                   {getRankIcon(entry.rank)}
                 </div>
 
                 {/* Student Info */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <h3 className="text-lg font-semibold text-gray-900 truncate">
+                  <div className="flex items-center space-x-1 sm:space-x-2 mb-1">
+                    <h3 className="text-sm sm:text-lg font-semibold text-gray-900 truncate">
                       {entry.displayName}
                     </h3>
                     {entry.rank <= 3 && (
-                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${getRankBadgeColor(entry.rank)}`}>
+                      <span className={`text-xs px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full font-medium ${getRankBadgeColor(entry.rank)} flex-shrink-0`}>
                         Top {entry.rank}
                       </span>
                     )}
                   </div>
                   
-                  <div className="flex items-center space-x-4 text-sm text-gray-600">
+                  <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-3 text-xs sm:text-sm text-gray-600">
                     <span className="flex items-center space-x-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{LeaderboardService.formatDate(entry.lastTestDate)}</span>
+                      <Clock className="w-3 h-3 flex-shrink-0" />
+                      <span className="truncate">{LeaderboardService.formatDate(entry.lastTestDate)}</span>
                     </span>
                     {entry.grade && entry.board && (
-                      <span className="text-xs bg-accent-100 text-accent-700 px-2 py-1 rounded-full font-medium">
+                      <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full font-medium flex-shrink-0">
                         {entry.grade} {entry.board}
                       </span>
                     )}
-                    <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full font-medium">
+                    <span className="text-xs bg-gray-100 text-gray-700 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full font-medium flex-shrink-0">
                       Best: {entry.bestScore}%
                     </span>
                   </div>
@@ -223,12 +230,12 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
               </div>
 
               {/* Right Section - Score */}
-              <div className="text-right">
-                <div className="text-3xl font-bold text-gray-900 mb-1">
+              <div className="text-right flex-shrink-0 ml-2">
+                <div className="text-xl sm:text-3xl font-bold text-gray-900 mb-0.5 sm:mb-1">
                   {entry.averageScore}%
                 </div>
-                <div className="text-sm text-gray-500 font-medium">
-                  Average Score
+                <div className="text-xs sm:text-sm text-gray-500 font-medium">
+                  Average
                 </div>
               </div>
             </motion.div>
