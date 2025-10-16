@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ActivityService, Activity } from '@/lib/activity';
 import NavigationHeader from '@/components/NavigationHeader';
+import GradeBoardRequest from '@/components/GradeBoardRequest';
 import { supabase } from '@/lib/supabase';
 import { normalizeGrade, VALID_GRADES, type ValidGrade } from '@/lib/grade-utils';
 
@@ -276,6 +277,11 @@ export default function DashboardPage() {
                             <option value="IGCSE">IGCSE</option>
                           </select>
                         </div>
+                      </div>
+
+                      {/* Grade/Board Request */}
+                      <div className="border-t pt-4">
+                        <GradeBoardRequest compact={true} />
                       </div>
 
                       {/* Error Message */}
