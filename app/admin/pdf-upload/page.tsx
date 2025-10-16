@@ -772,22 +772,24 @@ export default function PDFUploadPage() {
                   </div>
                 </div>
 
-                {/* File size indicator */}
+                {/* File size indicator - More Prominent */}
                 {formData.file && (
-                  <div className={`inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium ${
+                  <div className={`inline-flex items-center px-4 py-3 rounded-xl text-base font-bold shadow-lg border-2 ${
                     formData.file.size >= 4.5 * 1024 * 1024 
-                      ? 'bg-red-100 text-red-800 border border-red-200' 
-                      : 'bg-green-100 text-green-800 border border-green-200'
+                      ? 'bg-red-50 text-red-900 border-red-300' 
+                      : 'bg-green-50 text-green-900 border-green-300'
                   }`}>
-                    <svg className={`w-4 h-4 mr-2 ${formData.file.size >= 4.5 * 1024 * 1024 ? 'text-red-600' : 'text-green-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                    <svg className={`w-6 h-6 mr-3 ${formData.file.size >= 4.5 * 1024 * 1024 ? 'text-red-600' : 'text-green-600'}`} fill="currentColor" viewBox="0 0 20 20">
                       {formData.file.size >= 4.5 * 1024 * 1024 ? (
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                       ) : (
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       )}
                     </svg>
-                    File Size: {(formData.file.size / (1024 * 1024)).toFixed(2)} MB
-                    {formData.file.size >= 4.5 * 1024 * 1024 ? ' (Too Large)' : ' (OK)'}
+                    <span className="text-lg">
+                      File Size: {(formData.file.size / (1024 * 1024)).toFixed(2)} MB
+                      {formData.file.size >= 4.5 * 1024 * 1024 ? ' (❌ Too Large)' : ' (✅ Perfect Size)'}
+                    </span>
                   </div>
                 )}
               </div>
@@ -1160,16 +1162,16 @@ export default function PDFUploadPage() {
                 <h2 className="text-2xl font-bold text-gray-900">
                   Review Generated Tests ({generatedTests.length})
                 </h2>
-                <div className="flex gap-3">
+                <div className="flex gap-4">
                   <button
                     onClick={handleSelectAll}
-                    className="text-sm bg-navy text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#1a2633] transition-colors shadow-md"
+                    className="text-base bg-navy text-white px-6 py-3 rounded-xl font-bold hover:bg-[#1a2633] transition-all shadow-lg hover:shadow-xl border-2 border-navy"
                   >
                     {selectedTests.size === generatedTests.length ? '☐ Deselect All' : '☑ Select All'}
                   </button>
                   <button
                     onClick={handleClearAll}
-                    className="text-sm bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors shadow-md"
+                    className="text-base bg-red-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition-all shadow-lg hover:shadow-xl border-2 border-red-600"
                   >
                     🗑️ Clear All
                   </button>
@@ -1232,9 +1234,9 @@ export default function PDFUploadPage() {
                                 </h5>
                                 <button
                                   onClick={() => handleEditQuestion(index, qIndex)}
-                                  className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+                                  className="text-sm bg-blue-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl border-2 border-blue-600"
                                 >
-                                  ✏️ Edit
+                                  ✏️ Edit Question
                                 </button>
                               </div>
                               <p className="text-gray-700 mb-3">{question.question}</p>
@@ -1310,20 +1312,43 @@ export default function PDFUploadPage() {
                 </div>
               </div>
 
-              <div className="flex gap-4">
-                <button
-                  onClick={handleSaveTests}
-                  disabled={selectedTests.size === 0}
-                  className="flex-1 bg-green-600 text-white py-4 px-8 rounded-lg font-bold text-lg hover:bg-green-700 focus:ring-4 focus:ring-green-300 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
-                >
-                  💾 Save Selected Tests ({selectedTests.size})
-                </button>
-                <button
-                  onClick={handleClearAll}
-                  className="bg-gray-700 text-white py-4 px-8 rounded-lg font-semibold text-lg hover:bg-gray-800 focus:ring-4 focus:ring-gray-400 focus:ring-offset-2 transition-all shadow-lg hover:shadow-xl"
-                >
-                  🔄 Start Over
-                </button>
+              <div className="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 rounded-xl p-6">
+                <div className="text-center mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Ready to Save Your Tests?</h3>
+                  <p className="text-gray-600">
+                    {selectedTests.size > 0 
+                      ? `You have selected ${selectedTests.size} test${selectedTests.size !== 1 ? 's' : ''} to save to the database.`
+                      : 'Please select at least one test to save.'
+                    }
+                  </p>
+                </div>
+                
+                <div className="flex gap-6 justify-center">
+                  <button
+                    onClick={handleSaveTests}
+                    disabled={selectedTests.size === 0}
+                    className={`px-8 py-4 rounded-xl font-bold text-xl transition-all shadow-xl hover:shadow-2xl border-2 ${
+                      selectedTests.size === 0
+                        ? 'bg-gray-400 text-gray-600 cursor-not-allowed border-gray-400'
+                        : 'bg-green-600 text-white hover:bg-green-700 border-green-600 hover:scale-105'
+                    }`}
+                  >
+                    <span className="flex items-center gap-3">
+                      <span className="text-2xl">💾</span>
+                      <span>Save Selected Tests ({selectedTests.size})</span>
+                    </span>
+                  </button>
+                  
+                  <button
+                    onClick={handleClearAll}
+                    className="px-8 py-4 rounded-xl font-bold text-xl bg-gray-700 text-white hover:bg-gray-800 transition-all shadow-xl hover:shadow-2xl border-2 border-gray-700 hover:scale-105"
+                  >
+                    <span className="flex items-center gap-3">
+                      <span className="text-2xl">🔄</span>
+                      <span>Start Over</span>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
