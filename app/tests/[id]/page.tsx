@@ -17,7 +17,7 @@ import NavigationHeader from '@/components/NavigationHeader';
 export default function TestPage() {
   const params = useParams();
   const router = useRouter();
-  const { user, refreshSession } = useAuth();
+  const { user, refreshSession, isAdmin } = useAuth();
   const [test, setTest] = useState<Test | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -234,9 +234,63 @@ export default function TestPage() {
       if (params.id && user?.email) {
         const testId = Array.isArray(params.id) ? params.id[0] : params.id;
         
+        // For non-admin users, verify profile completion before loading test
+        if (!isAdmin) {
+          try {
+            const { data: isCompleted, error } = await supabase
+              .rpc('is_profile_completed', { user_id: user.id });
+
+            if (error) {
+              console.error('Error checking profile completion:', error);
+              // If RPC function doesn't exist, check profile manually
+              const { data: profile, error: profileError } = await supabase
+                .from('profiles')
+                .select('student_name, grade, board, profile_completed')
+                .eq('id', user.id)
+                .single();
+              
+              if (profileError || !profile || !profile.profile_completed || !profile.student_name || !profile.grade || !profile.board) {
+                console.log('Profile not completed, redirecting to complete-profile');
+                router.push('/complete-profile');
+                return;
+              }
+            } else if (!isCompleted) {
+              console.log('Profile not completed, redirecting to complete-profile');
+              router.push('/complete-profile');
+              return;
+            }
+          } catch (error) {
+            console.error('Error validating profile:', error);
+            // Fallback: check profile manually
+            try {
+              const { data: profile, error: profileError } = await supabase
+                .from('profiles')
+                .select('student_name, grade, board, profile_completed')
+                .eq('id', user.id)
+                .single();
+              
+              if (profileError || !profile || !profile.profile_completed || !profile.student_name || !profile.grade || !profile.board) {
+                console.log('Profile not completed, redirecting to complete-profile');
+                router.push('/complete-profile');
+                return;
+              }
+            } catch (fallbackError) {
+              console.error('Fallback profile check failed:', fallbackError);
+              router.push('/complete-profile');
+              return;
+            }
+          }
+        }
+        
         // Load test data
-        const fetchedTest = await testService.getById(testId);
-        if (fetchedTest) {
+        try {
+          const fetchedTest = await testService.getById(testId);
+          if (!fetchedTest) {
+            console.error('Test not found:', testId);
+            router.push('/tests');
+            return;
+          }
+          
           setTest(fetchedTest);
           setTimeRemaining(fetchedTest.duration * 60);
           
@@ -259,7 +313,12 @@ export default function TestPage() {
             console.log('Progress tracking not available - database table may not exist yet');
             // Continue without progress tracking
           }
+        } catch (error) {
+          console.error('Error loading test:', error);
+          router.push('/tests');
+          return;
         }
+        
         setLoading(false);
       }
     };
