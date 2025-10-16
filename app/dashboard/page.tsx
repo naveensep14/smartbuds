@@ -311,10 +311,10 @@ export default function DashboardPage() {
               {!isEditingProfile && (
                 <button
                   onClick={() => setIsEditingProfile(true)}
-                  className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                  className="flex items-center space-x-3 bg-navy text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#1a2633] focus:ring-4 focus:ring-blue-300 focus:ring-offset-2 transition-all shadow-lg hover:shadow-xl border-2 border-navy"
                 >
-                  <Edit3 className="w-4 h-4" />
-                  <span>Edit Profile</span>
+                  <Edit3 className="w-5 h-5" />
+                  <span className="text-lg">Edit Profile</span>
                 </button>
               )}
             </div>
