@@ -503,19 +503,19 @@ export default function PDFUploadPage() {
           <div className="flex items-center space-x-4 text-sm text-gray-600">
             <button
               onClick={() => router.push('/admin')}
-              className="hover:text-orange-600 transition-colors"
+              className="hover:text-navy transition-colors font-medium"
             >
               ← Back to Admin
             </button>
-            <span>|</span>
+            <span className="text-gray-400">|</span>
             <button
               onClick={() => router.push('/dashboard')}
-              className="hover:text-orange-600 transition-colors"
+              className="hover:text-navy transition-colors font-medium"
             >
               Dashboard
             </button>
-            <span>|</span>
-            <span className="text-orange-600 font-medium">PDF Upload</span>
+            <span className="text-gray-400">|</span>
+            <span className="text-navy font-semibold">PDF Upload</span>
           </div>
         </nav>
 
@@ -595,7 +595,7 @@ export default function PDFUploadPage() {
                   <select
                     value={formData.type}
                     onChange={(e) => handleInputChange('type', e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-navy focus:border-navy ${
                       formData.type === 'weekly' 
                         ? 'border-blue-300 bg-blue-50' 
                         : 'border-green-300 bg-green-50'
@@ -672,7 +672,7 @@ export default function PDFUploadPage() {
                     type="file"
                     accept=".pdf"
                     onChange={(e) => handleFileUpload(e.target.files)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-navy"
                     required
                   />
                   {/* File size limit badge */}
@@ -794,7 +794,7 @@ export default function PDFUploadPage() {
             </div>
 
             {/* Test Generation Options */}
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-6">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 🎯 Test Generation Options
               </h3>
@@ -806,7 +806,7 @@ export default function PDFUploadPage() {
                   <select
                     value={formData.numTests}
                     onChange={(e) => handleInputChange('numTests', parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
                     disabled={formData.type === 'weekly'}
                   >
                     <option value={1}>1 Test</option>
@@ -835,7 +835,7 @@ export default function PDFUploadPage() {
                   <select
                     value={formData.questionsPerTest}
                     onChange={(e) => handleInputChange('questionsPerTest', parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
                   >
                     <option value={5}>5 Questions</option>
                     <option value={8}>8 Questions</option>
@@ -851,8 +851,8 @@ export default function PDFUploadPage() {
                   </p>
                 </div>
               </div>
-              <div className="mt-4 p-3 bg-orange-100 rounded-lg">
-                <p className="text-sm text-orange-800">
+              <div className="mt-4 p-3 bg-blue-100 rounded-lg">
+                <p className="text-sm text-navy">
                   <strong>Total Questions:</strong> {formData.numTests * formData.questionsPerTest} questions across {formData.numTests} tests
                 </p>
               </div>
@@ -866,7 +866,7 @@ export default function PDFUploadPage() {
               <textarea
                 value={formData.customPrompt}
                 onChange={(e) => handleInputChange('customPrompt', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
                 rows={4}
                 placeholder="Add custom instructions for AI test generation (e.g., 'Focus on practical applications', 'Include word problems', 'Make questions more challenging')"
               />
@@ -901,7 +901,7 @@ export default function PDFUploadPage() {
                 <select
                   value={formData.subject}
                   onChange={(e) => handleInputChange('subject', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
                   required
                 >
                   <option value="">Select Subject</option>
@@ -919,7 +919,7 @@ export default function PDFUploadPage() {
                 <select
                   value={formData.grade}
                   onChange={(e) => handleInputChange('grade', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
                   required
                 >
                   <option value="">Select Grade</option>
@@ -943,7 +943,7 @@ export default function PDFUploadPage() {
                       value={formData.startDate}
                       onChange={(e) => handleInputChange('startDate', e.target.value)}
                       placeholder="dd/mm (e.g., 15/03)"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
                       required
                     />
                     <p className="text-xs text-gray-500 mt-1">
@@ -960,7 +960,7 @@ export default function PDFUploadPage() {
                       value={formData.endDate}
                       onChange={(e) => handleInputChange('endDate', e.target.value)}
                       placeholder="dd/mm (e.g., 21/03)"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
                       required
                     />
                     <p className="text-xs text-gray-500 mt-1">
@@ -977,7 +977,7 @@ export default function PDFUploadPage() {
                   <select
                     value={formData.chapter}
                     onChange={(e) => handleInputChange('chapter', parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
                     required
                   >
                     {Array.from({ length: 20 }, (_, i) => i + 1).map(chapter => (
@@ -999,7 +999,7 @@ export default function PDFUploadPage() {
                 <select
                   value={formData.board}
                   onChange={(e) => handleInputChange('board', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
                 >
                   <option value="CBSE">CBSE</option>
                   <option value="ICSE">ICSE</option>
@@ -1020,7 +1020,7 @@ export default function PDFUploadPage() {
                   onChange={(e) => handleInputChange('duration', parseInt(e.target.value))}
                   min="5"
                   max="120"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
                 />
                 {formData.type === 'weekly' && (
                   <p className="text-sm text-gray-500 mt-1">
@@ -1101,15 +1101,18 @@ export default function PDFUploadPage() {
 
                 {/* Live Logs Viewer */}
                 {logs.length > 0 && (
-                  <div className="mt-4 p-3 bg-gray-900 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-sm font-medium text-green-400">📋 Live Processing Logs</h4>
-                      <span className="text-xs text-gray-400">{logs.length} entries</span>
+                  <div className="mt-4 p-4 bg-white border-2 border-navy rounded-lg shadow-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-sm font-semibold text-navy flex items-center gap-2">
+                        <span className="text-lg">📋</span>
+                        Live Processing Logs
+                      </h4>
+                      <span className="text-xs font-medium bg-navy text-white px-2 py-1 rounded-full">{logs.length} entries</span>
                     </div>
-                    <div className="bg-black rounded p-3 max-h-40 overflow-y-auto">
-                      <div className="space-y-1">
-                        {logs.slice(-10).map((log, index) => (
-                          <div key={index} className="text-xs text-green-300 font-mono">
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 max-h-48 overflow-y-auto">
+                      <div className="space-y-1.5">
+                        {logs.slice(-15).map((log, index) => (
+                          <div key={index} className="text-sm text-gray-800 font-mono bg-white px-3 py-2 rounded border-l-4 border-green-500 shadow-sm">
                             {log}
                           </div>
                         ))}
@@ -1134,9 +1137,19 @@ export default function PDFUploadPage() {
             <button
               type="submit"
               disabled={isUploading}
-              className="w-full bg-orange-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-orange-700 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-navy text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-[#1a2633] focus:ring-4 focus:ring-blue-300 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
             >
-              {isUploading ? '🤖 AI Generating Tests...' : '🤖 Generate AI Tests from PDF'}
+              {isUploading ? (
+                <span className="flex items-center justify-center gap-3">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  🤖 AI Generating Tests...
+                </span>
+              ) : (
+                '🤖 Generate AI Tests from PDF'
+              )}
             </button>
           </form>
 
@@ -1147,18 +1160,18 @@ export default function PDFUploadPage() {
                 <h2 className="text-2xl font-bold text-gray-900">
                   Review Generated Tests ({generatedTests.length})
                 </h2>
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   <button
                     onClick={handleSelectAll}
-                    className="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-lg hover:bg-blue-200"
+                    className="text-sm bg-navy text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#1a2633] transition-colors shadow-md"
                   >
-                    {selectedTests.size === generatedTests.length ? 'Deselect All' : 'Select All'}
+                    {selectedTests.size === generatedTests.length ? '☐ Deselect All' : '☑ Select All'}
                   </button>
                   <button
                     onClick={handleClearAll}
-                    className="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-200"
+                    className="text-sm bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors shadow-md"
                   >
-                    Clear All
+                    🗑️ Clear All
                   </button>
                 </div>
               </div>
@@ -1189,7 +1202,7 @@ export default function PDFUploadPage() {
                             <h3 className="text-xl font-semibold text-gray-900">{test.title}</h3>
                             <button
                               onClick={() => handleEditTest(index)}
-                              className="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors"
+                              className="text-sm bg-navy text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#1a2633] transition-colors shadow-md"
                             >
                               ✏️ Edit Test
                             </button>
@@ -1219,7 +1232,7 @@ export default function PDFUploadPage() {
                                 </h5>
                                 <button
                                   onClick={() => handleEditQuestion(index, qIndex)}
-                                  className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded hover:bg-gray-200 transition-colors"
+                                  className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm"
                                 >
                                   ✏️ Edit
                                 </button>
@@ -1301,15 +1314,15 @@ export default function PDFUploadPage() {
                 <button
                   onClick={handleSaveTests}
                   disabled={selectedTests.size === 0}
-                  className="bg-green-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 bg-green-600 text-white py-4 px-8 rounded-lg font-bold text-lg hover:bg-green-700 focus:ring-4 focus:ring-green-300 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
                 >
-                  Save Selected Tests ({selectedTests.size})
+                  💾 Save Selected Tests ({selectedTests.size})
                 </button>
                 <button
                   onClick={handleClearAll}
-                  className="bg-gray-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  className="bg-gray-700 text-white py-4 px-8 rounded-lg font-semibold text-lg hover:bg-gray-800 focus:ring-4 focus:ring-gray-400 focus:ring-offset-2 transition-all shadow-lg hover:shadow-xl"
                 >
-                  Start Over
+                  🔄 Start Over
                 </button>
               </div>
             </div>
@@ -1343,7 +1356,7 @@ export default function PDFUploadPage() {
                             index === editingTest ? updatedTest : test
                           ));
                         }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-navy"
                       />
                     </div>
                     <div>
@@ -1358,22 +1371,22 @@ export default function PDFUploadPage() {
                             index === editingTest ? updatedTest : test
                           ));
                         }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-navy"
                         rows={3}
                       />
                     </div>
                     <div className="flex gap-4">
                       <button
                         onClick={() => setEditingTest(null)}
-                        className="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
+                        className="flex-1 bg-gray-200 text-gray-800 py-3 px-6 rounded-lg font-semibold hover:bg-gray-300 transition-colors border-2 border-gray-300"
                       >
-                        Cancel
+                        ✕ Cancel
                       </button>
                       <button
                         onClick={() => setEditingTest(null)}
-                        className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors"
+                        className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-lg"
                       >
-                        Save Changes
+                        ✓ Save Changes
                       </button>
                     </div>
                   </div>
@@ -1413,7 +1426,7 @@ export default function PDFUploadPage() {
                               const updatedQuestion = { ...question, question: e.target.value };
                               handleUpdateQuestion(editingQuestion.testIndex, editingQuestion.questionIndex, updatedQuestion);
                             }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-navy"
                             rows={3}
                           />
                         </div>
@@ -1437,7 +1450,7 @@ export default function PDFUploadPage() {
                                     const updatedQuestion = { ...question, options: updatedOptions };
                                     handleUpdateQuestion(editingQuestion.testIndex, editingQuestion.questionIndex, updatedQuestion);
                                   }}
-                                  className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
+                                  className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-navy focus:border-navy ${
                                     question.correctAnswer === optionIndex 
                                       ? 'border-green-500 bg-green-50' 
                                       : 'border-gray-300'
@@ -1469,7 +1482,7 @@ export default function PDFUploadPage() {
                               const updatedQuestion = { ...question, explanation: e.target.value };
                               handleUpdateQuestion(editingQuestion.testIndex, editingQuestion.questionIndex, updatedQuestion);
                             }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-navy"
                             rows={2}
                             placeholder="Add explanation for the correct answer..."
                           />
@@ -1478,15 +1491,15 @@ export default function PDFUploadPage() {
                         <div className="flex gap-4">
                           <button
                             onClick={() => setEditingQuestion(null)}
-                            className="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
+                            className="flex-1 bg-gray-200 text-gray-800 py-3 px-6 rounded-lg font-semibold hover:bg-gray-300 transition-colors border-2 border-gray-300"
                           >
-                            Cancel
+                            ✕ Cancel
                           </button>
                           <button
                             onClick={() => setEditingQuestion(null)}
-                            className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors"
+                            className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-lg"
                           >
-                            Save Changes
+                            ✓ Save Changes
                           </button>
                         </div>
                       </div>
