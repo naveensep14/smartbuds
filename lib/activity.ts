@@ -33,7 +33,7 @@ export class ActivityService {
             grade
           )
         `)
-        .eq('studentName', userId)
+        .eq('user_id', userId)
         .order('completedAt', { ascending: false })
         .limit(limit);
 

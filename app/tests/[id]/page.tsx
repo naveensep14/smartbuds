@@ -167,7 +167,8 @@ export default function TestPage() {
       // Create test result
       const resultData = {
         testId: test.id,
-        studentName: user.email || 'Anonymous',
+        user_id: user.id, // Primary key relationship
+        studentName: user.email, // Kept for backward compatibility during migration
         score,
         totalQuestions,
         correctAnswers,

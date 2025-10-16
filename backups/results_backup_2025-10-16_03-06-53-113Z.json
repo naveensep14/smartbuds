@@ -1,0 +1,364 @@
+[
+  {
+    "id": "abc66bc8-7cca-4c53-90e9-56a193288ec6",
+    "testId": "305fdf77-ceaf-4932-9578-5dc250e956d8",
+    "studentName": "highway789@gmail.com",
+    "score": 0,
+    "totalQuestions": 10,
+    "correctAnswers": 0,
+    "answers": [
+      {
+        "isCorrect": false,
+        "questionId": "1760225328922mee9636ea",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "17602253289222sbwv2ob9",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760225328922zm5yv7rf4",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760225328922wcr7ka37a",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "17602253289225kwfid438",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760225328922waucl6dn1",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760225328922vzi9u6t2i",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760225328922dm4sirjls",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "17602253289228nagrryzp",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "17602253289227fueebw7q",
+        "selectedAnswer": -1
+      }
+    ],
+    "timeTaken": 187,
+    "completedAt": "2025-10-16T02:53:47.074588+00:00"
+  },
+  {
+    "id": "c3fa0274-0140-4196-965a-0c4b98ce5186",
+    "testId": "1a79c86b-c1f0-4b22-b36c-24833078df2b",
+    "studentName": "learnniche@gmail.com",
+    "score": 60,
+    "totalQuestions": 10,
+    "correctAnswers": 6,
+    "answers": [
+      {
+        "isCorrect": true,
+        "questionId": "1760246016902irwuwea4w",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1760246016902ke8alipk2",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1760246016902uyrvure5s",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": true,
+        "questionId": "17602460169025w1g82g6o",
+        "selectedAnswer": 1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760246016902xwc8eqal1",
+        "selectedAnswer": 1
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1760246016902c8vrrgukj",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760246016902dg3kezk13",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1760246016902f1nbthon9",
+        "selectedAnswer": 1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760246016902ii5uw3x66",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760246016902pwmcausvd",
+        "selectedAnswer": 3
+      }
+    ],
+    "timeTaken": 147,
+    "completedAt": "2025-10-13T08:52:40.212414+00:00"
+  },
+  {
+    "id": "67b2b0a3-f6e6-491c-a3e5-937077559645",
+    "testId": "b3c39c45-3cd3-44eb-b873-fd0718e9be6e",
+    "studentName": "naveen.gowda@cruxinformatics.com",
+    "score": 0,
+    "totalQuestions": 10,
+    "correctAnswers": 0,
+    "answers": [
+      {
+        "isCorrect": false,
+        "questionId": "1760225328759h6zfdfs36",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760225328759kjja23rtf",
+        "selectedAnswer": 1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760225328759gauzybawj",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760225328759gaezw96o0",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760225328759tpd6aciwp",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760225328759dk8m0ullb",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760225328759yrfqbbivq",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760225328759w1kuwsi32",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "17602253287597bdb00p2q",
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1760225328759iorq9t2xn",
+        "selectedAnswer": -1
+      }
+    ],
+    "timeTaken": 14,
+    "completedAt": "2025-10-11T23:58:18.849433+00:00"
+  },
+  {
+    "id": "5a972ec5-4793-4760-bc56-cc5023c78e24",
+    "testId": "53066e13-d438-4619-b556-c0db9f2d96be",
+    "studentName": "nethramukund2015@gmail.com",
+    "score": 60,
+    "totalQuestions": 10,
+    "correctAnswers": 6,
+    "answers": [
+      {
+        "isCorrect": false,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797918738",
+        "selectedAnswer": 0
+      }
+    ],
+    "timeTaken": 457,
+    "completedAt": "2025-10-07T00:52:55.899973+00:00"
+  },
+  {
+    "id": "6d20144c-fb4e-4985-88dd-03a7e2362fc4",
+    "testId": "d6101d3a-c6df-49b4-be4e-e724ad1eaf6c",
+    "studentName": "nethramukund2015@gmail.com",
+    "score": 20,
+    "totalQuestions": 10,
+    "correctAnswers": 2,
+    "answers": [
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": false,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      },
+      {
+        "isCorrect": true,
+        "questionId": "1759797363668",
+        "selectedAnswer": 2
+      }
+    ],
+    "timeTaken": 30961,
+    "completedAt": "2025-10-07T00:44:16.417447+00:00"
+  },
+  {
+    "id": "c462fa26-b21c-4af6-b93f-4dde3cae7a84",
+    "testId": "d6101d3a-c6df-49b4-be4e-e724ad1eaf6c",
+    "studentName": "naveensep14@gmail.com",
+    "score": 0,
+    "totalQuestions": 10,
+    "correctAnswers": 0,
+    "answers": [
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      },
+      {
+        "isCorrect": false,
+        "selectedAnswer": -1
+      }
+    ],
+    "timeTaken": 6,
+    "completedAt": "2025-10-06T04:06:11.62455+00:00"
+  }
+]

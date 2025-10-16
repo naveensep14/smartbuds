@@ -235,6 +235,7 @@ export const resultService = {
       return data?.map(result => ({
         id: result.id,
         testId: result.testId,
+        user_id: result.user_id,
         studentName: result.studentName,
         score: result.score,
         totalQuestions: result.totalQuestions,
@@ -263,6 +264,7 @@ export const resultService = {
       return data?.map(result => ({
         id: result.id,
         testId: result.testId,
+        user_id: result.user_id,
         studentName: result.studentName,
         score: result.score,
         totalQuestions: result.totalQuestions,
@@ -285,7 +287,8 @@ export const resultService = {
         .from('results')
         .insert({
           testId: result.testId,
-          studentName: result.studentName,
+          user_id: result.user_id,
+          studentName: result.studentName, // Keep for backward compatibility during migration
           score: result.score,
           totalQuestions: result.totalQuestions,
           correctAnswers: result.correctAnswers,
@@ -301,6 +304,7 @@ export const resultService = {
       return {
         id: data.id,
         testId: data.testId,
+        user_id: data.user_id,
         studentName: data.studentName,
         score: data.score,
         totalQuestions: data.totalQuestions,
@@ -315,7 +319,36 @@ export const resultService = {
     }
   },
 
-  // Get results by student name
+  // Get results by user ID (preferred method)
+  getByUserId: async (userId: string): Promise<TestResult[]> => {
+    try {
+      const { data, error } = await supabase
+        .from('results')
+        .select('*')
+        .eq('user_id', userId)
+        .order('completedAt', { ascending: false });
+
+      if (error) throw error;
+
+      return data?.map(result => ({
+        id: result.id,
+        testId: result.testId,
+        user_id: result.user_id,
+        studentName: result.studentName,
+        score: result.score,
+        totalQuestions: result.totalQuestions,
+        correctAnswers: result.correctAnswers,
+        timeTaken: result.timeTaken,
+        answers: result.answers,
+        completedAt: new Date(result.completedAt),
+      })) || [];
+    } catch (error) {
+      console.error('Error fetching results by user ID:', error);
+      return [];
+    }
+  },
+
+  // Get results by student name (deprecated: use getByUserId)
   getByStudent: async (studentName: string): Promise<TestResult[]> => {
     try {
       const { data, error } = await supabase
@@ -329,6 +362,7 @@ export const resultService = {
       return data?.map(result => ({
         id: result.id,
         testId: result.testId,
+        user_id: result.user_id,
         studentName: result.studentName,
         score: result.score,
         totalQuestions: result.totalQuestions,

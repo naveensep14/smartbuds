@@ -30,7 +30,8 @@ export interface Test {
 export interface TestResult {
   id: string;
   testId: string;
-  studentName: string;
+  user_id: string; // Foreign key to auth.users
+  studentName?: string; // Deprecated: kept for backward compatibility during migration
   score: number;
   totalQuestions: number;
   correctAnswers: number;

@@ -84,7 +84,7 @@ export default function MyResultsPage() {
             answers,
             completedAt
           `)
-          .eq('studentName', user.email)
+          .eq('user_id', user.id)
           .order('completedAt', { ascending: false });
 
         if (resultsError) {

@@ -133,8 +133,8 @@ export default function CompleteProfilePage() {
       console.log('✅ [PROFILE LOG] Profile updated successfully');
       console.log('🔄 [PROFILE LOG] Redirecting to dashboard...');
       
-      // Profile completed successfully, redirect to dashboard
-      router.push('/dashboard');
+      // Profile completed successfully, use hard navigation to ensure middleware re-checks
+      window.location.href = '/dashboard';
     } catch (error) {
       console.error('🚨 [PROFILE LOG] Error completing profile:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';

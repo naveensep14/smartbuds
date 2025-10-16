@@ -53,14 +53,15 @@ export class TestProgressService {
         .select('*')
         .eq('user_email', userEmail)
         .eq('test_id', testId)
-        .single();
+        .maybeSingle();
 
       if (error) {
-        if (error.code === 'PGRST116') {
-          // No progress found
-          return null;
-        }
         console.error('Error getting test progress:', error);
+        return null;
+      }
+
+      // maybeSingle() returns null if no rows found (no error thrown)
+      if (!data) {
         return null;
       }
 

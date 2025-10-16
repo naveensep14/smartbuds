@@ -86,7 +86,7 @@ export default function TestsPage() {
         const { data: results, error } = await supabase
           .from('results')
           .select('testId')
-          .eq('studentName', user.email);
+          .eq('user_id', user.id);
         
         if (error) {
           console.error('Error loading completed tests:', error);
