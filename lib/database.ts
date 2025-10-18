@@ -250,6 +250,37 @@ export const resultService = {
     }
   },
 
+  // Get result by ID
+  getById: async (id: string): Promise<TestResult | null> => {
+    try {
+      const { data, error } = await supabase
+        .from('results')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) throw error;
+
+      if (!data) return null;
+
+      return {
+        id: data.id,
+        testId: data.testId,
+        user_id: data.user_id,
+        studentName: data.studentName,
+        score: data.score,
+        totalQuestions: data.totalQuestions,
+        correctAnswers: data.correctAnswers,
+        timeTaken: data.timeTaken,
+        answers: data.answers,
+        completedAt: new Date(data.completedAt),
+      };
+    } catch (error) {
+      console.error('Error fetching result by ID:', error);
+      return null;
+    }
+  },
+
   // Get results by test ID
   getByTestId: async (testId: string): Promise<TestResult[]> => {
     try {

@@ -69,6 +69,7 @@ export class LeaderboardService {
         totalTests: number;
         lastTestDate: string;
         profile: any;
+        testAttempts: Map<string, number>; // Track first attempt for each test
       }>();
 
       // Get unique student emails for profile lookup
@@ -92,21 +93,33 @@ export class LeaderboardService {
         });
       }
 
-      nonAdminResults.forEach(result => {
+      // Sort results by completion date to ensure we get the first attempt for each test
+      const sortedResults = nonAdminResults.sort((a, b) => 
+        new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime()
+      );
+
+      sortedResults.forEach(result => {
         const studentName = result.studentName;
+        const testId = result.testId;
         
         if (!studentStats.has(studentName)) {
           studentStats.set(studentName, {
             scores: [],
             totalTests: 0,
             lastTestDate: result.completedAt,
-            profile: profileMap.get(studentName) || null
+            profile: profileMap.get(studentName) || null,
+            testAttempts: new Map()
           });
         }
         
         const stats = studentStats.get(studentName)!;
-        stats.scores.push(result.score);
-        stats.totalTests++;
+        
+        // Only add score if this is the first attempt for this test
+        if (!stats.testAttempts.has(testId)) {
+          stats.scores.push(result.score);
+          stats.testAttempts.set(testId, result.score);
+          stats.totalTests++;
+        }
         
         // Keep track of the most recent test date
         if (new Date(result.completedAt) > new Date(stats.lastTestDate)) {

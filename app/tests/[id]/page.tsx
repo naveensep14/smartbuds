@@ -9,7 +9,6 @@ import { supabase } from '@/lib/supabase';
 import { Test, Question, TestResult, CreateQuestionReportData } from '@/types';
 import { testService, resultService } from '@/lib/database';
 import { useAuth } from '@/lib/auth';
-import TestReview from '@/components/TestReview';
 import ReportQuestionModal from '@/components/ReportQuestionModal';
 import NavigationHeader from '@/components/NavigationHeader';
 
@@ -26,7 +25,6 @@ export default function TestPage() {
   const [showResults, setShowResults] = useState(false);
   const [testResult, setTestResult] = useState<TestResult | null>(null);
   const [startTime, setStartTime] = useState<Date>(new Date());
-  const [showReview, setShowReview] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const [confidenceRatings, setConfidenceRatings] = useState<{ [key: string]: number }>({});
@@ -463,13 +461,13 @@ export default function TestPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => setShowReview(true)}
+              <Link 
+                href={`/test-review/${testResult.id}`}
                 className="btn-primary flex items-center justify-center space-x-2"
               >
                 <BookOpen className="w-5 h-5" />
                 <span>Review Test</span>
-              </button>
+              </Link>
               <Link href="/tests" className="btn-secondary">
                 Take Another Test
               </Link>
@@ -692,15 +690,6 @@ export default function TestPage() {
         </div>
       </main>
 
-      {/* Test Review Modal */}
-      {showReview && test && testResult && (
-        <TestReview
-          test={test}
-          testResult={testResult}
-          onClose={() => setShowReview(false)}
-        />
-      )}
-
       {/* Report Question Modal */}
       {currentQuestion && (
         <ReportQuestionModal
@@ -791,15 +780,6 @@ export default function TestPage() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Test Review Modal */}
-      {showReview && testResult && (
-        <TestReview
-          test={test}
-          testResult={testResult}
-          onClose={() => setShowReview(false)}
-        />
-      )}
     </div>
   );
 }
