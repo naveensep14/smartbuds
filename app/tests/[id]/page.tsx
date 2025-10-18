@@ -34,7 +34,6 @@ export default function TestPage() {
   const [showSubmitConfirmation, setShowSubmitConfirmation] = useState(false);
   
   // Ref for debouncing progress saves
-  const saveProgressTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Derived values
   const currentQuestion = test?.questions[currentQuestionIndex];
@@ -52,38 +51,7 @@ export default function TestPage() {
     textLength: currentQuestion?.text?.length || 0
   });
 
-  // Save progress when answers change (debounced to avoid excessive API calls)
-  const saveProgressDebounced = useCallback((delay: number = 2000) => {
-    // Clear any existing timeout
-    if (saveProgressTimeoutRef.current) {
-      clearTimeout(saveProgressTimeoutRef.current);
-    }
-    
-    // Set new timeout
-    saveProgressTimeoutRef.current = setTimeout(async () => {
-      if (user?.email && test) {
-        const timeSpent = TestProgressService.calculateTimeSpent(startTime);
-        await TestProgressService.saveProgress({
-          userEmail: user.email,
-          testId: test.id,
-          currentQuestionIndex,
-          selectedAnswers,
-          startTime,
-          timeSpent,
-          isCompleted: false
-        });
-      }
-    }, delay);
-  }, [user?.email, test, startTime, currentQuestionIndex, selectedAnswers]);
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (saveProgressTimeoutRef.current) {
-        clearTimeout(saveProgressTimeoutRef.current);
-      }
-    };
-  }, []);
+  // Progress saving removed - tests always start fresh
 
   const handleAnswerSelect = useCallback((answerIndex: number) => {
     if (!currentQuestion) return;
@@ -91,10 +59,7 @@ export default function TestPage() {
       ...prev,
       [currentQuestion.id]: answerIndex
     }));
-    
-    // Save progress after a delay (debounced)
-    saveProgressDebounced(2000);
-  }, [currentQuestion, saveProgressDebounced]);
+  }, [currentQuestion]);
 
   const handleConfidenceChange = (questionId: string, confidence: number) => {
     setConfidenceRatings(prev => ({
@@ -118,29 +83,20 @@ export default function TestPage() {
   const handleNextQuestion = useCallback(() => {
     if (currentQuestionIndex < totalQuestions - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
-      // Save progress when navigating (debounced)
-      saveProgressDebounced(2000);
     }
-  }, [currentQuestionIndex, totalQuestions, saveProgressDebounced]);
+  }, [currentQuestionIndex, totalQuestions]);
 
   const handlePreviousQuestion = useCallback(() => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(prev => prev - 1);
-      // Save progress when navigating (debounced)
-      saveProgressDebounced(2000);
     }
-  }, [currentQuestionIndex, saveProgressDebounced]);
+  }, [currentQuestionIndex]);
 
   const handleSubmitTest = useCallback(async () => {
     if (!test || !user) return;
 
     // Close confirmation dialog if open
     setShowSubmitConfirmation(false);
-    
-    // Clear any pending progress saves
-    if (saveProgressTimeoutRef.current) {
-      clearTimeout(saveProgressTimeoutRef.current);
-    }
 
     try {
       // Calculate test results
@@ -181,25 +137,15 @@ export default function TestPage() {
       if (savedResult) {
         setTestResult(savedResult);
         
-        // Mark progress as completed
-        if (user.email) {
-          await TestProgressService.markCompleted(user.email, test.id);
-        }
+        // Mark progress as completed (if progress tracking exists)
+        // Note: Progress tracking removed from individual test pages
         
         setIsTestCompleted(true);
         setShowResults(true);
       } else {
         console.error('Failed to save test result');
         // Still show results even if save failed
-        await TestProgressService.saveProgress({
-          userEmail: user.email,
-          testId: test.id,
-          currentQuestionIndex,
-          selectedAnswers,
-          startTime,
-          timeSpent: timeTaken,
-          isCompleted: true
-        });
+        // Note: Progress tracking removed from individual test pages
         setIsTestCompleted(true);
         setShowResults(true);
       }
@@ -616,7 +562,7 @@ export default function TestPage() {
           </div>
 
           {/* Middle - Test Content */}
-          <div className="lg:col-span-7 space-y-8">
+          <div className="lg:col-span-8 space-y-8">
 
 
             {/* Question */}
@@ -714,30 +660,30 @@ export default function TestPage() {
           </div>
 
           {/* Right Sidebar - Progress */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-2">
             <div className="sticky top-4">
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Your Progress</h3>
-                <div className="space-y-6">
-                  <div className="text-center pb-4 border-b border-gray-200">
-                    <div className="text-3xl font-bold text-blue mb-1">{formatTime(timeRemaining)}</div>
-                    <div className="text-sm text-gray-600">Time Remaining</div>
+              <div className="bg-white rounded-xl shadow-lg p-4">
+                <h3 className="text-base font-semibold text-gray-800 mb-3">Progress</h3>
+                <div className="space-y-3">
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-blue mb-1">{formatTime(timeRemaining)}</div>
+                    <div className="text-xs text-gray-600">Time Remaining</div>
                   </div>
                   
-                  <div className="text-center pb-4 border-b border-gray-200">
-                    <div className="text-2xl font-bold text-green mb-1">{answeredQuestions}/{totalQuestions}</div>
-                    <div className="text-sm text-gray-600 mb-3">Questions Answered</div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="text-center">
+                    <div className="text-lg font-bold text-green mb-1">{answeredQuestions}/{totalQuestions}</div>
+                    <div className="text-xs text-gray-600 mb-2">Questions</div>
+                    <div className="w-full bg-gray-200 rounded-full h-1.5">
                       <div 
-                        className="bg-green h-2 rounded-full transition-all duration-300"
+                        className="bg-green h-1.5 rounded-full transition-all duration-300"
                         style={{ width: `${(answeredQuestions / totalQuestions) * 100}%` }}
                       ></div>
                     </div>
                   </div>
 
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-600 mb-1">{Math.round((answeredQuestions / totalQuestions) * 100)}%</div>
-                    <div className="text-sm text-gray-600">Complete</div>
+                    <div className="text-lg font-bold text-purple-600">{Math.round((answeredQuestions / totalQuestions) * 100)}%</div>
+                    <div className="text-xs text-gray-600">Complete</div>
                   </div>
                 </div>
               </div>
