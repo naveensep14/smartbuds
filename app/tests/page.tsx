@@ -512,18 +512,20 @@ export default function TestsPage() {
                           </span>
                         </Link>
                       )}
-                      <button
-                        onClick={() => handlePrintTest(test)}
-                        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                          locked 
-                            ? 'text-gray-400 cursor-not-allowed' 
-                            : 'text-gray-600 hover:text-yellow hover:bg-gray-50'
-                        }`}
-                        disabled={locked}
-                      >
-                        <Printer className="w-4 h-4" />
-                        <span>Print</span>
-                      </button>
+                      {isAdmin && (
+                        <button
+                          onClick={() => handlePrintTest(test)}
+                          className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                            locked 
+                              ? 'text-gray-400 cursor-not-allowed' 
+                              : 'text-gray-600 hover:text-yellow hover:bg-gray-50'
+                          }`}
+                          disabled={locked}
+                        >
+                          <Printer className="w-4 h-4" />
+                          <span>Print</span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -535,8 +537,8 @@ export default function TestsPage() {
 
       </main>
 
-      {/* Print Modal */}
-      {showPrintModal && selectedTestForPrint && (
+      {/* Print Modal - Admin Only */}
+      {showPrintModal && selectedTestForPrint && isAdmin && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">

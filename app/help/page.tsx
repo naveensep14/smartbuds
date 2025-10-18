@@ -284,7 +284,7 @@ export default function HelpPage() {
                  <div>
                    <h4 className="font-medium text-gray-800 mb-2">Can I print tests?</h4>
                    <p className="text-sm text-gray-600">
-                     Yes! Use the &quot;Print Test & Answer Key&quot; button on any test card for offline use.
+                     Test printing and answer keys are available to administrators only. Contact your teacher or administrator if you need printed materials.
                    </p>
                  </div>
                  <div>
