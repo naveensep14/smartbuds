@@ -59,16 +59,19 @@ export async function middleware(request: NextRequest) {
 
     // Check profile completion for non-admin users
     if (user.email && !ADMIN_EMAILS.includes(user.email.toLowerCase() as any)) {
-      // Use the database function to properly validate profile completion
-      const { data: isCompleted, error } = await supabase
-        .rpc('is_profile_completed', { user_id: user.id });
+      // Check profile completion manually instead of using RPC function
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('student_name, grade, board, profile_completed')
+          .eq('id', user.id)
+          .single();
 
-      if (error) {
+        if (error || !profile || !profile.profile_completed || !profile.student_name || !profile.grade || !profile.board) {
+          return NextResponse.redirect(new URL('/complete-profile', request.url));
+        }
+      } catch (error) {
         console.error('Error checking profile completion:', error);
-        return NextResponse.redirect(new URL('/complete-profile', request.url));
-      }
-
-      if (!isCompleted) {
         return NextResponse.redirect(new URL('/complete-profile', request.url));
       }
     }
@@ -82,16 +85,19 @@ export async function middleware(request: NextRequest) {
 
     // Check profile completion for non-admin users
     if (user.email && !ADMIN_EMAILS.includes(user.email.toLowerCase() as any)) {
-      // Use the database function to properly validate profile completion
-      const { data: isCompleted, error } = await supabase
-        .rpc('is_profile_completed', { user_id: user.id });
+      // Check profile completion manually instead of using RPC function
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('student_name, grade, board, profile_completed')
+          .eq('id', user.id)
+          .single();
 
-      if (error) {
+        if (error || !profile || !profile.profile_completed || !profile.student_name || !profile.grade || !profile.board) {
+          return NextResponse.redirect(new URL('/complete-profile', request.url));
+        }
+      } catch (error) {
         console.error('Error checking profile completion:', error);
-        return NextResponse.redirect(new URL('/complete-profile', request.url));
-      }
-
-      if (!isCompleted) {
         return NextResponse.redirect(new URL('/complete-profile', request.url));
       }
     }
@@ -105,16 +111,19 @@ export async function middleware(request: NextRequest) {
 
     // Check profile completion for non-admin users
     if (user.email && !ADMIN_EMAILS.includes(user.email.toLowerCase() as any)) {
-      // Use the database function to properly validate profile completion
-      const { data: isCompleted, error } = await supabase
-        .rpc('is_profile_completed', { user_id: user.id });
+      // Check profile completion manually instead of using RPC function
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('student_name, grade, board, profile_completed')
+          .eq('id', user.id)
+          .single();
 
-      if (error) {
+        if (error || !profile || !profile.profile_completed || !profile.student_name || !profile.grade || !profile.board) {
+          return NextResponse.redirect(new URL('/complete-profile', request.url));
+        }
+      } catch (error) {
         console.error('Error checking profile completion:', error);
-        return NextResponse.redirect(new URL('/complete-profile', request.url));
-      }
-
-      if (!isCompleted) {
         return NextResponse.redirect(new URL('/complete-profile', request.url));
       }
     }

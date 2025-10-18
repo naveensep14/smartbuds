@@ -11,7 +11,6 @@ import { testService, resultService } from '@/lib/database';
 import { useAuth } from '@/lib/auth';
 import TestReview from '@/components/TestReview';
 import ReportQuestionModal from '@/components/ReportQuestionModal';
-import { TestProgressService, TestProgress } from '@/lib/test-progress';
 import NavigationHeader from '@/components/NavigationHeader';
 
 export default function TestPage() {
@@ -27,8 +26,6 @@ export default function TestPage() {
   const [showResults, setShowResults] = useState(false);
   const [testResult, setTestResult] = useState<TestResult | null>(null);
   const [startTime, setStartTime] = useState<Date>(new Date());
-  const [testProgress, setTestProgress] = useState<TestProgress | null>(null);
-  const [isResuming, setIsResuming] = useState(false);
   const [showReview, setShowReview] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportSubmitted, setReportSubmitted] = useState(false);
@@ -294,25 +291,7 @@ export default function TestPage() {
           setTest(fetchedTest);
           setTimeRemaining(fetchedTest.duration * 60);
           
-          // Check for existing progress
-          try {
-            const existingProgress = await TestProgressService.getProgress(user.email, testId);
-            if (existingProgress && !existingProgress.isCompleted) {
-              setTestProgress(existingProgress);
-              setIsResuming(true);
-              // Restore progress
-              setCurrentQuestionIndex(existingProgress.currentQuestionIndex);
-              setSelectedAnswers(existingProgress.selectedAnswers);
-              setStartTime(existingProgress.startTime);
-              // Calculate remaining time based on time spent
-              const timeSpent = TestProgressService.calculateTimeSpent(existingProgress.startTime);
-              const remainingTime = (fetchedTest.duration * 60) - timeSpent;
-              setTimeRemaining(Math.max(0, remainingTime));
-            }
-          } catch (error) {
-            console.log('Progress tracking not available - database table may not exist yet');
-            // Continue without progress tracking
-          }
+         // Start fresh - no progress resumption
         } catch (error) {
           console.error('Error loading test:', error);
           router.push('/tests');
@@ -582,25 +561,54 @@ export default function TestPage() {
           </div>
         </div>
 
-        {/* 3-Column Layout: Shortcuts | Test Content | Progress */}
+        {/* 2-Column Layout: Question Navigation | Test Content | Progress */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Sidebar - Keyboard Shortcuts */}
+          {/* Left Sidebar - Question Navigation */}
           <div className="lg:col-span-2 hidden lg:block">
             <div className="sticky top-4">
-              <div className="bg-gradient-to-br from-yellow to-secondary-500 border border-yellow rounded-xl p-4 shadow-lg">
-                <h4 className="font-semibold text-white mb-3">Shortcuts</h4>
-                <div className="space-y-2 text-sm text-white">
-                  <div className="flex flex-col">
-                    <kbd className="px-2 py-1 bg-white text-navy rounded text-xs text-center mb-1 font-bold">1-4</kbd>
-                    <span className="text-xs">Select</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <kbd className="px-2 py-1 bg-white text-navy rounded text-xs text-center mb-1 font-bold">←→</kbd>
-                    <span className="text-xs">Navigate</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <kbd className="px-2 py-1 bg-white text-navy rounded text-xs text-center mb-1 font-bold">Enter</kbd>
-                    <span className="text-xs">Next</span>
+              <div className="bg-white rounded-xl shadow-lg p-4">
+                <h4 className="font-semibold text-gray-800 mb-3">Questions</h4>
+                <div className="space-y-2">
+                  {test.questions.map((question, index) => {
+                    const isAnswered = selectedAnswers[question.id] !== undefined;
+                    const isCurrent = index === currentQuestionIndex;
+                    
+                    return (
+                      <button
+                        key={question.id}
+                        onClick={() => setCurrentQuestionIndex(index)}
+                        className={`w-full p-2 rounded-lg text-left transition-all ${
+                          isCurrent
+                            ? 'bg-yellow text-white border-2 border-yellow'
+                            : isAnswered
+                            ? 'bg-green text-white hover:bg-success-600'
+                            : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Q{index + 1}</span>
+                          {isAnswered && (
+                            <CheckCircle className="w-4 h-4" />
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="mt-4 pt-3 border-t border-gray-200">
+                  <div className="text-xs text-gray-600 space-y-1">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 bg-gray-200 rounded"></div>
+                      <span>Not answered</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 bg-green-500 rounded"></div>
+                      <span>Answered</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 bg-yellow rounded"></div>
+                      <span>Current</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -609,68 +617,7 @@ export default function TestPage() {
 
           {/* Middle - Test Content */}
           <div className="lg:col-span-7 space-y-8">
-            {/* Question Navigation */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Question Navigation</h3>
-              <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
-                {test.questions.map((question, index) => {
-                  const isAnswered = selectedAnswers[question.id] !== undefined;
-                  const isCurrent = index === currentQuestionIndex;
-                  
-                  return (
-                    <button
-                      key={question.id}
-                      onClick={() => setCurrentQuestionIndex(index)}
-                      className={`w-10 h-10 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        isCurrent
-                          ? 'bg-yellow text-white ring-2 ring-yellow'
-                          : isAnswered
-                          ? 'bg-green text-white hover:bg-success-600'
-                          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-                      }`}
-                      aria-label={`Question ${index + 1}${isAnswered ? ', answered' : ', not answered'}`}
-                    >
-                      {index + 1}
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-600">
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-gray-200 rounded"></div>
-                  <span>Not answered</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-green-500 rounded"></div>
-                  <span>Answered</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-yellow rounded"></div>
-                  <span>Current</span>
-                </div>
-              </div>
-            </div>
 
-            {/* Resume Notification */}
-            {isResuming && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-blue-50 border border-blue-200 rounded-xl p-4"
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-navy">Resuming Test</h3>
-                    <p className="text-blue text-sm">
-                      You have {answeredQuestions} answered questions. Continuing from question {currentQuestionIndex + 1}.
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            )}
 
             {/* Question */}
             <motion.div
@@ -898,6 +845,15 @@ export default function TestPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Test Review Modal */}
+      {showReview && testResult && (
+        <TestReview
+          test={test}
+          testResult={testResult}
+          onClose={() => setShowReview(false)}
+        />
+      )}
     </div>
   );
 }

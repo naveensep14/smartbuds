@@ -21,7 +21,7 @@ interface TestReviewProps {
 
 export default function TestReview({ test, testResult, onClose }: TestReviewProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [showAnswerKey, setShowAnswerKey] = useState(false);
+  const [showAnswerKey, setShowAnswerKey] = useState(true); // Changed to true by default
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const { refreshSession } = useAuth();
@@ -128,30 +128,35 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
         className="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[95vh] overflow-hidden"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-orange-50 to-red-50">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-navy to-primary-600">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-              <BookOpen className="w-6 h-6 text-orange-600" />
+            <div className="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+              <BookOpen className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-800">Test Review</h2>
-              <p className="text-sm text-gray-600">{test.title}</p>
+              <h2 className="text-xl font-semibold text-white">Test Review</h2>
+              <p className="text-sm text-white font-medium">{test.title}</p>
             </div>
           </div>
           <div className="flex items-center space-x-4">
             {/* Score Display */}
-            <div className={`px-4 py-2 rounded-lg border ${getScoreBgColor(testResult.score)}`}>
-              <div className="flex items-center space-x-2">
-                <BarChart3 className={`w-5 h-5 ${getScoreColor(testResult.score)}`} />
-                <span className={`font-semibold ${getScoreColor(testResult.score)}`}>
-                  {testResult.score}%
-                </span>
+            <div className="bg-white bg-opacity-20 backdrop-blur-sm px-6 py-3 rounded-xl border border-white border-opacity-30">
+              <div className="flex items-center space-x-3">
+                <BarChart3 className="w-6 h-6 text-white" />
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-white">
+                    {testResult.score}%
+                  </div>
+                  <div className="text-xs text-white font-medium opacity-90">
+                    Score
+                  </div>
+                </div>
               </div>
             </div>
             {onClose && (
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-white hover:text-blue-200 transition-colors p-2 hover:bg-white hover:bg-opacity-10 rounded-lg"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -167,13 +172,13 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
                 <h3 className="font-semibold text-gray-800">Questions</h3>
                 <button
                   onClick={() => setShowAnswerKey(!showAnswerKey)}
-                  className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     showAnswerKey 
-                      ? 'bg-orange-600 text-white' 
+                      ? 'bg-navy text-white hover:bg-primary-700' 
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                   }`}
                 >
-                  <Eye className="w-4 h-4 inline mr-1" />
+                  <Eye className="w-4 h-4 inline mr-2" />
                   {showAnswerKey ? 'Hide' : 'Show'} Answer Key
                 </button>
               </div>
@@ -188,32 +193,43 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
                     <button
                       key={question.id}
                       onClick={() => setCurrentQuestionIndex(index)}
-                      className={`w-full p-3 rounded-lg text-left transition-all ${
+                      className={`w-full p-2 rounded-lg text-left transition-all ${
                         isCurrent 
-                          ? 'bg-orange-100 border-2 border-orange-300' 
+                          ? 'bg-navy text-white border-2 border-navy' 
                           : 'bg-white border border-gray-200 hover:border-gray-300'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-medium text-gray-800">
-                          Q{index + 1}
-                        </span>
-                        <div className="flex items-center space-x-1">
-                          {isCorrect ? (
-                            <CheckCircle className="w-4 h-4 text-green-600" />
+                        <div className="flex items-center space-x-2">
+                          <span className={`text-sm font-medium ${isCurrent ? 'text-white' : 'text-gray-800'}`}>
+                            Q{index + 1}
+                          </span>
+                          {answer && answer.selectedAnswer !== undefined && answer.selectedAnswer >= 0 && answer.selectedAnswer < 26 ? (
+                            <span className={`text-xs font-bold px-1 py-0.5 rounded ${
+                              isCurrent 
+                                ? 'bg-white bg-opacity-20 text-white' 
+                                : isCorrect 
+                                  ? 'bg-green-100 text-green-700' 
+                                  : 'bg-red-100 text-red-700'
+                            }`}>
+                              {String.fromCharCode(65 + answer.selectedAnswer)}
+                            </span>
                           ) : (
-                            <XCircle className="w-4 h-4 text-red-600" />
-                          )}
-                          {showAnswerKey && (
-                            <span className="text-xs font-medium text-gray-600">
-                              {String.fromCharCode(65 + question.correctAnswer)}
+                            <span className={`text-xs font-bold px-1 py-0.5 rounded ${
+                              isCurrent 
+                                ? 'bg-white bg-opacity-20 text-white' 
+                                : 'bg-gray-100 text-gray-600'
+                            }`}>
+                              No Answer
                             </span>
                           )}
                         </div>
+                        {isCorrect ? (
+                          <CheckCircle className="w-4 h-4 text-green-600" />
+                        ) : (
+                          <XCircle className="w-4 h-4 text-red-600" />
+                        )}
                       </div>
-                      <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                        {question.text}
-                      </p>
                     </button>
                   );
                 })}
@@ -227,7 +243,7 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-4">
-                  <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
+                  <span className="px-3 py-1 bg-navy text-white rounded-full text-sm font-medium">
                     Question {currentQuestionIndex + 1} of {test.questions.length}
                   </span>
                   <div className="flex items-center space-x-2">
@@ -291,6 +307,8 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
                         optionClass += " bg-green text-white border-green";
                       } else if (isWrongSelected) {
                         optionClass += " bg-pink text-white border-pink";
+                      } else if (isSelected) {
+                        optionClass += " bg-blue-50 border-blue-300 text-blue-800";
                       } else {
                         optionClass += " bg-gray-50 border-gray-200 text-gray-600";
                       }
@@ -308,7 +326,8 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
                           <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
                             showAnswerKey 
                               ? (isCorrectAnswer ? 'border-green-500 bg-green-500' : 
-                                 isWrongSelected ? 'border-red-500 bg-red-500' : 'border-gray-300')
+                                 isWrongSelected ? 'border-red-500 bg-red-500' : 
+                                 isSelected ? 'border-blue-500 bg-blue-500' : 'border-gray-300')
                               : (isSelected ? 'border-orange-500 bg-orange-500' : 'border-gray-300')
                           }`}>
                             {showAnswerKey ? (
@@ -316,6 +335,8 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
                                 <CheckCircle className="w-4 h-4 text-white" />
                               ) : isWrongSelected ? (
                                 <XCircle className="w-4 h-4 text-white" />
+                              ) : isSelected ? (
+                                <div className="w-2 h-2 bg-white rounded-full"></div>
                               ) : null
                             ) : isSelected ? (
                               <div className="w-2 h-2 bg-white rounded-full"></div>
@@ -342,25 +363,16 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
                 </div>
 
                 {/* Explanation Section */}
-                {showAnswerKey && (
-                  <div className="mt-8 p-4 bg-gradient-to-r from-blue-50 to-accent-50 border border-blue rounded-lg">
-                    <h4 className="font-semibold text-navy mb-2">Explanation</h4>
-                    <p className="text-gray-700 mb-3">
-                      {isCorrect 
-                        ? "✓ Great job! You selected the correct answer." 
-                        : `The correct answer is ${String.fromCharCode(65 + currentQuestion.correctAnswer)}. ${
-                            selectedAnswerIndex !== undefined && selectedAnswerIndex >= 0
-                              ? `You selected ${String.fromCharCode(65 + selectedAnswerIndex)}.` 
-                              : "You didn't select an answer."
-                          }`
-                      }
-                    </p>
-                    {currentQuestion.explanation && (
-                      <div className="mt-3 pt-3 border-t border-blue">
-                        <p className="text-navy font-medium mb-1">Detailed Explanation:</p>
-                        <p className="text-gray-700">{currentQuestion.explanation}</p>
-                      </div>
-                    )}
+                {showAnswerKey && currentQuestion.explanation && (
+                  <div className="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <span className="text-gray-600 font-bold">💡</span>
+                      <h4 className="text-base font-semibold text-gray-800">Explanation</h4>
+                    </div>
+                    
+                    <div className="bg-white rounded-lg p-4 border border-gray-100">
+                      <p className="text-sm text-gray-700 leading-relaxed">{currentQuestion.explanation}</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -381,7 +393,7 @@ export default function TestReview({ test, testResult, onClose }: TestReviewProp
                   </Link>
                   <Link
                     href="/my-results"
-                    className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                    className="px-4 py-2 bg-navy text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
                   >
                     View All Results
                   </Link>
