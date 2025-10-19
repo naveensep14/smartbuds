@@ -153,7 +153,7 @@ export default function TestPage() {
       setIsTestCompleted(true);
       setShowResults(true);
     }
-  }, [test, user, selectedAnswers, startTime, currentQuestionIndex]);
+  }, [test, user, selectedAnswers, startTime]);
 
   const handleSubmitAttempt = useCallback(() => {
     if (!test) return;
@@ -246,7 +246,7 @@ export default function TestPage() {
       }
     };
     loadTest();
-  }, [params.id, user]);
+  }, [params.id, user, isAdmin, router]);
 
   // Timer effect - must be called before any conditional returns
   useEffect(() => {

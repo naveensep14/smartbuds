@@ -1,10 +1,16 @@
 import Razorpay from 'razorpay';
 
-// Initialize Razorpay
-export const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-});
+// Initialize Razorpay only if keys are available
+let razorpay: Razorpay | null = null;
+
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
+}
+
+export { razorpay };
 
 // Razorpay configuration
 export const RAZORPAY_CONFIG = {
@@ -29,6 +35,10 @@ export async function createRazorpayOrder(
   customerEmail: string,
   customerName?: string
 ) {
+  if (!razorpay) {
+    throw new Error('Razorpay not initialized. Please check environment variables.');
+  }
+  
   try {
     const order = await razorpay.orders.create({
       amount: amount * 100, // Convert to paise
@@ -70,6 +80,10 @@ export async function verifyRazorpayPayment(
 
 // Helper function to get payment details
 export async function getRazorpayPayment(paymentId: string) {
+  if (!razorpay) {
+    throw new Error('Razorpay not initialized. Please check environment variables.');
+  }
+  
   try {
     const payment = await razorpay.payments.fetch(paymentId);
     return payment;
@@ -81,6 +95,10 @@ export async function getRazorpayPayment(paymentId: string) {
 
 // Helper function to create customer
 export async function createRazorpayCustomer(email: string, name?: string) {
+  if (!razorpay) {
+    throw new Error('Razorpay not initialized. Please check environment variables.');
+  }
+  
   try {
     const customer = await razorpay.customers.create({
       email,

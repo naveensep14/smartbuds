@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       },
       payment: {
         id: payment.id,
-        amount: payment.amount / 100, // Convert from paise
+        amount: Number(payment.amount) / 100, // Convert from paise
         currency: payment.currency,
         status: payment.status,
         method: payment.method,

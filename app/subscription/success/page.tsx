@@ -1,15 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight, Home } from 'lucide-react';
 import Link from 'next/link';
 import NavigationHeader from '@/components/NavigationHeader';
 
-export default function SubscriptionSuccessPage() {
+function SuccessContent() {
   const searchParams = useSearchParams();
-  const sessionId = searchParams.get('session_id');
   const [loading, setLoading] = useState(true);
   const [subscriptionDetails, setSubscriptionDetails] = useState<any>(null);
 
@@ -50,14 +49,12 @@ export default function SubscriptionSuccessPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
         <NavigationHeader />
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-navy mx-auto mb-4"></div>
-              <p className="text-gray-600">Verifying your subscription...</p>
-            </div>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Verifying your payment...</p>
           </div>
-        </main>
+        </div>
       </div>
     );
   }
@@ -66,139 +63,149 @@ export default function SubscriptionSuccessPage() {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
       <NavigationHeader />
       
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center"
+          className="text-center mb-12"
         >
-          {/* Success Icon */}
-          <div className="mb-8">
-            <div className="bg-green-100 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-12 h-12 text-green-600" />
-            </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Subscription Successful!
-            </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Welcome to SmartBuds! Your annual subscription is now active.
-            </p>
+          <div className="bg-green-100 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
+          
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Payment Successful!
+          </h1>
+          
+          <p className="text-xl text-gray-600 mb-8">
+            Your subscription has been activated successfully. You now have access to all premium features.
+          </p>
+        </motion.div>
 
-          {/* Subscription Details */}
-          {subscriptionDetails && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white rounded-xl shadow-lg p-8 mb-8"
-            >
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Subscription Details</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Plan</h3>
-                  <p className="text-gray-600">{subscriptionDetails.plan?.name}</p>
-                </div>
-                
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Valid Until</h3>
-                  <p className="text-gray-600">
-                    {new Date(subscriptionDetails.subscriptionEndDate).toLocaleDateString()}
-                  </p>
-                </div>
-                
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Status</h3>
-                  <p className="text-green-600 font-semibold capitalize">
-                    {subscriptionDetails.status}
-                  </p>
-                </div>
-                
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Amount Paid</h3>
-                  <p className="text-gray-600">
-                    ₹{subscriptionDetails.plan?.priceInr}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* What's Next */}
+        {subscriptionDetails && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="bg-white rounded-xl shadow-lg p-8 mb-8"
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-white rounded-2xl shadow-lg p-8 mb-8"
           >
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">What&apos;s Next?</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Subscription Details</h2>
             
-            <div className="space-y-4 text-left">
-              <div className="flex items-start space-x-3">
-                <div className="bg-navy text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
-                  <span className="text-sm font-bold">1</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Access Your Tests</h3>
-                  <p className="text-gray-600">
-                    Go to the Tests page to start taking tests for your subscribed grade and board.
-                  </p>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">Plan</h3>
+                <p className="text-gray-600">{subscriptionDetails.plan?.name}</p>
               </div>
               
-              <div className="flex items-start space-x-3">
-                <div className="bg-navy text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
-                  <span className="text-sm font-bold">2</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Track Your Progress</h3>
-                  <p className="text-gray-600">
-                    Monitor your performance and improvement over time in your dashboard.
-                  </p>
-                </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">Valid Until</h3>
+                <p className="text-gray-600">
+                  {new Date(subscriptionDetails.subscriptionEndDate).toLocaleDateString()}
+                </p>
               </div>
               
-              <div className="flex items-start space-x-3">
-                <div className="bg-navy text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
-                  <span className="text-sm font-bold">3</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Manage Subscription</h3>
-                  <p className="text-gray-600">
-                    View and manage your subscription details anytime from your account.
-                  </p>
-                </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">Status</h3>
+                <p className="text-green-600 font-semibold capitalize">
+                  {subscriptionDetails.status}
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">Amount Paid</h3>
+                <p className="text-gray-600">
+                  ₹{subscriptionDetails.plan?.priceInr}
+                </p>
               </div>
             </div>
           </motion.div>
+        )}
 
-          {/* Action Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <Link
-              href="/tests"
-              className="bg-navy text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#1a2633] transition-colors flex items-center justify-center space-x-2"
-            >
-              <span>Start Taking Tests</span>
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+        {/* What's Next */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="bg-white rounded-2xl shadow-lg p-8 mb-8"
+        >
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">What&apos;s Next?</h2>
+          
+          <div className="space-y-4">
+            <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+              <div className="bg-orange-100 rounded-full w-10 h-10 flex items-center justify-center">
+                <span className="text-orange-600 font-bold">1</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Access Your Tests</h3>
+                <p className="text-gray-600">Start taking CBSE and ICSE tests immediately</p>
+              </div>
+            </div>
             
-            <Link
-              href="/dashboard"
-              className="bg-gray-100 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center space-x-2"
-            >
-              <Home className="w-5 h-5" />
-              <span>Go to Dashboard</span>
-            </Link>
-          </motion.div>
+            <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+              <div className="bg-orange-100 rounded-full w-10 h-10 flex items-center justify-center">
+                <span className="text-orange-600 font-bold">2</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Track Progress</h3>
+                <p className="text-gray-600">Monitor your performance and improvement</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+              <div className="bg-orange-100 rounded-full w-10 h-10 flex items-center justify-center">
+                <span className="text-orange-600 font-bold">3</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Earn Achievements</h3>
+                <p className="text-gray-600">Unlock badges and climb the leaderboard</p>
+              </div>
+            </div>
+          </div>
         </motion.div>
-      </main>
+
+        {/* Action Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center"
+        >
+          <Link
+            href="/tests"
+            className="inline-flex items-center px-8 py-4 bg-orange-600 text-white font-semibold rounded-xl hover:bg-orange-700 transition-colors duration-300"
+          >
+            <ArrowRight className="w-5 h-5 mr-2" />
+            Start Taking Tests
+          </Link>
+          
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center px-8 py-4 border-2 border-orange-600 text-orange-600 font-semibold rounded-xl hover:bg-orange-600 hover:text-white transition-all duration-300"
+          >
+            <Home className="w-5 h-5 mr-2" />
+            Go to Dashboard
+          </Link>
+        </motion.div>
+      </div>
     </div>
+  );
+}
+
+export default function SubscriptionSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+        <NavigationHeader />
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   );
 }

@@ -127,7 +127,7 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed"
             >
-              India's leading online platform for CBSE and ICSE students. Practice with interactive multiple choice tests, track your progress, and excel in your board exams. Perfect for Indian students from Class 4-10.
+              India&apos;s leading online platform for CBSE and ICSE students. Practice with interactive multiple choice tests, track your progress, and excel in your board exams. Perfect for Indian students from Class 4-10.
             </motion.p>
             
             <motion.div

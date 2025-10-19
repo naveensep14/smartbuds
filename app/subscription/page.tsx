@@ -42,7 +42,7 @@ export default function SubscriptionPage() {
     };
 
     loadPlans();
-  }, []);
+  }, [selectedGrade, selectedBoard]);
 
   useEffect(() => {
     if (selectedGrade && selectedBoard) {
