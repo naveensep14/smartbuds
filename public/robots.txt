@@ -1,21 +1,25 @@
 User-agent: *
 Allow: /
 
-# Disallow admin areas
+# Disallow admin areas and private pages
 Disallow: /admin/
 Disallow: /api/
+Disallow: /dashboard/
+Disallow: /my-results/
+Disallow: /complete-profile/
+Disallow: /subscription/success
+Disallow: /subscription/cancel
 
-# Allow important pages
+# Allow public pages
 Allow: /
-Allow: /tests
 Allow: /login
 Allow: /signup
-Allow: /dashboard
-Allow: /my-results
+Allow: /tests
 Allow: /results
+Allow: /subscription
 
 # Sitemap
 Sitemap: https://successbuds.com/sitemap.xml
 
-# Crawl delay (optional)
+# Crawl delay
 Crawl-delay: 1

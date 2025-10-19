@@ -10,37 +10,43 @@ export const metadata: Metadata = {
     default: 'SuccessBuds - Online Educational Tests for Kids',
     template: '%s | SuccessBuds'
   },
-  description: 'SuccessBuds is the leading online educational platform for kids. Take interactive multiple choice tests for CBSE and ICSE curriculum, track progress, and improve learning outcomes. Perfect for parents, teachers, and students.',
+  description: 'SuccessBuds is India\'s leading online educational platform for CBSE and ICSE students. Take interactive multiple choice tests, practice exams, and track academic progress. Perfect for Indian students, parents, and teachers.',
   keywords: [
-    'online education',
-    'educational testing',
-    'kids learning platform',
-    'multiple choice tests',
-    'student assessment',
-    'educational games',
-    'learning management',
-    'parent dashboard',
-    'teacher tools',
-    'academic progress',
-    'study materials',
-    'test preparation',
-    'educational technology',
-    'e-learning',
-    'student performance',
-    'CBSE',
-    'ICSE',
     'CBSE tests',
-    'ICSE tests',
+    'ICSE tests', 
+    'Indian students online tests',
     'CBSE online tests',
     'ICSE online tests',
     'CBSE practice tests',
     'ICSE practice tests',
     'CBSE exam preparation',
     'ICSE exam preparation',
-    'CBSE syllabus',
-    'ICSE syllabus',
-    'CBSE curriculum',
-    'ICSE curriculum'
+    'Indian educational platform',
+    'CBSE syllabus tests',
+    'ICSE syllabus tests',
+    'CBSE curriculum tests',
+    'ICSE curriculum tests',
+    'online education India',
+    'CBSE students',
+    'ICSE students',
+    'Indian students',
+    'CBSE board exams',
+    'ICSE board exams',
+    'CBSE sample papers',
+    'ICSE sample papers',
+    'CBSE mock tests',
+    'ICSE mock tests',
+    'educational testing platform',
+    'student assessment India',
+    'CBSE grade tests',
+    'ICSE grade tests',
+    'online learning India',
+    'educational technology India',
+    'CBSE class tests',
+    'ICSE class tests',
+    'Indian education system',
+    'CBSE study materials',
+    'ICSE study materials'
   ],
   authors: [{ name: 'SuccessBuds Team' }],
   creator: 'SuccessBuds',
@@ -56,24 +62,24 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    locale: 'en_US',
+    locale: 'en_IN',
     url: 'https://successbuds.com',
-    title: 'SuccessBuds - Online Educational Tests for Kids',
-    description: 'SuccessBuds is the leading online educational platform for kids. Take interactive multiple choice tests for CBSE and ICSE curriculum, track progress, and improve learning outcomes.',
+    title: 'SuccessBuds - CBSE & ICSE Online Tests for Indian Students',
+    description: 'India\'s leading platform for CBSE and ICSE online tests. Practice tests, mock exams, and study materials for Indian students from Class 4-10.',
     siteName: 'SuccessBuds',
     images: [
       {
         url: '/images/logo-wide.jpg',
         width: 1200,
         height: 630,
-        alt: 'SuccessBuds Educational Platform',
+        alt: 'SuccessBuds - CBSE ICSE Online Tests for Indian Students',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SuccessBuds - Online Educational Tests for Kids',
-    description: 'SuccessBuds is the leading online educational platform for kids. Take interactive multiple choice tests for CBSE and ICSE curriculum, track progress, and improve learning outcomes.',
+    title: 'SuccessBuds - CBSE & ICSE Online Tests for Indian Students',
+    description: 'India\'s leading platform for CBSE and ICSE online tests. Practice tests, mock exams, and study materials for Indian students.',
     images: ['/images/logo-wide.jpg'],
     creator: '@successbuds',
   },
@@ -89,7 +95,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'your-google-verification-code', // Replace with actual verification code
+    google: 'qQPmQK_RFBgrOigVcobsclOwzakO0hxf93t8GcGqZJQ',
   },
   icons: [
     { rel: 'icon', url: '/favicon.ico', sizes: 'any' },
@@ -116,9 +122,14 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "EducationalOrganization",
               "name": "SuccessBuds",
-              "description": "Online educational platform for kids offering interactive multiple choice tests and learning management tools",
+              "description": "India's leading online educational platform for CBSE and ICSE students offering interactive multiple choice tests, practice exams, and study materials",
               "url": "https://successbuds.com",
               "logo": "https://successbuds.com/images/logo-wide.jpg",
+              "address": {
+                "@type": "PostalAddress",
+                "addressCountry": "IN",
+                "addressRegion": "India"
+              },
               "sameAs": [
                 "https://twitter.com/successbuds",
                 "https://facebook.com/successbuds"
@@ -126,18 +137,23 @@ export default function RootLayout({
               "contactPoint": {
                 "@type": "ContactPoint",
                 "contactType": "customer service",
-                "email": "support@successbuds.com"
+                "email": "support@successbuds.com",
+                "areaServed": "IN",
+                "availableLanguage": ["English", "Hindi"]
               },
               "offers": {
                 "@type": "Offer",
-                "name": "Educational Testing Platform",
-                "description": "Interactive multiple choice tests for students",
-                "category": "Educational Technology"
+                "name": "CBSE & ICSE Online Tests",
+                "description": "Interactive multiple choice tests for CBSE and ICSE students from Class 4-10",
+                "category": "Educational Technology",
+                "areaServed": "IN"
               },
               "audience": {
                 "@type": "Audience",
-                "audienceType": "Students, Parents, Teachers"
-              }
+                "audienceType": "Indian Students, CBSE Students, ICSE Students, Parents, Teachers"
+              },
+              "educationalLevel": "Primary Education, Secondary Education",
+              "teaches": "CBSE Curriculum, ICSE Curriculum, Mathematics, Science, English, Social Studies"
             })
           }}
         />

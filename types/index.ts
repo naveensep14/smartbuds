@@ -15,9 +15,8 @@ export interface SubscriptionPlan {
   name: string;
   grade: string;
   board: string;
-  priceUsd: number;
-  stripePriceId: string;
-  stripeProductId: string;
+  priceInr: number;
+  razorpayPlanId?: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -27,12 +26,12 @@ export interface UserSubscription {
   id: string;
   userId: string;
   planId: string;
-  stripeSubscriptionId: string;
-  stripeCustomerId: string;
-  status: 'active' | 'cancelled' | 'past_due' | 'unpaid';
-  currentPeriodStart: Date;
-  currentPeriodEnd: Date;
-  cancelAtPeriodEnd: boolean;
+  razorpayOrderId: string;
+  razorpayPaymentId?: string;
+  razorpayCustomerId?: string;
+  status: 'pending' | 'active' | 'expired' | 'cancelled';
+  subscriptionStartDate: Date;
+  subscriptionEndDate: Date;
   createdAt: Date;
   updatedAt: Date;
   plan?: SubscriptionPlan;
@@ -42,8 +41,9 @@ export interface Payment {
   id: string;
   userId: string;
   subscriptionId: string;
-  stripePaymentIntentId: string;
-  amountUsd: number;
+  razorpayOrderId: string;
+  razorpayPaymentId?: string;
+  amountInr: number;
   status: 'pending' | 'succeeded' | 'failed' | 'cancelled';
   createdAt: Date;
 }

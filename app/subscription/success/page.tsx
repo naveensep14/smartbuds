@@ -14,8 +14,11 @@ export default function SubscriptionSuccessPage() {
   const [subscriptionDetails, setSubscriptionDetails] = useState<any>(null);
 
   useEffect(() => {
-    const verifySubscription = async () => {
-      if (!sessionId) {
+    const verifyPayment = async () => {
+      const paymentId = searchParams.get('payment_id');
+      const orderId = searchParams.get('order_id');
+      
+      if (!paymentId || !orderId) {
         setLoading(false);
         return;
       }
@@ -26,7 +29,7 @@ export default function SubscriptionSuccessPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ sessionId }),
+          body: JSON.stringify({ paymentId, orderId }),
         });
 
         const data = await response.json();
@@ -34,14 +37,14 @@ export default function SubscriptionSuccessPage() {
           setSubscriptionDetails(data.subscription);
         }
       } catch (error) {
-        console.error('Error verifying subscription:', error);
+        console.error('Error verifying payment:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    verifySubscription();
-  }, [sessionId]);
+    verifyPayment();
+  }, [searchParams]);
 
   if (loading) {
     return (
@@ -102,7 +105,7 @@ export default function SubscriptionSuccessPage() {
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-2">Valid Until</h3>
                   <p className="text-gray-600">
-                    {new Date(subscriptionDetails.currentPeriodEnd).toLocaleDateString()}
+                    {new Date(subscriptionDetails.subscriptionEndDate).toLocaleDateString()}
                   </p>
                 </div>
                 
@@ -116,7 +119,7 @@ export default function SubscriptionSuccessPage() {
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-2">Amount Paid</h3>
                   <p className="text-gray-600">
-                    ${subscriptionDetails.plan?.priceUsd}
+                    ₹{subscriptionDetails.plan?.priceInr}
                   </p>
                 </div>
               </div>

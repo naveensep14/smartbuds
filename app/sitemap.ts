@@ -2,49 +2,56 @@ import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://successbuds.com'
-  
+  const currentDate = new Date().toISOString()
+
   return [
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 1,
     },
     {
-      url: `${baseUrl}/tests`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
       url: `${baseUrl}/login`,
-      lastModified: new Date(),
+      lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/signup`,
-      lastModified: new Date(),
+      lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/dashboard`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.7,
+      url: `${baseUrl}/tests`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.9,
     },
     {
-      url: `${baseUrl}/my-results`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.6,
+      url: `${baseUrl}/tests?board=CBSE`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/tests?board=ICSE`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/results`,
-      lastModified: new Date(),
+      lastModified: currentDate,
       changeFrequency: 'daily',
       priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/subscription`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.8,
     },
   ]
 }

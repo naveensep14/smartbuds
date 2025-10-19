@@ -61,24 +61,57 @@ export default function SubscriptionPage() {
     }
 
     try {
-      // Redirect to checkout
-      const response = await fetch('/api/subscription/create-checkout', {
+      // Create Razorpay order
+      const response = await fetch('/api/subscription/create-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           planId: plan.id,
-          stripePriceId: plan.stripePriceId,
+          amount: plan.priceInr,
         }),
       });
 
-      const { url } = await response.json();
-      if (url) {
-        window.location.href = url;
+      const orderData = await response.json();
+      
+      if (orderData.error) {
+        alert(orderData.error);
+        return;
       }
+
+      // Load Razorpay script
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => {
+        const options = {
+          key: orderData.key,
+          amount: orderData.amount,
+          currency: orderData.currency,
+          name: orderData.name,
+          description: orderData.description,
+          order_id: orderData.orderId,
+          prefill: orderData.prefill,
+          theme: orderData.theme,
+          handler: function (response: any) {
+            // Payment successful
+            window.location.href = `/subscription/success?payment_id=${response.razorpay_payment_id}&order_id=${response.razorpay_order_id}`;
+          },
+          modal: {
+            ondismiss: function() {
+              // Payment cancelled
+              window.location.href = `/subscription/cancel?plan_id=${plan.id}`;
+            }
+          }
+        };
+
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+      };
+      document.head.appendChild(script);
     } catch (error) {
-      console.error('Error creating checkout session:', error);
+      console.error('Error creating Razorpay order:', error);
+      alert('Failed to initiate payment. Please try again.');
     }
   };
 
@@ -219,7 +252,7 @@ export default function SubscriptionPage() {
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
                   <div className="text-3xl font-bold text-navy mb-2">
-                    ${plan.priceUsd}
+                    ₹{plan.priceInr}
                   </div>
                   <p className="text-gray-600">per year</p>
                 </div>

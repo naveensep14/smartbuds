@@ -19,6 +19,7 @@ import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import Leaderboard from '@/components/Leaderboard';
 import NavigationHeader from '@/components/NavigationHeader';
+import Head from 'next/head';
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -33,14 +34,14 @@ export default function HomePage() {
   const features = [
     {
       icon: BookOpen,
-      title: "Interactive Tests",
-      description: "Comprehensive multiple choice tests covering all subjects and grade levels",
+      title: "CBSE & ICSE Tests",
+      description: "Comprehensive multiple choice tests covering CBSE and ICSE curriculum for Class 4-10",
       color: "from-blue to-accent-500"
     },
     {
       icon: BarChart3,
       title: "Progress Tracking",
-      description: "Detailed analytics and performance insights to monitor learning growth",
+      description: "Detailed analytics and performance insights for Indian students and parents",
       color: "from-green to-success-500"
     },
     {
@@ -52,32 +53,42 @@ export default function HomePage() {
     {
       icon: Users,
       title: "Parent Dashboard",
-      description: "Comprehensive tools for parents to monitor and support their child's learning",
+      description: "Comprehensive tools for Indian parents to monitor their child's CBSE/ICSE progress",
       color: "from-peach to-pink"
     }
   ];
 
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* SEO Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "name": "SuccessBuds",
-            "url": "https://successbuds.com",
-            "description": "Online educational platform for kids offering interactive multiple choice tests and learning management tools",
-            "potentialAction": {
-              "@type": "SearchAction",
-              "target": "https://successbuds.com/tests?search={search_term_string}",
-              "query-input": "required name=search_term_string"
-            }
-          })
-        }}
-      />
+    <>
+      <Head>
+        <link rel="canonical" href="https://successbuds.com/" />
+        <meta name="robots" content="index, follow" />
+      </Head>
+      <div className="min-h-screen bg-white">
+        {/* SEO Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "SuccessBuds - CBSE & ICSE Online Tests",
+              "url": "https://successbuds.com",
+              "description": "India's leading online educational platform for CBSE and ICSE students offering interactive multiple choice tests, practice exams, and study materials",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://successbuds.com/tests?search={search_term_string}",
+                "query-input": "required name=search_term_string"
+              },
+              "audience": {
+                "@type": "Audience",
+                "audienceType": "Indian Students, CBSE Students, ICSE Students"
+              },
+              "keywords": "CBSE tests, ICSE tests, Indian students online tests, CBSE online tests, ICSE online tests"
+            })
+          }}
+        />
       
       <NavigationHeader />
 
@@ -93,9 +104,9 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight"
             >
-              Learn Better with{' '}
+              CBSE & ICSE Tests for{' '}
               <span className="bg-gradient-to-r from-navy via-blue to-accent-500 bg-clip-text text-transparent">
-                SuccessBuds
+                Indian Students
               </span>
             </motion.h1>
             
@@ -116,8 +127,7 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed"
             >
-              The ultimate educational platform that makes learning fun, engaging, and effective. 
-              Take interactive tests, track progress, and achieve academic excellence.
+              India's leading online platform for CBSE and ICSE students. Practice with interactive multiple choice tests, track your progress, and excel in your board exams. Perfect for Indian students from Class 4-10.
             </motion.p>
             
             <motion.div
@@ -279,6 +289,7 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 } 
