@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { ADMIN_EMAILS } from './admin-config';
 
 export interface LeaderboardEntry {
   rank: number;
@@ -46,14 +47,13 @@ export class LeaderboardService {
         return [];
       }
 
-      // Filter out specific admin results (only naveensep14@gmail.com)
-      const EXCLUDED_ADMIN_EMAIL = 'naveensep14@gmail.com';
+      // Filter out all admin results
       const nonAdminResults = results.filter(result => {
-        const isExcludedAdmin = result.studentName.toLowerCase() === EXCLUDED_ADMIN_EMAIL.toLowerCase();
-        if (isExcludedAdmin) {
-          console.log('LeaderboardService - Filtering out excluded admin result:', result.studentName);
+        const isAdmin = ADMIN_EMAILS.includes(result.studentName.toLowerCase() as any);
+        if (isAdmin) {
+          console.log('LeaderboardService - Filtering out admin result:', result.studentName);
         }
-        return !isExcludedAdmin;
+        return !isAdmin;
       });
 
       console.log('LeaderboardService - Non-admin results:', nonAdminResults.length, 'out of', results.length);
