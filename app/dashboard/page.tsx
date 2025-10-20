@@ -6,7 +6,6 @@ import { BookOpen, Clock, Trophy, User, Menu, X, Settings, Edit3, Save, X as Clo
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { ActivityService, Activity } from '@/lib/activity';
 import NavigationHeader from '@/components/NavigationHeader';
 import { supabase } from '@/lib/supabase';
@@ -182,13 +181,6 @@ export default function DashboardPage() {
           className="bg-white rounded-2xl shadow-lg p-8 mb-8"
         >
           <div className="flex items-center space-x-4">
-            <Image
-              src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${isAdmin ? (user.user_metadata?.full_name || user.email?.split('@')[0]) : (userProfile?.student_name || user.user_metadata?.full_name || user.email?.split('@')[0])}&background=orange&color=white`}
-              alt="Profile"
-              width={64}
-              height={64}
-              className="w-16 h-16 rounded-full"
-            />
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
                 Welcome back, {isAdmin ? (user.user_metadata?.full_name || user.email?.split('@')[0]) : (userProfile?.student_name || user.user_metadata?.full_name || user.email?.split('@')[0])}!
