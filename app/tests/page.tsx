@@ -168,13 +168,38 @@ export default function TestsPage() {
     // NEW: All tests are visible to everyone (no hard filter)
     return matchesSearch && matchesSubject && matchesGrade && matchesBoard && matchesChapter && matchesType && isAvailable;
   }).sort((a, b) => {
-    // Sort unlocked tests first, then locked tests
+    // First, sort unlocked tests before locked tests
     const aLocked = isTestLocked(a);
     const bLocked = isTestLocked(b);
     
     if (aLocked && !bLocked) return 1;  // b (unlocked) comes first
     if (!aLocked && bLocked) return -1; // a (unlocked) comes first
-    return 0; // same lock status, maintain original order
+    
+    // If both have same lock status, prioritize Chapter 1 tests first
+    const aChapterMatch = a.title.match(/Chapter (\d+)/);
+    const bChapterMatch = b.title.match(/Chapter (\d+)/);
+    
+    if (aChapterMatch && bChapterMatch) {
+      const aChapterNum = parseInt(aChapterMatch[1]);
+      const bChapterNum = parseInt(bChapterMatch[1]);
+      
+      // Chapter 1 always comes first (since it's always unlocked)
+      if (aChapterNum === 1 && bChapterNum !== 1) return -1;
+      if (bChapterNum === 1 && aChapterNum !== 1) return 1;
+      
+      // If both are Chapter 1 or both are not Chapter 1, sort by subject then chapter
+      const subjectComparison = a.subject.localeCompare(b.subject);
+      if (subjectComparison !== 0) return subjectComparison;
+      
+      return aChapterNum - bChapterNum;
+    }
+    
+    // If one has chapter and other doesn't, prioritize the one with chapter
+    if (aChapterMatch && !bChapterMatch) return -1;
+    if (!aChapterMatch && bChapterMatch) return 1;
+    
+    // If neither has chapter, sort by subject alphabetically
+    return a.subject.localeCompare(b.subject);
   });
 
   // Filter options - show ALL options to everyone (no restrictions)
