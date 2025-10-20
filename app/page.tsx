@@ -34,14 +34,14 @@ export default function HomePage() {
   const features = [
     {
       icon: BookOpen,
-      title: "CBSE & ICSE Tests",
-      description: "Comprehensive multiple choice tests covering CBSE and ICSE curriculum for Class 4-10",
+      title: "Interactive Tests",
+      description: "Comprehensive multiple choice tests covering all subjects and grade levels",
       color: "from-blue to-accent-500"
     },
     {
       icon: BarChart3,
       title: "Progress Tracking",
-      description: "Detailed analytics and performance insights for Indian students and parents",
+      description: "Detailed analytics and performance insights to monitor learning growth",
       color: "from-green to-success-500"
     },
     {
@@ -53,7 +53,7 @@ export default function HomePage() {
     {
       icon: Users,
       title: "Parent Dashboard",
-      description: "Comprehensive tools for Indian parents to monitor their child's CBSE/ICSE progress",
+      description: "Comprehensive tools for parents to monitor and support their child's learning",
       color: "from-peach to-pink"
     }
   ];
@@ -73,19 +73,14 @@ export default function HomePage() {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "SuccessBuds - CBSE & ICSE Online Tests",
+              "name": "SuccessBuds",
               "url": "https://successbuds.com",
-              "description": "India's leading online educational platform for CBSE and ICSE students offering interactive multiple choice tests, practice exams, and study materials",
+              "description": "Online educational platform for kids offering interactive multiple choice tests and learning management tools",
               "potentialAction": {
                 "@type": "SearchAction",
                 "target": "https://successbuds.com/tests?search={search_term_string}",
                 "query-input": "required name=search_term_string"
-              },
-              "audience": {
-                "@type": "Audience",
-                "audienceType": "Indian Students, CBSE Students, ICSE Students"
-              },
-              "keywords": "CBSE tests, ICSE tests, Indian students online tests, CBSE online tests, ICSE online tests"
+              }
             })
           }}
         />
@@ -104,9 +99,9 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight"
             >
-              CBSE & ICSE Tests for{' '}
+              Learn Better with{' '}
               <span className="bg-gradient-to-r from-navy via-blue to-accent-500 bg-clip-text text-transparent">
-                Indian Students
+                SuccessBuds
               </span>
             </motion.h1>
             
@@ -127,7 +122,8 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed"
             >
-              India&apos;s leading online platform for CBSE and ICSE students. Practice with interactive multiple choice tests, track your progress, and excel in your board exams. Perfect for Indian students from Class 4-10.
+              The ultimate educational platform that makes learning fun, engaging, and effective. 
+              Take interactive tests, track progress, and achieve academic excellence.
             </motion.p>
             
             <motion.div
