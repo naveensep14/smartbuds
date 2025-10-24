@@ -178,30 +178,42 @@ export default function TestCoveragePage() {
           </div>
 
           {/* Legend */}
-          <div className="mt-6 flex flex-wrap items-center gap-6 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-red-100 border-2 border-red-300 rounded flex items-center justify-center">
-                <span className="text-red-700 font-bold text-xs">0</span>
+          <div className="mt-6 flex flex-wrap items-center gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-red-100 border-3 border-red-400 rounded-lg flex items-center justify-center shadow-sm">
+                <span className="text-red-800 font-bold text-base">0</span>
               </div>
-              <span className="text-gray-700 font-medium">No tests (0)</span>
+              <div>
+                <div className="text-gray-900 font-semibold">No tests</div>
+                <div className="text-gray-600 text-sm">(0)</div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-yellow-100 border-2 border-yellow-300 rounded flex items-center justify-center">
-                <span className="text-yellow-800 font-bold text-xs">1-19</span>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-yellow-100 border-3 border-yellow-400 rounded-lg flex items-center justify-center shadow-sm">
+                <span className="text-yellow-900 font-bold text-xs">1-19</span>
               </div>
-              <span className="text-gray-700 font-medium">Few tests</span>
+              <div>
+                <div className="text-gray-900 font-semibold">Few tests</div>
+                <div className="text-gray-600 text-sm">(1-19)</div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-green-100 border-2 border-green-400 rounded flex items-center justify-center">
-                <span className="text-green-800 font-bold text-xs">20-30</span>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-green-100 border-3 border-green-500 rounded-lg flex items-center justify-center shadow-sm">
+                <span className="text-green-900 font-bold text-xs">20-30</span>
               </div>
-              <span className="text-gray-700 font-medium">Good coverage</span>
+              <div>
+                <div className="text-gray-900 font-semibold">Good coverage</div>
+                <div className="text-gray-600 text-sm">(20-30)</div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-200 border-2 border-blue-400 rounded flex items-center justify-center">
-                <span className="text-blue-900 font-bold text-xs">31+</span>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-blue-200 border-3 border-blue-500 rounded-lg flex items-center justify-center shadow-sm">
+                <span className="text-blue-900 font-bold text-sm">31+</span>
               </div>
-              <span className="text-gray-700 font-medium">Excellent</span>
+              <div>
+                <div className="text-gray-900 font-semibold">Excellent</div>
+                <div className="text-gray-600 text-sm">(31+)</div>
+              </div>
             </div>
           </div>
         </div>
