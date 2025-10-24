@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Plus, Edit, Trash2, Eye, BarChart3, Users, Settings, Menu, X, LogOut, Upload, Filter, Search, Flag, AlertCircle, Mail } from 'lucide-react';
+import { BookOpen, Plus, Edit, Trash2, Eye, BarChart3, Users, Settings, Menu, X, LogOut, Upload, Filter, Search, Flag, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import AdminRoute from '@/components/AdminRoute';
@@ -286,13 +286,6 @@ function AdminPageContent() {
               <p className="text-xl text-gray-600">Manage tests and monitor student progress</p>
             </div>
             <div className="flex gap-3">
-              <Link
-                href="/admin/emails"
-                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center space-x-2"
-              >
-                <Mail className="w-5 h-5" />
-                <span>📧 Support Emails</span>
-              </Link>
               <Link
                 href="/admin/pdf-upload"
                 className="btn-secondary flex items-center space-x-2"

@@ -32,38 +32,86 @@ export async function middleware(request: NextRequest) {
 
   // Check if user is authenticated
   const { data: { user }, error } = await supabase.auth.getUser();
-
-  // Check if user is admin
-  const isAdmin = user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase() as any);
+  
+  console.log('🔒 [MIDDLEWARE LOG] User:', user?.email, 'Error:', error, 'Path:', request.nextUrl.pathname);
+  console.log('🔒 [MIDDLEWARE LOG] Method:', request.method);
+  console.log('🔒 [MIDDLEWARE LOG] Headers:', Object.fromEntries(request.headers.entries()));
 
   // Protect admin routes
   if (request.nextUrl.pathname.startsWith('/admin')) {
     if (!user) {
-      const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
-      return NextResponse.redirect(loginUrl);
+      // Not authenticated, redirect to login
+      return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    if (!isAdmin) {
+    // Check if user is admin
+    if (!user.email || !ADMIN_EMAILS.includes(user.email.toLowerCase() as any)) {
+      // Not admin, redirect to dashboard
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
   }
 
-  // For protected routes that need profile completion check
-  const requiresProfileCheck = 
-    request.nextUrl.pathname.startsWith('/dashboard') ||
-    request.nextUrl.pathname.startsWith('/tests') ||
-    request.nextUrl.pathname.startsWith('/my-results');
-
-  if (requiresProfileCheck) {
+  // Protect dashboard routes (require authentication)
+  if (request.nextUrl.pathname.startsWith('/dashboard')) {
     if (!user) {
-      const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
-      return NextResponse.redirect(loginUrl);
+      return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    // Only check profile completion for non-admin users, and only once
-    if (!isAdmin) {
+    // Check profile completion for non-admin users
+    if (user.email && !ADMIN_EMAILS.includes(user.email.toLowerCase() as any)) {
+      // Check profile completion manually instead of using RPC function
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('student_name, grade, board, profile_completed')
+          .eq('id', user.id)
+          .single();
+
+        if (error || !profile || !profile.profile_completed || !profile.student_name || !profile.grade || !profile.board) {
+          return NextResponse.redirect(new URL('/complete-profile', request.url));
+        }
+      } catch (error) {
+        console.error('Error checking profile completion:', error);
+        return NextResponse.redirect(new URL('/complete-profile', request.url));
+      }
+    }
+  }
+
+  // Protect tests routes (require authentication)
+  if (request.nextUrl.pathname.startsWith('/tests')) {
+    if (!user) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    // Check profile completion for non-admin users
+    if (user.email && !ADMIN_EMAILS.includes(user.email.toLowerCase() as any)) {
+      // Check profile completion manually instead of using RPC function
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('student_name, grade, board, profile_completed')
+          .eq('id', user.id)
+          .single();
+
+        if (error || !profile || !profile.profile_completed || !profile.student_name || !profile.grade || !profile.board) {
+          return NextResponse.redirect(new URL('/complete-profile', request.url));
+        }
+      } catch (error) {
+        console.error('Error checking profile completion:', error);
+        return NextResponse.redirect(new URL('/complete-profile', request.url));
+      }
+    }
+  }
+
+  // Protect my-results route (require authentication)
+  if (request.nextUrl.pathname.startsWith('/my-results')) {
+    if (!user) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    // Check profile completion for non-admin users
+    if (user.email && !ADMIN_EMAILS.includes(user.email.toLowerCase() as any)) {
+      // Check profile completion manually instead of using RPC function
       try {
         const { data: profile, error } = await supabase
           .from('profiles')

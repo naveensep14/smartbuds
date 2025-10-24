@@ -89,9 +89,9 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
                       <div className="h-2 sm:h-3 bg-gray-300 rounded w-16 sm:w-24"></div>
                     </div>
                   </div>
-                  <div className="text-right space-y-1 sm:space-y-2 ml-auto">
-                    <div className="h-5 sm:h-6 bg-gray-300 rounded w-12 sm:w-16 ml-auto"></div>
-                    <div className="h-2 sm:h-3 bg-gray-300 rounded w-8 sm:w-12 ml-auto"></div>
+                  <div className="text-right space-y-1 sm:space-y-2">
+                    <div className="h-5 sm:h-6 bg-gray-300 rounded w-12 sm:w-16"></div>
+                    <div className="h-2 sm:h-3 bg-gray-300 rounded w-8 sm:w-12"></div>
                   </div>
                 </div>
               </div>
@@ -220,7 +220,7 @@ export default function Leaderboard({ limit = 10 }: LeaderboardProps) {
               </div>
 
               {/* Right Section - Score */}
-              <div className="flex flex-col items-end justify-center flex-shrink-0 ml-4">
+              <div className="text-right flex-shrink-0 ml-2">
                 <div className="text-xl sm:text-3xl font-bold text-gray-900 mb-0.5 sm:mb-1">
                   {entry.averageScore}%
                 </div>
