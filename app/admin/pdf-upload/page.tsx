@@ -1222,77 +1222,60 @@ export default function PDFUploadPage() {
                     </div>
 
                     {/* Questions Section */}
-                    <div className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50">
-                      <h4 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <span className="text-2xl">📝</span>
-                        Questions Preview
-                      </h4>
-                      <div className="space-y-6">
+                    <div className="p-6">
+                      <h4 className="text-lg font-semibold text-gray-800 mb-4">Questions Preview</h4>
+                      <div className="space-y-4">
                         {test.questions.map((question: any, qIndex: number) => (
-                          <div key={qIndex} className="bg-white border-2 border-gray-200 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all">
-                            <div className="mb-4">
-                              <div className="flex items-center justify-between mb-3">
-                                <h5 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-bold">
-                                    Question {qIndex + 1}
-                                  </span>
+                          <div key={qIndex} className="border border-gray-200 rounded-lg p-4">
+                            <div className="mb-3">
+                              <div className="flex items-center justify-between mb-2">
+                                <h5 className="text-md font-medium text-gray-800">
+                                  Question {qIndex + 1}
                                 </h5>
                                 <button
                                   onClick={() => handleEditQuestion(index, qIndex)}
-                                  className="bg-navy text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-900 transition-all shadow-lg hover:shadow-xl border-2 border-navy hover:border-blue-900 flex items-center gap-2 text-lg"
+                                  className="text-sm bg-blue-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl border-2 border-blue-600"
                                 >
-                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                  </svg>
-                                  Edit Question
+                                  ✏️ Edit Question
                                 </button>
                               </div>
-                              <p className="text-gray-800 text-lg font-medium mb-4 leading-relaxed">{question.question}</p>
+                              <p className="text-gray-700 mb-3">{question.question}</p>
                             </div>
                             
-                            <div className="space-y-3">
+                            <div className="space-y-2">
                               {question.options.map((option: any, optionIndex: number) => (
                                 <div 
                                   key={optionIndex} 
-                                  className={`flex items-center space-x-4 p-4 rounded-xl border-2 transition-all ${
+                                  className={`flex items-center space-x-3 p-2 rounded-lg border transition-all ${
                                     question.correctAnswer === optionIndex 
-                                      ? 'border-green-500 bg-green-50 shadow-md' 
-                                      : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+                                      ? 'border-green-500 bg-green-50' 
+                                      : 'border-gray-200'
                                   }`}
                                 >
                                   <div className="flex items-center space-x-3">
-                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                                      question.correctAnswer === optionIndex 
-                                        ? 'border-green-500 bg-green-500' 
-                                        : 'border-gray-300 bg-white'
-                                    }`}>
-                                      {question.correctAnswer === optionIndex && (
-                                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                        </svg>
-                                      )}
-                                    </div>
-                                    <span className={`text-lg font-bold min-w-[60px] ${
-                                      question.correctAnswer === optionIndex 
-                                        ? 'text-green-700' 
-                                        : 'text-gray-600'
-                                    }`}>
+                                    <input
+                                      type="radio"
+                                      checked={question.correctAnswer === optionIndex}
+                                      readOnly
+                                      className="w-4 h-4 text-green-600"
+                                    />
+                                    <span className="text-sm font-medium text-gray-600 min-w-[50px]">
                                       {String.fromCharCode(65 + optionIndex)}:
                                     </span>
                                   </div>
-                                  <span className={`text-lg flex-1 ${
+                                  <span className={`text-sm ${
                                     question.correctAnswer === optionIndex 
-                                      ? 'text-green-800 font-semibold' 
+                                      ? 'text-green-800 font-medium' 
                                       : 'text-gray-700'
                                   }`}>
                                     {option}
                                   </span>
                                   {question.correctAnswer === optionIndex && (
-                                    <div className="flex items-center space-x-2 text-green-600 ml-auto">
-                                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <div className="flex items-center space-x-1 text-green-600 ml-auto">
+                                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                       </svg>
-                                      <span className="text-sm font-bold bg-green-100 px-2 py-1 rounded-full">Correct Answer</span>
+                                      <span className="text-xs font-medium">Correct</span>
                                     </div>
                                   )}
                                 </div>
@@ -1314,37 +1297,25 @@ export default function PDFUploadPage() {
                 ))}
               </div>
 
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6 mb-6">
+              <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="bg-blue-100 p-3 rounded-full">
-                      <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <span className="text-lg font-bold text-gray-900">
-                        Selected: {selectedTests.size} of {generatedTests.length} tests
+                  <div>
+                    <span className="text-sm font-medium text-gray-700">
+                      Selected: {selectedTests.size} of {generatedTests.length} tests
+                    </span>
+                    {selectedTests.size > 0 && (
+                      <span className="ml-2 text-sm text-green-600">
+                        ({Array.from(selectedTests).map(i => generatedTests[i].questions.length).reduce((a, b) => a + b, 0)} total questions)
                       </span>
-                      {selectedTests.size > 0 && (
-                        <span className="ml-3 text-lg font-semibold text-green-600">
-                          ({Array.from(selectedTests).map(i => generatedTests[i].questions.length).reduce((a, b) => a + b, 0)} total questions)
-                        </span>
-                      )}
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
 
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-3 border-green-300 rounded-2xl p-8 shadow-xl">
-                <div className="text-center mb-6">
-                  <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Ready to Save Your Tests?</h3>
-                  <p className="text-lg text-gray-700">
+              <div className="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 rounded-xl p-6">
+                <div className="text-center mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Ready to Save Your Tests?</h3>
+                  <p className="text-gray-600">
                     {selectedTests.size > 0 
                       ? `You have selected ${selectedTests.size} test${selectedTests.size !== 1 ? 's' : ''} to save to the database.`
                       : 'Please select at least one test to save.'
@@ -1352,36 +1323,30 @@ export default function PDFUploadPage() {
                   </p>
                 </div>
                 
-                <div className="flex gap-8 justify-center">
+                <div className="flex gap-6 justify-center">
                   <button
                     onClick={handleSaveTests}
                     disabled={selectedTests.size === 0}
-                    className={`px-10 py-5 rounded-2xl font-bold text-xl transition-all shadow-2xl hover:shadow-3xl border-3 flex items-center gap-4 ${
+                    className={`px-8 py-4 rounded-xl font-bold text-xl transition-all shadow-xl hover:shadow-2xl border-2 ${
                       selectedTests.size === 0
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed border-gray-300'
-                        : 'bg-navy text-white hover:bg-blue-900 border-navy hover:border-blue-900 hover:scale-105 transform'
+                        ? 'bg-gray-400 text-gray-600 cursor-not-allowed border-gray-400'
+                        : 'bg-green-600 text-white hover:bg-green-700 border-green-600 hover:scale-105'
                     }`}
                   >
-                    <div className={`p-2 rounded-full ${
-                      selectedTests.size === 0 ? 'bg-gray-200' : 'bg-white bg-opacity-20'
-                    }`}>
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12" />
-                      </svg>
-                    </div>
-                    <span>Save Selected Tests ({selectedTests.size})</span>
+                    <span className="flex items-center gap-3">
+                      <span className="text-2xl">💾</span>
+                      <span>Save Selected Tests ({selectedTests.size})</span>
+                    </span>
                   </button>
                   
                   <button
                     onClick={handleClearAll}
-                    className="px-10 py-5 rounded-2xl font-bold text-xl bg-red-600 text-white hover:bg-red-700 transition-all shadow-2xl hover:shadow-3xl border-3 border-red-600 hover:border-red-700 hover:scale-105 transform flex items-center gap-4"
+                    className="px-8 py-4 rounded-xl font-bold text-xl bg-gray-700 text-white hover:bg-gray-800 transition-all shadow-xl hover:shadow-2xl border-2 border-gray-700 hover:scale-105"
                   >
-                    <div className="bg-white bg-opacity-20 p-2 rounded-full">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                    </div>
-                    <span>Start Over</span>
+                    <span className="flex items-center gap-3">
+                      <span className="text-2xl">🔄</span>
+                      <span>Start Over</span>
+                    </span>
                   </button>
                 </div>
               </div>
