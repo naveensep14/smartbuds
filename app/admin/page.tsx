@@ -359,22 +359,24 @@ function AdminPageContent() {
               </motion.div>
             </Link>
 
-            <motion.div
-              className="card"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 text-yellow-600" />
+            <Link href="/admin/test-coverage">
+              <motion.div
+                className="card hover:shadow-xl transition-shadow cursor-pointer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <BarChart3 className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm text-gray-600">Test Coverage</p>
+                    <p className="text-lg font-semibold text-blue-600">View Details →</p>
+                  </div>
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm text-gray-600">Avg Score</p>
-                  <p className="text-lg font-semibold text-gray-500">Coming Soon</p>
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </Link>
           </div>
 
           {/* Filters Section */}
