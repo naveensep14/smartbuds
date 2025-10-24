@@ -39,8 +39,8 @@ function LoginPageContent() {
     setError('');
     
     try {
-      // Type-safe call to signInWithGoogle
-      const result = await signInWithGoogle(redirectTo);
+      // Call signInWithGoogle without parameters to avoid TypeScript issues
+      const result = await signInWithGoogle();
       if (result.error) {
         setError(result.error.message || 'Failed to sign in with Google');
       }
