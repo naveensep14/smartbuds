@@ -40,8 +40,10 @@ export async function middleware(request: NextRequest) {
   // Protect admin routes
   if (request.nextUrl.pathname.startsWith('/admin')) {
     if (!user) {
-      // Not authenticated, redirect to login
-      return NextResponse.redirect(new URL('/login', request.url));
+      // Not authenticated, redirect to login with redirect parameter
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
     }
 
     // Check if user is admin
@@ -80,7 +82,9 @@ export async function middleware(request: NextRequest) {
   // Protect tests routes (require authentication)
   if (request.nextUrl.pathname.startsWith('/tests')) {
     if (!user) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
     }
 
     // Check profile completion for non-admin users
@@ -106,7 +110,9 @@ export async function middleware(request: NextRequest) {
   // Protect my-results route (require authentication)
   if (request.nextUrl.pathname.startsWith('/my-results')) {
     if (!user) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
     }
 
     // Check profile completion for non-admin users
