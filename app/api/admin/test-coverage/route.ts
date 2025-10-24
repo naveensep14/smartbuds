@@ -68,9 +68,9 @@ export async function GET(request: NextRequest) {
     });
 
     // Get unique values for filters
-    const subjects = [...new Set(tests?.map(t => t.subject).filter(Boolean))].sort();
-    const grades = [...new Set(tests?.map(t => t.grade).filter(Boolean))].sort();
-    const boards = [...new Set(tests?.map(t => t.board).filter(Boolean))].sort();
+    const subjects = Array.from(new Set(tests?.map(t => t.subject).filter(Boolean))).sort();
+    const grades = Array.from(new Set(tests?.map(t => t.grade).filter(Boolean))).sort();
+    const boards = Array.from(new Set(tests?.map(t => t.board).filter(Boolean))).sort();
 
     return NextResponse.json({
       coverage,
