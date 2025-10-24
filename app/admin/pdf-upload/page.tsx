@@ -1239,7 +1239,7 @@ export default function PDFUploadPage() {
                                 </h5>
                                 <button
                                   onClick={() => handleEditQuestion(index, qIndex)}
-                                  className="bg-navy text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-900 transition-all shadow-lg hover:shadow-xl border-2 border-navy hover:border-blue-900 flex items-center gap-2 text-lg"
+                                  className="bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-all shadow-lg hover:shadow-xl border-2 border-gray-900 hover:border-black flex items-center gap-2 text-lg"
                                 >
                                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -1359,7 +1359,7 @@ export default function PDFUploadPage() {
                     className={`px-10 py-5 rounded-2xl font-bold text-xl transition-all shadow-2xl hover:shadow-3xl border-3 flex items-center gap-4 ${
                       selectedTests.size === 0
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed border-gray-300'
-                        : 'bg-navy text-white hover:bg-blue-900 border-navy hover:border-blue-900 hover:scale-105 transform'
+                        : 'bg-gray-900 text-white hover:bg-black border-gray-900 hover:border-black hover:scale-105 transform'
                     }`}
                   >
                     <div className={`p-2 rounded-full ${
