@@ -178,41 +178,42 @@ export default function TestCoveragePage() {
           </div>
 
           {/* Legend */}
-          <div className="mt-6 flex flex-wrap items-center gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-red-100 border-3 border-red-400 rounded-lg flex items-center justify-center shadow-sm">
-                <span className="text-red-800 font-bold text-base">0</span>
-              </div>
-              <div>
-                <div className="text-gray-900 font-semibold">No tests</div>
-                <div className="text-gray-600 text-sm">(0)</div>
-              </div>
+          <div className="mt-6 bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Coverage Levels</h4>
+              <span className="text-xs text-gray-500">Tests per Subject-Board-Grade</span>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-yellow-100 border-3 border-yellow-400 rounded-lg flex items-center justify-center shadow-sm">
-                <span className="text-yellow-900 font-bold text-xs">1-19</span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-4 h-4 bg-red-100 border-2 border-red-400 rounded"></div>
+                  <span className="text-sm font-semibold text-gray-900">No Tests</span>
+                </div>
+                <div className="text-xs text-gray-600 ml-6">0 tests available</div>
               </div>
-              <div>
-                <div className="text-gray-900 font-semibold">Few tests</div>
-                <div className="text-gray-600 text-sm">(1-19)</div>
+              
+              <div className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-4 h-4 bg-yellow-100 border-2 border-yellow-400 rounded"></div>
+                  <span className="text-sm font-semibold text-gray-900">Few Tests</span>
+                </div>
+                <div className="text-xs text-gray-600 ml-6">1-19 tests</div>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-green-100 border-3 border-green-500 rounded-lg flex items-center justify-center shadow-sm">
-                <span className="text-green-900 font-bold text-xs">20-30</span>
+              
+              <div className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-4 h-4 bg-green-100 border-2 border-green-400 rounded"></div>
+                  <span className="text-sm font-semibold text-gray-900">Good Coverage</span>
+                </div>
+                <div className="text-xs text-gray-600 ml-6">20-30 tests</div>
               </div>
-              <div>
-                <div className="text-gray-900 font-semibold">Good coverage</div>
-                <div className="text-gray-600 text-sm">(20-30)</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-blue-200 border-3 border-blue-500 rounded-lg flex items-center justify-center shadow-sm">
-                <span className="text-blue-900 font-bold text-sm">31+</span>
-              </div>
-              <div>
-                <div className="text-gray-900 font-semibold">Excellent</div>
-                <div className="text-gray-600 text-sm">(31+)</div>
+              
+              <div className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-4 h-4 bg-blue-200 border-2 border-blue-400 rounded"></div>
+                  <span className="text-sm font-semibold text-gray-900">Excellent</span>
+                </div>
+                <div className="text-xs text-gray-600 ml-6">31+ tests</div>
               </div>
             </div>
           </div>
