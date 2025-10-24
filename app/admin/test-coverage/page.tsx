@@ -95,10 +95,10 @@ export default function TestCoveragePage() {
   };
 
   const getCellColor = (count: number): string => {
-    if (count === 0) return 'bg-red-50 text-red-600 border-red-200';
-    if (count < 20) return 'bg-yellow-50 text-yellow-700 border-yellow-200';
-    if (count <= 30) return 'bg-green-50 text-green-700 border-green-200';
-    return 'bg-blue-50 text-blue-700 border-blue-200';
+    if (count === 0) return 'bg-red-100 text-red-700 border-red-300';
+    if (count < 20) return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+    if (count <= 30) return 'bg-green-100 text-green-800 border-green-400';
+    return 'bg-blue-200 text-blue-900 border-blue-400';
   };
 
   return (
@@ -178,22 +178,30 @@ export default function TestCoveragePage() {
           </div>
 
           {/* Legend */}
-          <div className="mt-6 flex items-center gap-6 text-sm">
+          <div className="mt-6 flex flex-wrap items-center gap-6 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-50 border border-red-200 rounded"></div>
-              <span className="text-gray-600">No tests (0)</span>
+              <div className="w-6 h-6 bg-red-100 border-2 border-red-300 rounded flex items-center justify-center">
+                <span className="text-red-700 font-bold text-xs">0</span>
+              </div>
+              <span className="text-gray-700 font-medium">No tests (0)</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-yellow-50 border border-yellow-200 rounded"></div>
-              <span className="text-gray-600">Few tests (1-19)</span>
+              <div className="w-6 h-6 bg-yellow-100 border-2 border-yellow-300 rounded flex items-center justify-center">
+                <span className="text-yellow-800 font-bold text-xs">1-19</span>
+              </div>
+              <span className="text-gray-700 font-medium">Few tests</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-green-50 border border-green-200 rounded"></div>
-              <span className="text-gray-600">Good coverage (20-30)</span>
+              <div className="w-6 h-6 bg-green-100 border-2 border-green-400 rounded flex items-center justify-center">
+                <span className="text-green-800 font-bold text-xs">20-30</span>
+              </div>
+              <span className="text-gray-700 font-medium">Good coverage</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-blue-50 border border-blue-200 rounded"></div>
-              <span className="text-gray-600">Excellent (31+)</span>
+              <div className="w-6 h-6 bg-blue-200 border-2 border-blue-400 rounded flex items-center justify-center">
+                <span className="text-blue-900 font-bold text-xs">31+</span>
+              </div>
+              <span className="text-gray-700 font-medium">Excellent</span>
             </div>
           </div>
         </div>
