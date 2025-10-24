@@ -287,6 +287,13 @@ function AdminPageContent() {
             </div>
             <div className="flex gap-3">
               <Link
+                href="/admin/test-coverage"
+                className="btn-secondary flex items-center space-x-2"
+              >
+                <BarChart3 className="w-5 h-5" />
+                <span>Test Coverage</span>
+              </Link>
+              <Link
                 href="/admin/pdf-upload"
                 className="btn-secondary flex items-center space-x-2"
               >
@@ -610,7 +617,7 @@ function AdminPageContent() {
           </div>
 
           {/* Quick Actions */}
-          <div className="mt-8 grid md:grid-cols-3 gap-6">
+          <div className="mt-8 grid md:grid-cols-4 gap-6">
             <motion.div
               className="card text-center"
               initial={{ opacity: 0, y: 20 }}
@@ -630,11 +637,29 @@ function AdminPageContent() {
               </button>
             </motion.div>
 
+            <Link href="/admin/test-coverage">
+              <motion.div
+                className="card text-center cursor-pointer hover:shadow-xl transition-shadow"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <BarChart3 className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Test Coverage</h3>
+                <p className="text-gray-600 mb-4">View test availability across subjects and grades</p>
+                <div className="btn-primary">
+                  View Coverage
+                </div>
+              </motion.div>
+            </Link>
+
             <motion.div
               className="card text-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
             >
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <BarChart3 className="w-8 h-8 text-red-600" />
@@ -650,7 +675,7 @@ function AdminPageContent() {
               className="card text-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.7 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
             >
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Settings className="w-8 h-8 text-green-600" />
