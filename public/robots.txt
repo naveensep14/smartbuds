@@ -9,14 +9,16 @@ Disallow: /my-results/
 Disallow: /complete-profile/
 Disallow: /subscription/success
 Disallow: /subscription/cancel
+Disallow: /test-review/
+Disallow: /debug-auth/
 
 # Allow public pages
 Allow: /
 Allow: /login
 Allow: /signup
-Allow: /tests
 Allow: /results
 Allow: /subscription
+Allow: /help
 
 # Sitemap
 Sitemap: https://successbuds.com/sitemap.xml

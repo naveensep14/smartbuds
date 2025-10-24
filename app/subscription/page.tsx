@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/auth';
 import { subscriptionService } from '@/lib/subscription';
 import { SubscriptionPlan } from '@/types';
 import NavigationHeader from '@/components/NavigationHeader';
+import Head from 'next/head';
 
 export default function SubscriptionPage() {
   const { user, loading: authLoading } = useAuth();
@@ -135,7 +136,12 @@ export default function SubscriptionPage() {
   const boards = Array.from(new Set(plans.map(plan => plan.board))).sort();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+    <>
+      <Head>
+        <link rel="canonical" href="https://successbuds.com/subscription" />
+        <meta name="robots" content="index, follow" />
+      </Head>
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
       <NavigationHeader />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -346,6 +352,7 @@ export default function SubscriptionPage() {
           </div>
         </motion.div>
       </main>
-    </div>
+      </div>
+    </>
   );
 }

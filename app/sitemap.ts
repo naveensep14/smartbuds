@@ -24,24 +24,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/tests`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/tests?board=CBSE`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/tests?board=ICSE`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
       url: `${baseUrl}/results`,
       lastModified: currentDate,
       changeFrequency: 'daily',
@@ -52,6 +34,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/help`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.6,
     },
   ]
 }

@@ -6,6 +6,7 @@ import { BookOpen, BarChart3, TrendingUp, Users, Calendar, Filter, Download, Eye
 import Link from 'next/link';
 import Image from 'next/image';
 import { TestResult, Test } from '@/types';
+import Head from 'next/head';
 
 // Sample test results data
 const sampleResults: TestResult[] = [
@@ -135,7 +136,12 @@ export default function ResultsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+    <>
+      <Head>
+        <link rel="canonical" href="https://successbuds.com/results" />
+        <meta name="robots" content="index, follow" />
+      </Head>
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -435,6 +441,7 @@ export default function ResultsPage() {
           </motion.div>
         </div>
       </main>
-    </div>
+      </div>
+    </>
   );
 } 

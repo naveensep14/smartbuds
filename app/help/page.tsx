@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send, Mail, MessageSquare, Bug, HelpCircle, CheckCircle, AlertCircle } from 'lucide-react';
 import NavigationHeader from '@/components/NavigationHeader';
+import Head from 'next/head';
 
 export default function HelpPage() {
   const [formData, setFormData] = useState({
@@ -67,7 +68,12 @@ export default function HelpPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+    <>
+      <Head>
+        <link rel="canonical" href="https://successbuds.com/help" />
+        <meta name="robots" content="index, follow" />
+      </Head>
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
       <NavigationHeader />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -329,6 +335,7 @@ export default function HelpPage() {
           </motion.div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

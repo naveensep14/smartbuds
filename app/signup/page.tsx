@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import Head from 'next/head';
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +34,12 @@ export default function SignupPage() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-cream">
+    <>
+      <Head>
+        <link rel="canonical" href="https://successbuds.com/signup" />
+        <meta name="robots" content="index, follow" />
+      </Head>
+      <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-cream">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -147,6 +153,7 @@ export default function SignupPage() {
           </div>
         </motion.div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

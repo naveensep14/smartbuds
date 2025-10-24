@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Lock, Mail, Menu, X } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import Head from 'next/head';
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,13 +15,15 @@ export default function LoginPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { signInWithGoogle } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect') || '/dashboard';
 
   const handleGoogleSignin = async () => {
     setIsLoading(true);
     setError('');
     
     try {
-      const { error } = await signInWithGoogle();
+      const { error } = await signInWithGoogle(redirectTo);
       if (error) {
         setError(error.message || 'Failed to sign in with Google');
       }
@@ -33,7 +36,12 @@ export default function LoginPage() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-cream">
+    <>
+      <Head>
+        <link rel="canonical" href="https://successbuds.com/login" />
+        <meta name="robots" content="index, follow" />
+      </Head>
+      <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-cream">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -133,6 +141,7 @@ export default function LoginPage() {
           </div>
         </motion.div>
       </div>
-    </div>
+      </div>
+    </>
   );
 } 
