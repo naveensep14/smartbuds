@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Lock, Mail, Menu, X } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
@@ -10,6 +10,22 @@ import Image from 'next/image';
 import Head from 'next/head';
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginPageSkeleton />}>
+      <LoginPageContent />
+    </Suspense>
+  );
+}
+
+function LoginPageSkeleton() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-cream flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-navy"></div>
+    </div>
+  );
+}
+
+function LoginPageContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
