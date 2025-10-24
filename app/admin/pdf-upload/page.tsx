@@ -1239,9 +1239,9 @@ export default function PDFUploadPage() {
                                 </h5>
                                 <button
                                   onClick={() => handleEditQuestion(index, qIndex)}
-                                  className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-md hover:shadow-lg flex items-center gap-2"
+                                  className="bg-navy text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-900 transition-all shadow-lg hover:shadow-xl border-2 border-navy hover:border-blue-900 flex items-center gap-2 text-lg"
                                 >
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                   </svg>
                                   Edit Question
@@ -1358,11 +1358,13 @@ export default function PDFUploadPage() {
                     disabled={selectedTests.size === 0}
                     className={`px-10 py-5 rounded-2xl font-bold text-xl transition-all shadow-2xl hover:shadow-3xl border-3 flex items-center gap-4 ${
                       selectedTests.size === 0
-                        ? 'bg-gray-400 text-gray-600 cursor-not-allowed border-gray-400'
-                        : 'bg-green-600 text-white hover:bg-green-700 border-green-600 hover:scale-105 transform'
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed border-gray-300'
+                        : 'bg-navy text-white hover:bg-blue-900 border-navy hover:border-blue-900 hover:scale-105 transform'
                     }`}
                   >
-                    <div className="bg-white bg-opacity-20 p-2 rounded-full">
+                    <div className={`p-2 rounded-full ${
+                      selectedTests.size === 0 ? 'bg-gray-200' : 'bg-white bg-opacity-20'
+                    }`}>
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12" />
                       </svg>
@@ -1372,7 +1374,7 @@ export default function PDFUploadPage() {
                   
                   <button
                     onClick={handleClearAll}
-                    className="px-10 py-5 rounded-2xl font-bold text-xl bg-gray-700 text-white hover:bg-gray-800 transition-all shadow-2xl hover:shadow-3xl border-3 border-gray-700 hover:scale-105 transform flex items-center gap-4"
+                    className="px-10 py-5 rounded-2xl font-bold text-xl bg-red-600 text-white hover:bg-red-700 transition-all shadow-2xl hover:shadow-3xl border-3 border-red-600 hover:border-red-700 hover:scale-105 transform flex items-center gap-4"
                   >
                     <div className="bg-white bg-opacity-20 p-2 rounded-full">
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
